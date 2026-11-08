@@ -23,11 +23,12 @@
       <a href="#config" data-view="config"><i class="ti ti-settings"></i><span data-i18n="nav.config">配置项管理</span></a>
       <a href="#graph" data-view="graph"><i class="ti ti-hierarchy-3"></i><span data-i18n="nav.graph">知识图谱</span></a>
       <a href="#sources" data-view="sources"><i class="ti ti-file-description"></i><span data-i18n="nav.sources">来源与待确认</span></a>
+      <a href="#targets" data-view="targets"><i class="ti ti-plug-connected"></i><span data-i18n="nav.targets">接入配置</span></a>
       <a href="#about" data-view="about"><i class="ti ti-info-circle"></i><span data-i18n="nav.about">关于服务</span></a>
     </nav>
     <div class="side-foot">
       <div class="mini-label" data-i18n="side.mode">运行模式</div>
-      <div id="sideMode" class="text-secondary small" data-i18n="side.loading">加载中...</div>
+      <div id="sideMode" class="text-secondary small">Loading...</div>
       <div class="mini-label mt-3" data-i18n="side.access">接入方式</div>
       <div id="sideAccess" class="small">-</div>
       <div class="mini-label mt-3" data-i18n="side.framework">前端框架</div>
@@ -149,7 +150,7 @@
               <select class="form-select form-select-sm" id="moduleSection" style="width:170px">
                 <option value="" data-i18n="mod.allSections">全部分区</option>
                 <option value="LOW_PAGE" data-i18n="mod.low">低页 0x00</option>
-                <option value="DOM" data-i18n="mod.dom">DOM 监测</option>
+                <option value="VDM" data-i18n="mod.vdm">VDM 监测</option>
                 <option value="CDB" data-i18n="mod.cdb">CDB 命令</option>
                 <option value="CONTROL" data-i18n="mod.control">控制与诊断</option>
               </select>
@@ -238,6 +239,82 @@
         <div class="card mt-3">
           <div class="card-header"><h3 class="card-title" data-i18n="src.pending">待确认项</h3><span class="badge bg-orange-lt" id="pendingCount"></span></div>
           <div class="card-body" id="pendingList"></div>
+        </div>
+      </section>
+
+
+      <!-- Editable access / target configuration -->
+      <section class="view" id="view-targets" hidden>
+        <div class="card">
+          <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <h3 class="card-title mb-0" data-i18n="tg.title">终端测试接口与目标设备</h3>
+            <div class="btn-list">
+              <button class="btn btn-sm btn-outline-primary" id="tgAdd" data-i18n="tg.add">新增设备</button>
+              <button class="btn btn-sm btn-primary" id="tgSave" data-i18n="tg.save">保存配置</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="alert alert-info py-2" id="tgNote"></div>
+            <div class="row g-2 align-items-end mb-3">
+              <div class="col-md-5">
+                <label class="form-label" data-i18n="tg.active">当前测试目标</label>
+                <select class="form-select form-select-sm" id="tgActive"></select>
+              </div>
+              <div class="col-md-4">
+                <button class="btn btn-sm btn-outline-secondary" id="tgProbe" data-i18n="tg.probe">探测当前目标</button>
+              </div>
+              <div class="col-md-3 text-end"><span class="small text-secondary mono" id="tgFile"></span></div>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-sm table-vcenter card-table">
+                <thead><tr>
+                  <th data-i18n="tg.f.deviceId">Device ID</th>
+                  <th data-i18n="tg.f.name">Name</th>
+                  <th data-i18n="tg.f.mode">Mode</th>
+                  <th data-i18n="tg.f.host">IP / host</th>
+                  <th data-i18n="tg.f.port">Port</th>
+                  <th data-i18n="tg.f.enabled">Enabled</th>
+                  <th class="text-end" data-i18n="tg.actions">Actions</th>
+                </tr></thead>
+                <tbody id="tgRows"></tbody>
+              </table>
+            </div>
+            <div id="tgProbeResult" class="cdb-report mt-3" hidden></div>
+
+            <div class="card mt-3" id="tgEditor" hidden>
+              <div class="card-header"><h4 class="card-title mb-0" id="tgEditorTitle" data-i18n="tg.editor">编辑设备</h4></div>
+              <div class="card-body">
+                <div class="row g-2">
+                  <div class="col-md-3"><label class="form-label">Device ID</label><input class="form-control form-control-sm" data-tg="device_id"></div>
+                  <div class="col-md-3"><label class="form-label" data-i18n="tg.f.name">Name</label><input class="form-control form-control-sm" data-tg="name"></div>
+                  <div class="col-md-3"><label class="form-label" data-i18n="tg.f.mode">Mode</label>
+                    <select class="form-select form-select-sm" data-tg="access_mode">
+                      <option value="mirror">mirror (offline)</option>
+                      <option value="ssh-i2c">ssh + i2c</option>
+                      <option value="rest-api">restful API</option>
+                    </select></div>
+                  <div class="col-md-3"><label class="form-label" data-i18n="tg.f.enabled">Enabled</label>
+                    <select class="form-select form-select-sm" data-tg="enabled"><option value="true">true</option><option value="false">false</option></select></div>
+                  <div class="col-md-4"><label class="form-label" data-i18n="tg.f.host">IP / host</label><input class="form-control form-control-sm" data-tg="host" placeholder="192.0.2.10"></div>
+                  <div class="col-md-2"><label class="form-label" data-i18n="tg.f.port">Port</label><input class="form-control form-control-sm" data-tg="port" type="number" min="0" max="65535"></div>
+                  <div class="col-md-3"><label class="form-label">SSH user</label><input class="form-control form-control-sm" data-tg="ssh_user"></div>
+                  <div class="col-md-3"><label class="form-label">I2C bus</label><input class="form-control form-control-sm" data-tg="i2c_bus"></div>
+                  <div class="col-md-3"><label class="form-label">I2C addr</label><input class="form-control form-control-sm" data-tg="i2c_addr"></div>
+                  <div class="col-md-3"><label class="form-label">REST scheme</label>
+                    <select class="form-select form-select-sm" data-tg="rest_scheme"><option value="https">https</option><option value="http">http</option></select></div>
+                  <div class="col-md-3"><label class="form-label">REST base path</label><input class="form-control form-control-sm" data-tg="rest_base_path" placeholder="/api"></div>
+                  <div class="col-md-3"><label class="form-label">Token env var</label><input class="form-control form-control-sm" data-tg="token_env" placeholder="CMIS_REST_TOKEN"></div>
+                  <div class="col-md-3"><label class="form-label">Module IDs</label><input class="form-control form-control-sm" data-tg="module_ids" placeholder="QSFP-DD-01, OSFP-01"></div>
+                  <div class="col-md-12"><label class="form-label" data-i18n="tg.f.notes">Notes</label><input class="form-control form-control-sm" data-tg="notes"></div>
+                </div>
+                <div class="mt-3 btn-list">
+                  <button class="btn btn-sm btn-primary" id="tgApply" data-i18n="tg.apply">应用到列表</button>
+                  <button class="btn btn-sm btn-outline-secondary" id="tgCancel" data-i18n="tg.cancel">取消</button>
+                  <span class="small text-secondary ms-2" data-i18n="tg.hint">应用到列表后还需点击「保存配置」才会写入文件</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

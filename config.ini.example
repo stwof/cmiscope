@@ -13,6 +13,9 @@ static_dir = cmis_service/static
 db_file = data/cmis.db
 seed_file = data/seed.json
 kg_file = data/knowledge_graph.json
+# Editable target-device registry. If this file does not exist, the shipped
+# config/targets.example.json is used; PUT /api/targets writes this path.
+targets_file = config/targets.json
 
 [app]
 read_only = false
@@ -20,6 +23,9 @@ read_only = false
 #   mirror    - offline SQLite mirror, never touches hardware (default, safe)
 #   ssh-i2c   - Mode A: SSH from the test server to the test switch, then I2C
 #   rest-api  - Mode B: northbound RESTful API of the target device / NOS
+# This is the global fallback. Per-device modes and IP/port/credential-reference
+# parameters live in config/targets.json (see [targets] notes below) and can be
+# switched at runtime from the "Access targets" view or via /api/targets.
 access_mode = mirror
 # write_adapter is a backward-compatible alias for access_mode
 write_adapter = mirror
@@ -72,3 +78,14 @@ cdb_confirm_token = EXECUTE
 [limits]
 max_body_bytes = 65536
 log_level = INFO
+
+# ---------------------------------------------------------------------------
+# Editable target registry (new devices join without any code change).
+# Edit config/targets.json directly, or use the dashboard / PUT /api/targets.
+# Fields per target: device_id, name, enabled, access_mode, host, port,
+#   ssh_user, i2c_bus, i2c_addr, rest_scheme, rest_base_path, token_env,
+#   module_ids, notes.
+# Credentials are NEVER stored here: token_env names an environment variable
+# (for example CMIS_REST_TOKEN), and SSH reuses ssh-agent keys with BatchMode.
+# CMIS_TARGETS_FILE overrides targets_file; CMIS_REST_TOKEN carries the token.
+# ---------------------------------------------------------------------------

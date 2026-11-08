@@ -36,7 +36,7 @@
 | `CONFIGURES` | 配置 | 22 | `AppSel` → `Data Path`；`BankSelect` → `Bank/Page` |
 | `CONSTRAINS` | 约束 | 19 | `§6.2.1` → `AppSel 只能引用已广告 Application`；`CON-PAGE-GOVERNANCE` → `PageSelect` |
 | `ADVERTISES` | 声明能力 | 5 | `OSFP 模块` → `Application Descriptor` |
-| `MONITORS` | 监控 | 5 | `DDM 监测量` → `DDM/DOM 概念` |
+| `MONITORS` | 监控 | 5 | `VDM 监测量` → `DDM/VDM 概念` |
 | `DERIVES_FROM` | 派生自 | 4 | `CMIS 5.3` → `5.2`；`libsffcmis` → `ethtool` |
 | `INSTANTIATES` | 实例化 | 2 | `相干 DCO` → `QSFP-DD / OSFP 封装` |
 | `INTEGRATES` | 集成 | 2 | CMIScope → `Tabler 1.7.3` / `Tabler Icons` |
@@ -48,10 +48,10 @@
 
 | 实体族 | ID | 说明 |
 | --- | --- | --- |
-| 规范分区 `SpecificationPartition` | `SEC-LOW-PAGE`、`SEC-DOM`、`SEC-CDB`、`SEC-CONTROL` | 与 `cmis_spec.SECTIONS` 一一对应，字段通过 link 归属到分区 |
+| 规范分区 `SpecificationPartition` | `SEC-LOW-PAGE`、`SEC-VDM`、`SEC-CDB`、`SEC-CONTROL` | 与 `cmis_spec.SECTIONS` 一一对应，字段通过 link 归属到分区 |
 | 接入路径 `AccessPath` | `IF-SSH-I2C`、`IF-REST-API`、`IF-MIRROR` | 对应 `docs/USAGE_BACKGROUND.md` 的两种生产接入方式 + 离线镜像 |
 | CDB 接口 | `IF-CDB-FRAME`（Page 9Fh 128B 帧）、`IF-CDB-EPL`（A0h–AFh）、`IF-CDB` | 命令帧与扩展载荷 |
-| CDB/分区配置项 | `CFG-CDB`、`CFG-DOM`、`CFG-LOW-PAGE` | 让 CDB/DOM/Low Page 字段在图谱中有落点 |
+| CDB/分区配置项 | `CFG-CDB`、`CFG-VDM`、`CFG-LOW-PAGE` | 让 CDB/VDM/Low Page 字段在图谱中有落点 |
 | 页治理约束 | `CON-PAGE-GOVERNANCE` | 参照 IETF YANG 草案的 `remote-read-allowed-pages` / `remote-write-allowed-pages` |
 | 服务实体 | `Service`：`CMIScope - Lightweight CMIS Dashboard` | 项目名称同步 |
 
@@ -112,7 +112,7 @@
 | --- | --- | --- |
 | `sonic-net/sonic-platform-common` | NOASSERTION（混合许可，待确认） | `CmisApi` 字段解析、AppSel、SI staging、CMIS 初始化 |
 | `sonic-net/sonic-platform-daemons` | 待确认 | `xcvrd` CMIS application initialization 状态机 |
-| `sonic-net/sonic-utilities` | 待确认 | `sfputil show eeprom --dom` |
+| `sonic-net/sonic-utilities` | 待确认 | `sfputil show eeprom` |
 | `meta/fboss` | NOASSERTION（BSD-style + PATENTS） | `qsfp_service` / CmisModule |
 | `vjardin/libsffcmis` | README 声明 GPLv2（GitHub 未识别 LICENSE） | 按页实现 datapath / VDM / CDB / diag / coherent / tunable |
 | `ethtool` (`cmis.c`) | GPL-2.0 | CMIS EEPROM 解析；注释引用 `§8.4.4 Table 8-40` |
@@ -161,7 +161,7 @@ Vitex CMIS 5.3 EEPROM map、CSDN CMIS 5.2/5.3 中文解读（社区资料，条�
 | **P-14** | **CDB 命令帧精确位定义** | 9Fh 帧的字节序、Check Code 覆盖范围、保留字节需按 OIF-CMIS-05.3 §9 原文复核；当前实现以内核 `cmis_cdb.c` 与规范目录交叉推导 |
 | **P-15** | **CDB 命令 ID 第三方冲突** | 命令目录中部分 CMDID 来自开源实现/社区资料，若与厂商自定义命令冲突需按模块实际能力裁剪 |
 | **P-16** | **Low Page 应用广告位置版本差异** | Upper Page 00h/01h 的 Application 广告字节在 5.2/5.3/5.4 间可能有调整 |
-| **P-17** | **DOM 术语与页归属** | DOM 是 SFF-8472/8636 历史术语；CMIS 5.3 用 Monitors / Thresholds / VDM，本服务把 `DOM` 作为工程分区名，需与实际设备页映射确认 |
+| **P-17** | **VDM 页归属与阈值可写性** | Lower 14-25、Page 02h、10h/11h、20h-2Fh 在 Monitors / Thresholds / VDM 之间的精确分工需按 OIF 原文与真实模块确认 |
 | **P-18** | **IETF CMIS YANG 草案状态** | `draft-hi-ccamp-cmis-control-yang-04` 为 Internet-Draft，页级 allowlist 尚未成为正式标准 |
 | **P-19** | **两种接入方式的设备侧映射** | SSH+I2C 命令模板与 REST 资源路径因 NOS/厂商而异，需在真实设备上联调并填充 |
 
@@ -206,7 +206,7 @@ curl "http://127.0.0.1:8787/api/kg/relations?type=CONSTRAINS"
    或 `tools/build_kg.py`（实体/关系/来源/待确认项）。
 2. 运行 `python tools/build_seed.py` 与 `python tools/build_kg.py`；生成器内置一致性自检
    （关系两端实体存在、`source_ids` 均已定义、link 目标存在）。
-3. 运行 `python tools/smoke_test.py`（61 项端到端回归）。
+3. 运行 `python tools/smoke_test.py`（87 项端到端回归）。
 4. 重启服务：图谱表自动以新 JSON 重建；设备数据以 `INSERT OR IGNORE` 幂等同步且**不覆盖用户已编辑的配置值**，
    如需完全重置，删除 `data/cmis.db` 后重启（或指向新的 `CMIS_DB_FILE`）。
 

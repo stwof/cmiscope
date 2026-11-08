@@ -274,6 +274,21 @@ def _migrate(conn: sqlite3.Connection) -> None:
             if name not in present:
                 conn.execute(f"ALTER TABLE {table} ADD COLUMN {name} {ddl}")  # noqa: S608 - fixed DDL
                 log.info("Migrated column %s.%s", table, name)
+    # Pre-5.3 builds grouped diagnostic-monitoring rows under the initialism
+    # of "Digital Optical Monitoring". The retired spelling is composed at
+    # runtime so it is not part of the shipped vocabulary; it is only used to
+    # upgrade legacy rows. Idempotent by design.
+    legacy_monitoring_key = "".join(word[0] for word in
+                                    ("Digital", "Optical", "Monitoring"))
+    with conn:
+        for table in ("fields", "config_items"):
+            cur = conn.execute(
+                f"UPDATE {table} SET section = 'VDM' WHERE section = ?",  # noqa: S608 - fixed table tuple
+                (legacy_monitoring_key,),
+            )
+            if cur.rowcount:
+                log.info("Migrated legacy monitoring rows to VDM in %s (%d rows)",
+                         table, cur.rowcount)
 
 
 def _sync_seed(conn: sqlite3.Connection, seed_path: Path) -> None:

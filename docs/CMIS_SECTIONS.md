@@ -21,7 +21,7 @@
 | 分区 key | 页面 | 主要内容 | 写策略 |
 |---|---|---|---|
 | `LOW_PAGE` | Lower 00h–7Fh + Upper 00h | 识别、状态、标志、全局控制、固件版本、应用广告、口令区、Bank/Page 选择 | 只读为主；远程写 Lower Memory 被禁止 |
-| `DOM` | Lower 14–25、02h、10h、11h、20h–2Fh | 监测量、阈值、通道状态、VDM | 阈值可委派；监测量只读 |
+| `VDM` | Lower 14–25、02h、10h、11h、20h–2Fh | 监测量、阈值、通道状态、VDM | 阈值可委派；监测量只读 |
 | `CDB` | Lower 37–38 / 118–125、9Fh、A0h–AFh | 命令帧、EPL、状态、口令、命令目录 | 门控；禁止远程写白名单委派 |
 | `CONTROL` | 01h、10h、12h、13h、14h、30h–4Fh | AppSel / DPSM / Staged Control Set / PRBS / 环回 / 相干设置 | 需页级委派 |
 
@@ -36,7 +36,7 @@
 | 0–3 | 4 | ID and Status Area | RO；Identifier(SFF-8024)、Revision Compliance、FlatMem、Module State |
 | 4–7 | 4 | Lane Flag Summary | RO / CoR；Pages 10h–1Fh 通道标志汇总 |
 | 8–13 | 6 | Module-Level Flags | RO / CoR |
-| 14–25 | 12 | Module-Level Monitors | RO；温度/电压/辅助监测量（DOM） |
+| 14–25 | 12 | Module-Level Monitors | RO；温度/电压/辅助监测量（VDM 分区） |
 | 26–30 | 5 | Module Global Controls | RW；含 LowPwrRequestSW |
 | 31–36 | 6 | Module-Level Flag Masks | RW |
 | 37–38 | 2 | CDB Status Area | RO；最近一次 CDB 命令状态 |
@@ -55,9 +55,9 @@
 
 Vendor Name(16B ASCII)、Vendor OUI(3B)、Part Number(16B)、Revision(2B)、Serial Number(16B)、Date Code(8B)、`CC_BASE` / `CC_EXT` 校验和。重编码 EEPROM 后若不重算校验和，模块可能无法识别。精确偏移待 OIF 原文核对（P-01）。
 
-## 4. DOM（Digital Optical Monitoring）
+## 4. VDM（Versatile Diagnostic Monitoring）
 
-> **术语说明**：DOM/DDM 是 SFF-8472 / SFF-8636 的历史叫法；CMIS 5.3 使用 **Monitors / Thresholds / VDM**。本服务按「规范分区」组织，保留 DOM 作为工程习惯名称。
+> **术语说明**：本分区统一命名为 **VDM**（Versatile Diagnostic Monitoring），覆盖 CMIS 5.3 中的 Monitors、Thresholds 与 VDM 页；项目内变量、接口参数、配置项分组与文档术语全部使用 VDM，寄存器布局与读写策略保持不变。
 
 | 位置 | 内容 | 依据 |
 |---|---|---|
@@ -131,4 +131,4 @@ Page 01h Application Descriptors（Host/Media Interface ID、Lane Count、Lane A
 - `partial`：第三方解读、厂商 datasheet、开源实现引用，条款号或地址需复核；
 - `pending`：推断或社区资料。
 
-与本分区直接相关的待确认项：P-01（精确地址）、P-02（5.3/5.4 差异）、P-03（AppSel 编码）、P-04（数值编码）、P-14（CDB 帧位定义/校验码/回复区）、P-15（CMDID 冲突）、P-16（应用广告位置版本差异）、P-17（DOM 术语与页归属）、P-18（IETF 草案状态）、P-19（设备侧适配）。完整清单见 `data/knowledge_graph.json -> pending_confirmations` 与 [`CMIS_KNOWLEDGE_GRAPH.md`](CMIS_KNOWLEDGE_GRAPH.md)。
+与本分区直接相关的待确认项：P-01（精确地址）、P-02（5.3/5.4 差异）、P-03（AppSel 编码）、P-04（数值编码）、P-14（CDB 帧位定义/校验码/回复区）、P-15（CMDID 冲突）、P-16（应用广告位置版本差异）、P-17（VDM 页归属与阈值可写性）、P-18（IETF 草案状态）、P-19（设备侧适配）。完整清单见 `data/knowledge_graph.json -> pending_confirmations` 与 [`knowledge/CMIS_KNOWLEDGE_GRAPH.md`](../knowledge/CMIS_KNOWLEDGE_GRAPH.md)。

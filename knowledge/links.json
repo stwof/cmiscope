@@ -1,0 +1,387 @@
+{
+  "description": "Canonical links for every CMIS knowledge-graph source. Bundled PDF copies are listed under bundled_copy.",
+  "generated_from": "data/knowledge_graph.json",
+  "count": 38,
+  "sources": [
+    {
+      "source_id": "S-OIF-INDEX",
+      "title": "OIF Implementation Agreements - Management Interface Specifications",
+      "kind": "oif_page",
+      "url": "https://www.oiforum.com/technical-work/implementation-agreements/",
+      "publisher": "OIF",
+      "license": "公开 IA 索引（文档条款以各 PDF 为准）",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-OIF-052",
+      "title": "OIF-CMIS-05.2 Common Management Interface Specification Rev 5.2 (April 2022)",
+      "kind": "oif_ia",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-05.2.pdf",
+      "publisher": "OIF",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-OIF-053",
+      "title": "OIF-CMIS-05.3 CMIS Rev 5.3 (September 2024)",
+      "kind": "oif_ia",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-05.3.pdf",
+      "publisher": "OIF",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": "knowledge/specs/OIF-CMIS-05.3.pdf"
+    },
+    {
+      "source_id": "S-OIF-054",
+      "title": "OIF-CMIS-05.4 CMIS Rev 5.4 (May 2026)",
+      "kind": "oif_ia",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-05.4.pdf",
+      "publisher": "OIF",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": "knowledge/specs/OIF-CMIS-05.4.pdf"
+    },
+    {
+      "source_id": "S-OIF-ERRATA",
+      "title": "OIF-CMIS-05-Errata-01.0 Errata and Corrigenda for CMIS 5.x Rev 1.0 (February 2025)",
+      "kind": "oif_ia",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-05-Errata-01.0.pdf",
+      "publisher": "OIF",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-IETF-CMIS-YANG",
+      "title": "draft-hi-ccamp-cmis-control-yang-04 - A YANG Data Model for CMIS Access and Control",
+      "kind": "ietf_draft",
+      "url": "https://datatracker.ietf.org/doc/html/draft-hi-ccamp-cmis-control-yang-04",
+      "publisher": "IETF",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-GH-LINUX-CDB",
+      "title": "Linux kernel net/ethtool/cmis_cdb.c and cmis.h (GPL-2.0)",
+      "kind": "github_repo",
+      "url": "https://github.com/torvalds/linux/blob/master/net/ethtool/cmis_cdb.c",
+      "publisher": "Linux Foundation",
+      "license": "GPL-2.0",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-ART-VITEX",
+      "title": "AI Data Center Engineering Guide - CMIS 5.3 EEPROM map (Vitex)",
+      "kind": "vendor_guide",
+      "url": "https://cdn.asp.events/CLIENT_Kisaco_R_E0D4AD69_B740_B124_D2ADF5A777880773/sites/AI-Infra-Summit-2026/media/libraries/sponsor-editorial/9781-vitex-eeprom-guide-2026.pdf",
+      "publisher": "Vitex",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-OIF-CCMIS-013",
+      "title": "OIF-C-CMIS-01.3 Implementation Agreement for Coherent CMIS (October 2023)",
+      "kind": "oif_ia",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-C-CMIS-01.3.pdf",
+      "publisher": "OIF",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-OIF-CCMIS-015",
+      "title": "OIF-C-CMIS-01.5 Implementation Agreement for Coherent CMIS (September 2026)",
+      "kind": "oif_ia",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-C-CMIS-01.5.pdf",
+      "publisher": "OIF",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-OIF-VCS-011",
+      "title": "OIF-CMIS-VCS-01.1 CMIS Versatile Control Set Rev 1.1 (July 2025)",
+      "kind": "oif_ia",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-VCS-01.1.pdf",
+      "publisher": "OIF",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-OIF-FF-010",
+      "title": "OIF-CMIS-FF-01.0 Formfactor Specific Hardware Management CMIS-FF (September 2024)",
+      "kind": "oif_ia",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-FF-01.0.pdf",
+      "publisher": "OIF",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-OIF-ELSFP-010",
+      "title": "OIF-ELSFP-CMIS-01.0 ELSFP CMIS (September 2024)",
+      "kind": "oif_ia",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-ELSFP-CMIS-01.0.pdf",
+      "publisher": "OIF",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-OIF-LT-010",
+      "title": "OIF-CMIS-LT-01.0 CMIS Out of Band Link Training (September 2026)",
+      "kind": "oif_ia",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-LT-01.0.pdf",
+      "publisher": "OIF",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-SFF-8024",
+      "title": "SNIA SFF-8024 - SFF Module / Interface Identifier Codes",
+      "kind": "standard_index",
+      "url": "https://www.snia.org/technology-communities/sff/specifications",
+      "publisher": "SNIA SFF TWG",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-SFF-8636",
+      "title": "SFF-8636 - QSFP+ / QSFP28 Management Interface (legacy)",
+      "kind": "standard_index",
+      "url": "https://www.snia.org/technology-communities/sff/specifications",
+      "publisher": "SNIA SFF TWG",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-QSFPDD-MSA",
+      "title": "QSFP-DD MSA CMIS 4.0 / 5.0（CMIS 前身）",
+      "kind": "msa",
+      "url": "http://www.qsfp-dd.com/",
+      "publisher": "QSFP-DD MSA",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-GH-API-SNAPSHOT",
+      "title": "GitHub REST API /repos 元数据快照 (2026-11-08)",
+      "kind": "github_api",
+      "url": "https://api.github.com",
+      "publisher": "GitHub",
+      "license": "API 数据",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-GH-TABLER",
+      "title": "tabler/tabler - HTML Dashboard UI Kit (v1.7.3, MIT)",
+      "kind": "github_repo",
+      "url": "https://github.com/tabler/tabler",
+      "publisher": "Tabler Authors",
+      "license": "MIT",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-GH-TABLER-ICONS",
+      "title": "tabler/tabler-icons (MIT)",
+      "kind": "github_repo",
+      "url": "https://github.com/tabler/tabler-icons",
+      "publisher": "Tabler Authors",
+      "license": "MIT",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-GH-ADMINLTE",
+      "title": "ColorlibHQ/AdminLTE (MIT)",
+      "kind": "github_repo",
+      "url": "https://github.com/ColorlibHQ/AdminLTE",
+      "publisher": "ColorlibHQ",
+      "license": "MIT",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-GH-DASHY",
+      "title": "Lissy93/dashy (MIT)",
+      "kind": "github_repo",
+      "url": "https://github.com/Lissy93/dashy",
+      "publisher": "Lissy93",
+      "license": "MIT",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-GH-GRAFANA",
+      "title": "grafana/grafana (AGPL-3.0)",
+      "kind": "github_repo",
+      "url": "https://github.com/grafana/grafana",
+      "publisher": "Grafana Labs",
+      "license": "AGPL-3.0",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-GH-SONIC-PC",
+      "title": "sonic-net/sonic-platform-common (CMIS API: sonic_xcvr/api/public/cmis.py)",
+      "kind": "github_repo",
+      "url": "https://github.com/sonic-net/sonic-platform-common",
+      "publisher": "SONiC",
+      "license": "NOASSERTION (GitHub 未识别)",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-GH-SONIC-PD",
+      "title": "sonic-net/sonic-platform-daemons (xcvrd CMIS 初始化状态机)",
+      "kind": "github_repo",
+      "url": "https://github.com/sonic-net/sonic-platform-daemons",
+      "publisher": "SONiC",
+      "license": "待确认",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-GH-SONIC-UTIL",
+      "title": "sonic-net/sonic-utilities (sfputil show eeprom)",
+      "kind": "github_repo",
+      "url": "https://github.com/sonic-net/sonic-utilities",
+      "publisher": "SONiC",
+      "license": "待确认",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-GH-FBOSS",
+      "title": "facebook/fboss -> meta/fboss (qsfp_service, CmisModule)",
+      "kind": "github_repo",
+      "url": "https://github.com/facebook/fboss",
+      "publisher": "Meta",
+      "license": "NOASSERTION (BSD-style + PATENTS 文件)",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-GH-LIBSFFCMIS",
+      "title": "vjardin/libsffcmis (C 库 + CLI, 支持 OIF-CMIS-05.3 / C-CMIS-01.3)",
+      "kind": "github_repo",
+      "url": "https://github.com/vjardin/libsffcmis",
+      "publisher": "vjardin",
+      "license": "README 声明 GPLv2（GitHub 未识别 LICENSE）",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-GH-ETHTOOL",
+      "title": "ethtool (cmis.c / qsfp.c, GPL-2.0)",
+      "kind": "github_repo",
+      "url": "https://github.com/kernelkit/ethtool",
+      "publisher": "kernel.org / GitHub mirrors",
+      "license": "GPL-2.0",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-GH-LINUX",
+      "title": "Linux kernel (I2C / SFP 与模块 EEPROM 访问)",
+      "kind": "github_repo",
+      "url": "https://github.com/torvalds/linux",
+      "publisher": "Linux Foundation",
+      "license": "GPL-2.0",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-ART-MAPYOURTECH",
+      "title": "CMIS for Pluggable Optics: Management Architecture, State Machines and Comparison",
+      "kind": "technical_article",
+      "url": "https://mapyourtech.com/cmis-for-pluggable-optics-management-architecture-state-machines-and-comparison",
+      "publisher": "MapYourTech",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-ART-W2W",
+      "title": "CMIS Transceiver Programming & Breakout Configuration Reference Guide v1.0",
+      "kind": "vendor_guide",
+      "url": "https://www.wave2wave.io/datasheets/resources/W2W_CMIS-Programming-Breakout-Guide_v1.0.pdf",
+      "publisher": "Wave2Wave",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-ART-LINKPP",
+      "title": "CMIS Explained - Common Management Interface",
+      "kind": "technical_article",
+      "url": "https://resources.l-p.com/knowledge-center/cmis-common-management-interface-specification",
+      "publisher": "LINK-PP",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-ART-XRDOCS",
+      "title": "DCO configuration using CMIS AppSel (IOS-XR)",
+      "kind": "technical_article",
+      "url": "https://xrdocs.io/design/blogs/2026-0610-dco-configuration-appsel",
+      "publisher": "Cisco / xrdocs",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-ART-LIGHTWAVE",
+      "title": "OIF finishes one CMIS project, starts another (2022 Q2)",
+      "kind": "news",
+      "url": "https://www.lightwaveonline.com/optical-tech/transmission/article/14277596/oif-finishes-one-cmis-project-starts-another",
+      "publisher": "Lightwave Online",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-ART-CSDN-52",
+      "title": "CMIS 5.2 深度解读：光模块 I2C 管理、LPO 配置与实战排查",
+      "kind": "technical_article",
+      "url": "https://blog.csdn.net/weixin_32642109/article/details/164407082",
+      "publisher": "CSDN 社区",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-ART-CSDN-53",
+      "title": "CMIS 5.3 vs 5.2：光模块管理接口差异与驱动迁移实践",
+      "kind": "technical_article",
+      "url": "https://blog.csdn.net/weixin_29193359/article/details/164416903",
+      "publisher": "CSDN 社区",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    },
+    {
+      "source_id": "S-INTERNAL",
+      "title": "本项目内部示例设备数据（合成）",
+      "kind": "internal_dataset",
+      "url": "data/seed.json",
+      "publisher": "本项目",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "bundled_copy": null
+    }
+  ]
+}

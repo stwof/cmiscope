@@ -103,7 +103,7 @@ def build() -> dict:
             "project": "CMIScope",
             "data_nature": "synthetic-demo",
             "cmis_reference": ["OIF-CMIS-05.3", "OIF-CMIS-05.4", "OIF-CMIS-05-Errata-01.0"],
-            "sections": ["LOW_PAGE", "DOM", "CDB", "CONTROL"],
+            "sections": ["LOW_PAGE", "VDM", "CDB", "CONTROL"],
             "note": "Internal device data is synthetic, not real network assets. Register offsets and clause numbers marked pending are listed in knowledge_graph.json -> pending_confirmations.",
             "counts": {"devices": len(devices), "modules": len(modules),
                        "fields": len(fields), "config_items": len(items)},
@@ -118,5 +118,6 @@ def build() -> dict:
 if __name__ == "__main__":
     data = build()
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    # write_bytes keeps LF on every platform (write_text would emit CRLF on Windows).
+    OUT.write_bytes((json.dumps(data, ensure_ascii=False, indent=2) + "\n").encode("utf-8"))
     print(f"wrote {OUT} | {data['meta']['counts']}")

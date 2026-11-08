@@ -1,0 +1,31 @@
+CMIScope - Third-Party Notices
+==============================
+
+The CMIScope source code is licensed under the MIT License (see LICENSE).
+
+1. Tabler 1.7.3 and Tabler Icons (MIT)
+   Location: cmis_service/static/vendor/tabler/
+   Copyright (c) 2018-2026 The Tabler Authors.
+   The original MIT license text is preserved at
+   cmis_service/static/vendor/tabler/LICENSE. These are unmodified vendored
+   distribution files (CSS, JS, webfont).
+
+2. OIF CMIS Implementation Agreements
+   Location: knowledge/specs/OIF-CMIS-05.3.pdf, OIF-CMIS-05.4.pdf
+   Copyright belongs to the Optical Internetworking Forum (OIF). These are
+   publicly published documents, bundled as unmodified offline reference
+   copies. Canonical links and redistribution notes are in
+   knowledge/specs/README.md. No OIF text is reproduced in the source code.
+
+3. Referenced open-source projects (no source code copied)
+   The knowledge graph cites SONiC, FBOSS, libsffcmis, ethtool and the Linux
+   kernel by name, URL and repository metadata only. No source files from
+   those projects are included in this repository. Their respective licenses
+   (GPL-2.0, NOASSERTION, etc.) are recorded in data/knowledge_graph.json and
+   knowledge/SOURCES.md; review them before integrating any upstream code.
+
+4. Credentials
+   This repository contains no tokens, passwords, private keys or machine
+   addresses of real equipment. Example configuration uses documentation-only
+   TEST-NET-1 addresses (192.0.2.0/24). Operator-owned files (config.ini,
+   config/targets.json) are excluded by .gitignore.

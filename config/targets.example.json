@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "active_target": "DEMO-MIRROR",
+  "targets": [
+    {
+      "device_id": "DEMO-MIRROR",
+      "name": "Offline mirror (default, no hardware contact)",
+      "enabled": true,
+      "access_mode": "mirror",
+      "host": "",
+      "port": 0,
+      "notes": "Safe default. Edit active_target to select another test interface."
+    },
+    {
+      "device_id": "LAB-SSH-01",
+      "name": "Lab switch via SSH + I2C",
+      "enabled": true,
+      "access_mode": "ssh-i2c",
+      "host": "192.0.2.10",
+      "port": 22,
+      "ssh_user": "lab",
+      "i2c_bus": "0",
+      "i2c_addr": "0x50",
+      "module_ids": ["QSFP-DD-01"],
+      "notes": "192.0.2.0/24 is documentation-only TEST-NET-1. Replace with a real lab address."
+    },
+    {
+      "device_id": "LAB-REST-01",
+      "name": "Target device via northbound REST API",
+      "enabled": true,
+      "access_mode": "rest-api",
+      "host": "192.0.2.20",
+      "port": 443,
+      "rest_scheme": "https",
+      "rest_base_path": "/api",
+      "token_env": "CMIS_REST_TOKEN",
+      "module_ids": ["OSFP-01"],
+      "notes": "The token value is read from the named environment variable, never stored here."
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 # Runtime artifacts and machine-local configuration.
 # These are regenerated on startup or supplied per deployment.
 config.ini
+# Operator-owned device inventory (may contain internal IP addresses)
+config/targets.json
 data/cmis.db
 data/cmis.db-journal
 data/cmis.db-wal

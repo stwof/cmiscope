@@ -93,7 +93,7 @@
   var VIEW_TITLE = {
     overview: 'nav.overview', devices: 'nav.devices', module: 'nav.module',
     config: 'nav.config', graph: 'nav.graph', sources: 'nav.sources',
-    about: 'nav.about', search: 'common.searchResults'
+    targets: 'nav.targets', about: 'nav.about', search: 'common.searchResults'
   };
   function setView(name, skipHash) {
     state.view = name;
@@ -116,6 +116,7 @@
     else if (name === 'config') loadConfig();
     else if (name === 'graph') loadGraph();
     else if (name === 'sources') loadSources();
+    else if (name === 'targets') loadTargets();
     else if (name === 'about') loadAbout();
   }
 
@@ -182,7 +183,7 @@
   function sectionLabel(key) {
     var found = (state.sections || []).filter(function (s) { return s.key === key; })[0];
     if (found) return pick(found.zh, found.en);
-    var map = { LOW_PAGE: 'mod.low', DOM: 'mod.dom', CDB: 'mod.cdb', CONTROL: 'mod.control' };
+    var map = { LOW_PAGE: 'mod.low', VDM: 'mod.vdm', CDB: 'mod.cdb', CONTROL: 'mod.control' };
     return t(map[key] || key) === (map[key] || key) ? key : t(map[key]);
   }
 
@@ -725,6 +726,139 @@
     sel.value = value;
   }
 
+  // --------------------------------------------------------------- access targets
+  // The registry is edited in the browser but persisted as a plain JSON file
+  // by PUT /api/targets, so the same configuration can be edited in a terminal.
+  var tg = { version: 1, active_target: '', targets: [], editIndex: -1 };
+
+  function loadTargets() {
+    api('GET', '/api/targets').then(function (d) {
+      tg.version = d.version;
+      tg.active_target = d.active_target || '';
+      tg.targets = (d.targets || []).map(function (x) { return Object.assign({}, x); });
+      el('tgNote').textContent = t('tg.note');
+      el('tgFile').textContent = d.file || '';
+      renderTargets();
+    }).catch(fail);
+  }
+
+  function targetModeLabel(mode) {
+    if (mode === 'ssh-i2c') return 'ssh + i2c';
+    if (mode === 'rest-api') return 'restful API';
+    return 'mirror';
+  }
+
+  function renderTargets() {
+    el('tgActive').innerHTML = tg.targets.map(function (x) {
+      return '<option value="' + esc(x.device_id) + '">' + esc(x.device_id) +
+        ' - ' + esc(targetModeLabel(x.access_mode)) + '</option>';
+    }).join('');
+    el('tgActive').value = tg.active_target || '';
+    el('tgRows').innerHTML = tg.targets.length ? tg.targets.map(function (x, i) {
+      var isActive = x.device_id === tg.active_target;
+      return '<tr>' +
+        '<td class="mono">' + esc(x.device_id) + (isActive ? ' ' + badge(t('tg.setActive'), 'green') : '') + '</td>' +
+        '<td>' + esc(x.name) + '</td>' +
+        '<td>' + badge(targetModeLabel(x.access_mode), x.access_mode === 'mirror' ? 'secondary' : 'blue') + '</td>' +
+        '<td class="mono">' + esc(x.host || '-') + '</td>' +
+        '<td class="mono">' + esc(x.port || '-') + '</td>' +
+        '<td>' + (x.enabled ? '&#10003;' : '-') + '</td>' +
+        '<td class="text-end"><div class="btn-list flex-nowrap justify-content-end">' +
+        '<button class="btn btn-sm btn-outline-primary tg-edit" data-i="' + i + '">' + esc(t('tg.edit')) + '</button>' +
+        '<button class="btn btn-sm btn-outline-secondary tg-probe" data-i="' + i + '">' + esc(t('tg.probeRow')) + '</button>' +
+        '<button class="btn btn-sm btn-outline-danger tg-del" data-i="' + i + '">' + esc(t('tg.del')) + '</button>' +
+        '</div></td></tr>';
+    }).join('') : '<tr><td colspan="7" class="text-secondary">-</td></tr>';
+
+    el('tgRows').querySelectorAll('.tg-edit').forEach(function (b) {
+      b.addEventListener('click', function () { openTargetEditor(parseInt(b.getAttribute('data-i'), 10)); });
+    });
+    el('tgRows').querySelectorAll('.tg-probe').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var i = parseInt(b.getAttribute('data-i'), 10);
+        probeTargetById(tg.targets[i].device_id);
+      });
+    });
+    el('tgRows').querySelectorAll('.tg-del').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var i = parseInt(b.getAttribute('data-i'), 10);
+        var removed = tg.targets.splice(i, 1)[0];
+        if (removed && removed.device_id === tg.active_target) {
+          tg.active_target = tg.targets.length ? tg.targets[0].device_id : '';
+        }
+        renderTargets();
+      });
+    });
+  }
+
+  function openTargetEditor(index) {
+    tg.editIndex = index;
+    var x = index >= 0 ? tg.targets[index] : {
+      device_id: '', name: '', enabled: true, access_mode: 'mirror', host: '', port: 0,
+      ssh_user: 'admin', i2c_bus: '0', i2c_addr: '0x50', rest_scheme: 'https',
+      rest_base_path: '/api', token_env: 'CMIS_REST_TOKEN', module_ids: [], notes: ''
+    };
+    document.querySelectorAll('[data-tg]').forEach(function (input) {
+      var k = input.getAttribute('data-tg');
+      var v = x[k];
+      if (k === 'module_ids') v = (v || []).join(', ');
+      else if (k === 'enabled') v = v ? 'true' : 'false';
+      input.value = (v === undefined || v === null || v === false) ? '' : v;
+    });
+    el('tgEditor').hidden = false;
+    el('tgEditorTitle').textContent = t('tg.editor') + ' - ' + (x.device_id || t('tg.add'));
+  }
+
+  function applyTargetForm() {
+    var obj = {};
+    document.querySelectorAll('[data-tg]').forEach(function (input) {
+      obj[input.getAttribute('data-tg')] = String(input.value).trim();
+    });
+    if (!obj.device_id) { toast('device_id is required', 'err'); return; }
+    obj.port = parseInt(obj.port || '0', 10) || 0;
+    obj.enabled = obj.enabled === 'true';
+    obj.module_ids = String(obj.module_ids || '').split(',')
+      .map(function (v) { return v.trim(); }).filter(Boolean);
+    if (tg.editIndex >= 0) tg.targets[tg.editIndex] = obj;
+    else tg.targets.push(obj);
+    if (!tg.active_target) tg.active_target = obj.device_id;
+    tg.editIndex = -1;
+    el('tgEditor').hidden = true;
+    renderTargets();
+    toast(t('tg.added'), 'ok');
+  }
+
+  function saveTargets() {
+    api('PUT', '/api/targets', {
+      version: tg.version,
+      active_target: el('tgActive').value || tg.active_target,
+      targets: tg.targets
+    }).then(function (d) {
+      tg.version = d.version;
+      tg.active_target = d.active_target || '';
+      tg.targets = (d.targets || []).slice();
+      renderTargets();
+      toast(t('tg.saved'), 'ok');
+    }).catch(function (err) {
+      var extra = (err.details && err.details.errors)
+        ? ' - ' + err.details.errors.slice(0, 3).join('; ') : '';
+      toast((err.message || '') + extra, 'err');
+    });
+  }
+
+  function probeTargetById(deviceId) {
+    api('POST', '/api/targets/probe', { device_id: deviceId || '' }).then(function (d) {
+      el('tgProbeResult').hidden = false;
+      el('tgProbeResult').innerHTML = '<div class="report-box"><strong>' +
+        esc(d.access_mode) + '</strong> - ' + esc(d.device_id || 'global') +
+        '<pre class="mono mt-2">' + esc(JSON.stringify(d.probe, null, 2)) + '</pre></div>';
+    }).catch(function (err) {
+      el('tgProbeResult').hidden = false;
+      el('tgProbeResult').innerHTML = '<div class="report-box fail">' +
+        esc(t('tg.probeFail')) + ': ' + esc(err.message) + '</div>';
+    });
+  }
+
   function bind() {
     document.querySelectorAll('[data-view]').forEach(function (a) {
       a.addEventListener('click', function (e) {
@@ -793,6 +927,18 @@
         fail(err);
       });
     });
+    el('tgAdd').addEventListener('click', function () { openTargetEditor(-1); });
+    el('tgSave').addEventListener('click', saveTargets);
+    el('tgApply').addEventListener('click', applyTargetForm);
+    el('tgCancel').addEventListener('click', function () {
+      el('tgEditor').hidden = true; tg.editIndex = -1;
+    });
+    el('tgProbe').addEventListener('click', function () {
+      probeTargetById(el('tgActive').value);
+    });
+    el('tgActive').addEventListener('change', function () {
+      tg.active_target = el('tgActive').value;
+    });
     window.addEventListener('hashchange', function () {
       var name = (location.hash || '#overview').slice(1);
       if (VIEW_TITLE[name] && name !== state.view) setView(name, true);
@@ -820,6 +966,11 @@
       el('healthText').textContent = t('status.down');
     });
     api('GET', '/api/sections').then(function (d) { state.sections = d.items; fillSectionSelect(); }).catch(fail);
+    api('GET', '/api/meta').then(function (d) {
+      var svc = d.service || {};
+      el('sideMode').textContent = (svc.read_only ? 'read-only' : 'read/write') +
+        ' - ' + (svc.access_mode || 'mirror');
+    }).catch(function () { el('sideMode').textContent = 'unknown'; });
     fillDeviceSelects();
     var hash = (location.hash || '').slice(1);
     setView(VIEW_TITLE[hash] ? hash : 'overview', true);

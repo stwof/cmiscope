@@ -1,6 +1,6 @@
 """CMIS field catalog and device profiles shared by seed/knowledge-graph builders.
 
-Registers are grouped into four CMIS partitions (LOW_PAGE / DOM / CDB / CONTROL)
+Registers are grouped into four CMIS partitions (LOW_PAGE / VDM / CDB / CONTROL)
 following OIF-CMIS-05.3 and 05.4. Every field carries Chinese and English
 labels so the UI can switch language without changing the dataset.
 
@@ -186,64 +186,64 @@ FIELD_CATALOG = [
       kg_entity_id="CFG-PAGESEL"),
 
     # -----------------------------------------------------------------------
-    # DOM: monitors, thresholds, flags and VDM
+    # VDM partition: monitors, thresholds, flags and VDM pages
     # -----------------------------------------------------------------------
     F("ModuleLevelMonitors", "模块级监测量", "Module-Level Monitors", "Lower", "14-25", "hex", "RO",
       "Lower 14-25 温度/电压/辅助监测量原始字节",
       "Lower 14-25 raw temperature, supply voltage and auxiliary monitor bytes",
       "OIF-CMIS-05.3 8.8 / public datasheet", SRC_OIF_53 + SRC_MAP,
-      section="DOM", default_value="0x2A", kg_entity_id="CFG-DDM"),
+      section="VDM", default_value="0x2A", kg_entity_id="CFG-DDM"),
     F("ModuleTemperature", "模块温度", "Module Temperature", "Lower/11h", "pending", "float", "RO",
-      "数字诊断监测量（DDM/DOM），实际页/偏移按模块 CMIS 版本核对",
+      "VDM 诊断监测量（DDM/VDM），实际页/偏移按模块 CMIS 版本核对",
       "Digital diagnostic monitor; exact page/offset depends on the module revision",
       "OIF-CMIS-05.3 8.8 Monitors", SRC_OIF_53 + SRC_LIBSFF,
-      section="DOM", unit="degC", default_value=42.5, kg_entity_id="CFG-DDM"),
+      section="VDM", unit="degC", default_value=42.5, kg_entity_id="CFG-DDM"),
     F("ModuleVoltage", "模块供电电压", "Supply Voltage", "Lower/11h", "pending", "float", "RO",
       "模块供电电压监测量", "Module supply voltage monitor",
       "OIF-CMIS-05.3 8.8 Monitors", SRC_OIF_53 + SRC_LIBSFF,
-      section="DOM", unit="V", default_value=3.31, kg_entity_id="CFG-DDM"),
+      section="VDM", unit="V", default_value=3.31, kg_entity_id="CFG-DDM"),
     F("TxPowerDbm", "Tx 光功率", "Tx Optical Power", "11h", "pending", "float", "RO",
       "按通道的发射光功率监测量", "Per-lane transmit optical power monitor",
       "OIF-CMIS-05.3 8.8 / VDM 8.22", SRC_OIF_53 + SRC_LIBSFF,
-      section="DOM", unit="dBm", default_value=-1.2, kg_entity_id="CFG-DDM"),
+      section="VDM", unit="dBm", default_value=-1.2, kg_entity_id="CFG-DDM"),
     F("RxPowerDbm", "Rx 光功率", "Rx Optical Power", "11h", "pending", "float", "RO",
       "按通道的接收光功率监测量", "Per-lane receive optical power monitor",
       "OIF-CMIS-05.3 8.8 / VDM 8.22", SRC_OIF_53 + SRC_LIBSFF,
-      section="DOM", unit="dBm", default_value=-2.8, kg_entity_id="CFG-DDM"),
+      section="VDM", unit="dBm", default_value=-2.8, kg_entity_id="CFG-DDM"),
     F("TxBiasLane1", "Lane1 Tx 偏置电流", "Lane 1 Tx Bias Current", "11h", "pending", "float", "RO",
       "通道 1 激光器偏置电流监测量", "Lane 1 laser bias current monitor",
       "OIF-CMIS-05.3 8.8", SRC_OIF_53 + SRC_LIBSFF,
-      section="DOM", unit="mA", default_value=7.4, kg_entity_id="CFG-DDM"),
+      section="VDM", unit="mA", default_value=7.4, kg_entity_id="CFG-DDM"),
     F("RxLosLane1", "Lane1 Rx LOS", "Lane 1 Rx LOS", "11h", "pending", "bool", "RO",
       "接收信号丢失标志", "Receive loss-of-signal flag",
       "OIF-CMIS-05.3 8.8 Lane Flags", SRC_OIF_53 + SRC_YANG,
-      section="DOM", default_value=0, kg_entity_id="CFG-DDM"),
+      section="VDM", default_value=0, kg_entity_id="CFG-DDM"),
     F("TempHighAlarmThreshold", "高温告警阈值", "Temp High Alarm Threshold", "02h", "pending", "float", "RW",
       "Page 02h 告警/预警阈值页的高温告警门限；应高于高温预警门限",
       "Page 02h high-temperature alarm threshold; must exceed the warning threshold",
       "OIF-CMIS-05.3 8.8 Thresholds / IETF YANG draft table 2",
       SRC_OIF_53 + SRC_YANG + SRC_LIBSFF,
-      section="DOM", unit="degC", default_value=85.0, min_value=-40.0, max_value=125.0,
+      section="VDM", unit="degC", default_value=85.0, min_value=-40.0, max_value=125.0,
       cross_rule="threshold_high_gt_warning", kg_entity_id="CFG-THRESH"),
     F("TempHighWarningThreshold", "高温预警阈值", "Temp High Warning Threshold", "02h", "pending",
       "float", "RW", "Page 02h 高温预警门限", "Page 02h high-temperature warning threshold",
       "OIF-CMIS-05.3 8.8 Thresholds", SRC_OIF_53 + SRC_YANG + SRC_LIBSFF,
-      section="DOM", unit="degC", default_value=75.0, min_value=-40.0, max_value=125.0,
+      section="VDM", unit="degC", default_value=75.0, min_value=-40.0, max_value=125.0,
       kg_entity_id="CFG-THRESH"),
     F("TempLowWarningThreshold", "低温预警阈值", "Temp Low Warning Threshold", "02h", "pending",
       "float", "RW", "Page 02h 低温预警门限", "Page 02h low-temperature warning threshold",
       "OIF-CMIS-05.3 8.8 Thresholds", SRC_OIF_53 + SRC_YANG,
-      section="DOM", unit="degC", default_value=0.0, min_value=-40.0, max_value=125.0,
+      section="VDM", unit="degC", default_value=0.0, min_value=-40.0, max_value=125.0,
       kg_entity_id="CFG-THRESH"),
     F("VccHighAlarmThreshold", "电压高告警阈值", "Vcc High Alarm Threshold", "02h", "pending",
       "float", "RW", "Page 02h 供电电压高告警门限", "Page 02h high supply-voltage alarm threshold",
       "OIF-CMIS-05.3 8.8 Thresholds", SRC_OIF_53 + SRC_YANG,
-      section="DOM", unit="V", default_value=3.60, min_value=0.0, max_value=5.0,
+      section="VDM", unit="V", default_value=3.60, min_value=0.0, max_value=5.0,
       kg_entity_id="CFG-THRESH"),
     F("VdmFreeze", "VDM 观测冻结", "VDM Freeze", "2Fh", "pending", "bool", "RW",
       "VDM Freeze 用于原子读取一组监测量", "VDM Freeze for an atomic snapshot of monitor values",
       "OIF-CMIS-05.3 8.22 / libsffcmis cmis-vdm.c", SRC_OIF_53 + SRC_LIBSFF,
-      section="DOM", default_value=0, kg_entity_id="CFG-VDMFREEZE"),
+      section="VDM", default_value=0, kg_entity_id="CFG-VDMFREEZE"),
 
     # -----------------------------------------------------------------------
     # CDB: page 9Fh command frame, A0h-AFh EPL, status and password

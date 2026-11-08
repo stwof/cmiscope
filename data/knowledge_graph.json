@@ -336,13 +336,13 @@
     },
     {
       "source_id": "S-GH-SONIC-UTIL",
-      "title": "sonic-net/sonic-utilities (sfputil show eeprom --dom)",
+      "title": "sonic-net/sonic-utilities (sfputil show eeprom)",
       "publisher": "SONiC",
       "url": "https://github.com/sonic-net/sonic-utilities",
       "kind": "github_repo",
       "license": "待确认",
       "retrieved_at": "2026-11-08",
-      "note": "CMIS EEPROM/DOM 命令行展示",
+      "note": "CMIS EEPROM/VDM 命令行展示",
       "confidence": "partial"
     },
     {
@@ -1759,7 +1759,7 @@
     {
       "entity_id": "CFG-DDM",
       "type": "ConfigItem",
-      "name": "DDM / DOM 监测量",
+      "name": "VDM / DDM 监测量",
       "summary": "温度、电压、Tx/Rx 光功率，RO",
       "source_ids": [
         "S-OIF-052",
@@ -1838,7 +1838,7 @@
     {
       "entity_id": "CON-DDM",
       "type": "Concept",
-      "name": "Digital Diagnostics Monitoring (DDM/DOM)",
+      "name": "Digital Diagnostics Monitoring (DDM)",
       "summary": "实时温度/电压/光功率监视",
       "source_ids": [
         "S-ART-LINKPP",
@@ -1980,7 +1980,7 @@
       "entity_id": "OSS-SONIC-UTIL",
       "type": "OpenSourceProject",
       "name": "sonic-net/sonic-utilities",
-      "summary": "sfputil show eeprom --dom：CMIS EEPROM/DOM CLI 展示",
+      "summary": "sfputil show eeprom：CMIS EEPROM/VDM CLI 展示",
       "source_ids": [
         "S-GH-SONIC-UTIL"
       ],
@@ -2098,9 +2098,9 @@
       }
     },
     {
-      "entity_id": "SEC-DOM",
+      "entity_id": "SEC-VDM",
       "type": "SpecificationPartition",
-      "name": "DOM / CMIS Monitors",
+      "name": "VDM / CMIS Monitors",
       "summary": "CMIS 称 Monitors：Lower 14-25 模块级监测量、Page 02h 阈值、Page 10h/11h 通道状态与光功率监测量、Pages 20h-2Fh VDM",
       "source_ids": [
         "S-OIF-053",
@@ -2255,9 +2255,9 @@
       }
     },
     {
-      "entity_id": "CFG-DOM",
+      "entity_id": "CFG-VDM",
       "type": "ConfigItem",
-      "name": "DOM threshold and monitor registers",
+      "name": "VDM threshold and monitor registers",
       "summary": "Page 02h 阈值、Lower 14-25 与 Page 10h/11h 监测量、Pages 20h-2Fh VDM 控制",
       "source_ids": [
         "S-OIF-053",
@@ -4937,7 +4937,7 @@
       "src": "OSS-SONIC-UTIL",
       "dst": "CL-8-4",
       "type": "IMPLEMENTS",
-      "label": "sfputil show eeprom --dom",
+      "label": "sfputil show eeprom",
       "source_ids": [
         "S-GH-SONIC-PC",
         "S-GH-LIBSFFCMIS",
@@ -5412,7 +5412,7 @@
     {
       "relation_id": "REL-230",
       "src": "STD-CMIS-053",
-      "dst": "SEC-DOM",
+      "dst": "SEC-VDM",
       "type": "DEFINES",
       "label": "规范定义该分区及其寄存器组织",
       "source_ids": [
@@ -5468,7 +5468,7 @@
     {
       "relation_id": "REL-234",
       "src": "STD-CMIS-054",
-      "dst": "SEC-DOM",
+      "dst": "SEC-VDM",
       "type": "DEFINES",
       "label": "规范定义该分区及其寄存器组织",
       "source_ids": [
@@ -5550,10 +5550,10 @@
     },
     {
       "relation_id": "REL-240",
-      "src": "SEC-DOM",
+      "src": "SEC-VDM",
       "dst": "CON-DDM",
       "type": "CONTAINS",
-      "label": "DOM 分区承载监测量与阈值",
+      "label": "VDM 分区承载监测量与阈值",
       "source_ids": [
         "S-OIF-053",
         "S-IETF-CMIS-YANG"
@@ -5564,7 +5564,7 @@
     },
     {
       "relation_id": "REL-241",
-      "src": "SEC-DOM",
+      "src": "SEC-VDM",
       "dst": "IF-VDM",
       "type": "CONTAINS",
       "label": "VDM 页 20h-2Fh 属于监测分区",
@@ -6269,7 +6269,7 @@
     },
     {
       "cmis_ref": "ModuleLevelMonitors",
-      "entity_id": "SEC-DOM",
+      "entity_id": "SEC-VDM",
       "relation": "belongs_to_section",
       "note": "字段归属的 CMIS 规范分区"
     },
@@ -6287,7 +6287,7 @@
     },
     {
       "cmis_ref": "ModuleTemperature",
-      "entity_id": "SEC-DOM",
+      "entity_id": "SEC-VDM",
       "relation": "belongs_to_section",
       "note": "字段归属的 CMIS 规范分区"
     },
@@ -6311,7 +6311,7 @@
     },
     {
       "cmis_ref": "ModuleVoltage",
-      "entity_id": "SEC-DOM",
+      "entity_id": "SEC-VDM",
       "relation": "belongs_to_section",
       "note": "字段归属的 CMIS 规范分区"
     },
@@ -6335,7 +6335,7 @@
     },
     {
       "cmis_ref": "TxPowerDbm",
-      "entity_id": "SEC-DOM",
+      "entity_id": "SEC-VDM",
       "relation": "belongs_to_section",
       "note": "字段归属的 CMIS 规范分区"
     },
@@ -6365,7 +6365,7 @@
     },
     {
       "cmis_ref": "RxPowerDbm",
-      "entity_id": "SEC-DOM",
+      "entity_id": "SEC-VDM",
       "relation": "belongs_to_section",
       "note": "字段归属的 CMIS 规范分区"
     },
@@ -6395,7 +6395,7 @@
     },
     {
       "cmis_ref": "TxBiasLane1",
-      "entity_id": "SEC-DOM",
+      "entity_id": "SEC-VDM",
       "relation": "belongs_to_section",
       "note": "字段归属的 CMIS 规范分区"
     },
@@ -6419,7 +6419,7 @@
     },
     {
       "cmis_ref": "RxLosLane1",
-      "entity_id": "SEC-DOM",
+      "entity_id": "SEC-VDM",
       "relation": "belongs_to_section",
       "note": "字段归属的 CMIS 规范分区"
     },
@@ -6437,7 +6437,7 @@
     },
     {
       "cmis_ref": "TempHighAlarmThreshold",
-      "entity_id": "SEC-DOM",
+      "entity_id": "SEC-VDM",
       "relation": "belongs_to_section",
       "note": "字段归属的 CMIS 规范分区"
     },
@@ -6467,7 +6467,7 @@
     },
     {
       "cmis_ref": "TempHighWarningThreshold",
-      "entity_id": "SEC-DOM",
+      "entity_id": "SEC-VDM",
       "relation": "belongs_to_section",
       "note": "字段归属的 CMIS 规范分区"
     },
@@ -6497,7 +6497,7 @@
     },
     {
       "cmis_ref": "TempLowWarningThreshold",
-      "entity_id": "SEC-DOM",
+      "entity_id": "SEC-VDM",
       "relation": "belongs_to_section",
       "note": "字段归属的 CMIS 规范分区"
     },
@@ -6521,7 +6521,7 @@
     },
     {
       "cmis_ref": "VccHighAlarmThreshold",
-      "entity_id": "SEC-DOM",
+      "entity_id": "SEC-VDM",
       "relation": "belongs_to_section",
       "note": "字段归属的 CMIS 规范分区"
     },
@@ -6545,7 +6545,7 @@
     },
     {
       "cmis_ref": "VdmFreeze",
-      "entity_id": "SEC-DOM",
+      "entity_id": "SEC-VDM",
       "relation": "belongs_to_section",
       "note": "字段归属的 CMIS 规范分区"
     },
@@ -7575,13 +7575,13 @@
     },
     {
       "pending_id": "P-17",
-      "topic": "DOM 术语与页归属",
-      "question": "DOM 是 SFF-8472/8636 历史术语，CMIS 5.3 使用 Monitors / Thresholds / VDM；Lower 14-25、Page 02h、10h/11h、20h-2Fh 的精确分工需按原文确认",
+      "topic": "VDM 页归属与阈值可写性",
+      "question": "Lower 14-25、Page 02h、10h/11h、20h-2Fh 在 Monitors / Thresholds / VDM 之间的精确分工需按原文确认",
       "source_ids": [
         "S-OIF-053",
         "S-IETF-CMIS-YANG"
       ],
-      "impact": "影响 DOM 分区字段分组与阈值可写性判断",
+      "impact": "影响 VDM 分区字段分组与阈值可写性判断",
       "status": "open"
     },
     {

@@ -20,7 +20,7 @@
 
 | HTTP | `error.code` | 场景 |
 | ---: | --- | --- |
-| 400 | `MISSING_VALUE` / `BAD_PARAM` / `BAD_REQUEST` / `INVALID_JSON` / `MISSING_QUERY` / `MISSING_PARAM` / `VALIDATION_FAILED` / `CDB_VALIDATION_FAILED` / `UNSAFE_PARAM` | 参数缺失、JSON 非法、保存前校验失败、CDB 帧校验失败、SSH 模板参数不安全 |
+| 400 | `MISSING_VALUE` / `BAD_PARAM` / `BAD_REQUEST` / `INVALID_JSON` / `MISSING_QUERY` / `MISSING_PARAM` / `VALIDATION_FAILED` / `CDB_VALIDATION_FAILED` / `TARGETS_VALIDATION_FAILED` / `UNSAFE_PARAM` | 参数缺失、JSON 非法、保存前校验失败、CDB 帧校验失败、设备清单校验失败、SSH 模板参数不安全 |
 | 403 | `FORBIDDEN` / `HARDWARE_WRITE_DISABLED` / `LOWER_MEMORY_PROTECTED` / `CDB_PAGE_PROTECTED` / `CDB_REST_FORBIDDEN` / `FIRMWARE_COMMAND_FORBIDDEN` | 目录穿越、硬件写开关未开、Lower Memory 写保护、CDB 页只读、固件命令未授权 |
 | 404 | `NOT_FOUND` / `ENDPOINT_NOT_FOUND` / `DEVICE_NOT_FOUND` / `CONFIG_ITEM_NOT_FOUND` / `KG_ENTITY_NOT_FOUND` / `SECTION_NOT_FOUND` | 资源不存在 |
 | 405 | `METHOD_NOT_ALLOWED` | 方法不支持 |
@@ -52,7 +52,7 @@
 | GET | `/api/devices` | `q`, `status`, `access_mode`, `limit`, `offset` | 设备列表（含模块数/配置项数、中英文名称） |
 | GET | `/api/devices/{id}` | — | 设备详情：模块、字段/配置项、图谱关联、最近变更 |
 | GET | `/api/fields` | `q`, `page`, `access`, `section` | 字段字典（页、偏移、类型、权限、分区、规范引用、置信度、来源）；最多返回 300 条 |
-| GET | `/api/config-items` | `q`, `device_id`, `field_key`, `section`, `writable`, `limit`, `offset` | 配置项实例检索；`section` 取 `LOW_PAGE\|DOM\|CDB\|CONTROL` |
+| GET | `/api/config-items` | `q`, `device_id`, `field_key`, `section`, `writable`, `limit`, `offset` | 配置项实例检索；`section` 取 `LOW_PAGE\|VDM\|CDB\|CONTROL` |
 | GET | `/api/config-items/{id}` | — | 配置项详情：字段定义、所属分区、校验规则、图谱关联、变更历史 |
 | GET | `/api/changes` | `device_id`, `limit` | 配置项变更审计记录 |
 
@@ -60,7 +60,7 @@
 
 | 方法 | 路径 | 参数 | 说明 |
 | --- | --- | --- | --- |
-| GET | `/api/sections` | — | 四个分区定义（`LOW_PAGE / DOM / CDB / CONTROL`）及字段数，附 Lower Memory 布局、Upper Page 00h、CDB 帧、CDB 状态寄存器、规范版本、来源 ID |
+| GET | `/api/sections` | — | 四个分区定义（`LOW_PAGE / VDM / CDB / CONTROL`）及字段数，附 Lower Memory 布局、Upper Page 00h、CDB 帧、CDB 状态寄存器、规范版本、来源 ID |
 | GET | `/api/sections/{key}` | — | 单分区详情 + 该分区下全部字段；未知 key → 404 `SECTION_NOT_FOUND` |
 | GET | `/api/cmis/module` | `device_id`(可选，缺省取第一个设备), `section`(可选过滤) | **模块 CMIS 分区视图**：设备+模块信息，配置项按分区分组，每组带 `writable_count` 与对应寄存器映射；LOW_PAGE 返回 Lower Memory 表，CDB 返回命令帧表 |
 
@@ -69,7 +69,7 @@
 | key | 名称 | 主要页 | 写策略 |
 | --- | --- | --- | --- |
 | `LOW_PAGE` | 低页 0x00（Lower + Upper 00h） | Lower 00h–7Fh、Upper 00h 80h–FFh | `read-mostly`；远程接入禁止写 Lower Memory |
-| `DOM` | DOM 数字诊断监测（CMIS 称 Monitors） | Lower 14–25、02h、10h、11h、20h–2Fh | `thresholds-only`；监测量只读 |
+| `VDM` | VDM 诊断监测域（CMIS 称 Monitors / VDM） | Lower 14–25、02h、10h、11h、20h–2Fh | `thresholds-only`；监测量只读 |
 | `CDB` | CDB 命令数据块与操作接口 | Lower 37–38、118–125、9Fh、A0h–AFh | 命令帧专用接口；页级只读保护 |
 | `CONTROL` | 控制/状态/应用与诊断 | 01h、10h、12h、13h、14h、30h–4Fh | 逐字段 `writable` 位控制 |
 
@@ -78,7 +78,10 @@
 | 方法 | 路径 | 参数 / 请求体 | 说明 |
 | --- | --- | --- | --- |
 | GET | `/api/access` | — | 当前适配器能力（`capabilities()`）、三种接入模式拓扑/读写语义/风险/控制项、脱敏后的服务配置、规范版本 |
-| POST | `/api/access/probe` | `{}` | 连通性探测；mirror 模式直接返回离线状态；SSH/REST 模式按配置发起真实探测 |
+| POST | `/api/access/probe` | `{"device_id":"..."}`(可选) | 连通性探测；指定设备时按该设备配置解析传输 |
+| GET | `/api/targets` | — | **可编辑接入配置**：设备清单、`active_target`、三种接入模式、字段元数据、文件路径、是否可写、禁止的凭据字段名 |
+| PUT | `/api/targets` | `{"version":1,"active_target":"...","targets":[...]}` | 校验后**原子写入** `config/targets.json`（UTF-8/LF）；新增设备即时生效；只读服务返回 409 |
+| POST | `/api/targets/probe` | `{"device_id":"..."}`(可选) | 按指定设备（缺省为 active target）的配置实例化适配器并探测 |
 | GET | `/api/registers/read` | `device_id`(必填), `page`(默认 `00h`), `offset`(0–255), `length`(1–128) | 通过当前适配器读取页/偏移；mirror 返回本地镜像缓存值 |
 | POST | `/api/registers/write` | `{"device_id":"...", "page":"10h", "offset":130, "data_hex":"0x21"}` | **先执行页级写保护**再下发；Lower Memory 与 CDB 页直接拒绝 |
 
@@ -191,7 +194,15 @@ curl http://127.0.0.1:8787/api/overview
 # 分区与模块 CMIS 视图
 curl http://127.0.0.1:8787/api/sections
 curl http://127.0.0.1:8787/api/sections/CDB
-curl "http://127.0.0.1:8787/api/cmis/module?device_id=SW-CORE-01&section=DOM"
+curl "http://127.0.0.1:8787/api/cmis/module?device_id=SW-CORE-01&section=VDM"
+
+# 接入配置（可编辑、可切换）
+curl http://127.0.0.1:8787/api/targets
+curl -X PUT http://127.0.0.1:8787/api/targets -H "Content-Type: application/json" \
+  -d '{"version":1,"active_target":"LAB-SW-01","targets":[{"device_id":"LAB-SW-01",
+       "access_mode":"ssh-i2c","host":"10.0.0.2","port":22,"ssh_user":"lab"}]}'
+curl -X POST http://127.0.0.1:8787/api/targets/probe \
+  -H "Content-Type: application/json" -d '{"device_id":"LAB-SW-01"}'
 
 # 接入方式
 curl http://127.0.0.1:8787/api/access
@@ -236,7 +247,8 @@ curl "http://127.0.0.1:8787/api/kg/link?cmis=CdbCmdId"
 
 ## 5. 回归验证
 
-`python tools/smoke_test.py` 会启动临时端口 + 临时数据库，端到端验证 **61 项**：健康检查、分区视图、
-CDB 编排/校验/审计/写保护、配置保存与乐观锁、图谱双向关联、静态资源与目录穿越防护，
+`python tools/smoke_test.py` 会启动临时端口 + 临时数据库，端到端验证 **87 项**：健康检查、分区视图（含 VDM 命名）、CDB 编排/校验/审计/写保护、
+配置保存与乐观锁、图谱双向关联、静态资源与目录穿越防护、**目标设备注册表**（读取/编辑/保存/探测/
+凭据字段拒绝/设备级传输解析）、`knowledge/` 文档与 OIF PDF 副本、术语与凭证安全扫描，
 以及**旧版数据库升级路径**（构造第一版 schema 的临时库，验证迁移后 `section` 列/索引就位且不覆盖用户已编辑值）。
-当前结果：`61 passed / 0 failed`。
+当前结果：`87 passed / 0 failed`。

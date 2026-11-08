@@ -15,7 +15,7 @@ import sqlite3
 from datetime import datetime, timezone
 from typing import Any
 
-from . import cmis_spec, kg
+from . import cmis_spec, kg, targets
 from .adapters import AdapterError, get_adapter
 from .config import Settings, public_settings
 from .db import insert_row, rows_as_dicts
@@ -375,8 +375,9 @@ def save_item(conn: sqlite3.Connection, settings: Settings, item_id: int,
     # Apply through the configured transport when hardware writes are enabled.
     applied = False
     transport_result: dict[str, Any] = {}
-    if settings.access_mode != "mirror" and settings.allow_hardware_write:
-        adapter = get_adapter(settings)
+    effective, _ = _device_settings(settings, item["device_id"])
+    if effective.access_mode != "mirror" and settings.allow_hardware_write:
+        adapter = get_adapter(effective)
         page, offset = _parse_register_location(item)
         try:
             adapter.enforce_write_policy(page, offset)
@@ -538,19 +539,23 @@ def cdb_execute(conn: sqlite3.Connection, settings: Settings, body: Any) -> tupl
     if not device_id:
         raise ApiError(400, "MISSING_PARAM", "device_id is required")
     dev = conn.execute("SELECT * FROM devices WHERE device_id = ?", (device_id,)).fetchone()
-    if dev is None:
+    effective, target = _device_settings(settings, device_id)
+    if dev is None and target is None:
         raise ApiError(404, "DEVICE_NOT_FOUND", f"Device not found: {device_id}")
     module = conn.execute("SELECT module_id FROM modules WHERE device_id = ? ORDER BY module_id LIMIT 1",
                           (device_id,)).fetchone()
     module_id = module["module_id"] if module else ""
+    if not module_id and target:
+        module_ids = target.get("module_ids") or []
+        module_id = module_ids[0] if module_ids else ""
 
     cmd = cmis_spec.CDB_COMMAND_BY_ID.get(frame["cmd_id"], {})
-    adapter = get_adapter(settings)
+    adapter = get_adapter(effective)
     applied = False
     result = "staged"
     message = "Frame validated and recorded in the local audit log; no hardware command was sent"
-    transport: dict[str, Any] = {"adapter": settings.access_mode}
-    if settings.access_mode != "mirror":
+    transport: dict[str, Any] = {"adapter": effective.access_mode}
+    if effective.access_mode != "mirror":
         try:
             adapter.enforce_cdb_policy(frame["cmd_id"], str(body.get("confirm") or ""))
             outcome = adapter.execute_cdb(device_id, module_id, frame["frame_hex"],
@@ -609,22 +614,92 @@ def cdb_status(conn: sqlite3.Connection, query: dict) -> tuple[int, dict]:
                "status_registers": cmis_spec.CDB_STATUS})
 
 
+# --------------------------------------------------------------------------- editable target registry
+
+def _registry(settings: Settings) -> dict:
+    """Load the editable target list; the shipped example is the fallback."""
+    example = settings.base_dir / "config" / "targets.example.json"
+    return targets.load_registry(settings.targets_file, example)
+
+
+def _device_settings(settings: Settings, device_id: str = "") -> tuple[Settings, dict | None]:
+    """Resolve the transport for one device, falling back to the global mode."""
+    target = targets.find_target(_registry(settings), device_id)
+    return targets.resolve_settings(settings, target), target
+
+
+def list_targets(settings: Settings) -> tuple[int, dict]:
+    registry = _registry(settings)
+    return ok({
+        "version": registry.get("version", targets.REGISTRY_VERSION),
+        "active_target": registry.get("active_target", ""),
+        "targets": [targets.public_target(t) for t in registry.get("targets", [])],
+        "access_modes": list(targets.ACCESS_MODES),
+        "fields": targets.TARGET_FIELDS,
+        "file": str(settings.targets_file),
+        "example_file": str(settings.base_dir / "config" / "targets.example.json"),
+        "writable": not settings.read_only,
+        "credential_fields_forbidden": sorted(targets.SENSITIVE_KEYS),
+        "note": "Credentials are never stored here; reference them with token_env.",
+    })
+
+
+def save_targets(settings: Settings, body: Any) -> tuple[int, dict]:
+    if settings.read_only:
+        raise ApiError(409, "SERVICE_READ_ONLY",
+                       "Service is read-only; target configuration cannot be saved")
+    if not isinstance(body, dict):
+        raise ApiError(400, "BAD_REQUEST", "Request body must be a JSON object")
+    try:
+        cleaned = targets.save_registry(settings.targets_file, body)
+    except targets.TargetError as exc:
+        raise ApiError(400, "TARGETS_VALIDATION_FAILED", exc.message, {"errors": exc.errors})
+    except OSError as exc:
+        raise ApiError(500, "IO_ERROR", "Could not write the target registry", {"detail": str(exc)})
+    return ok({"version": cleaned["version"],
+               "active_target": cleaned["active_target"],
+               "targets": [targets.public_target(t) for t in cleaned["targets"]],
+               "saved": True,
+               "message": "Target registry saved; new devices are available immediately"})
+
+
+def probe_target(settings: Settings, body: Any) -> tuple[int, dict]:
+    device_id = str((body or {}).get("device_id") or "").strip() if isinstance(body, dict) else ""
+    effective, target = _device_settings(settings, device_id)
+    try:
+        result = get_adapter(effective).probe()
+    except AdapterError as exc:
+        raise ApiError(exc.status, exc.code, exc.message, exc.details)
+    return ok({"probe": result,
+               "device_id": (target or {}).get("device_id", ""),
+               "access_mode": effective.access_mode,
+               "target": targets.public_target(target) if target else None})
+
+
 # --------------------------------------------------------------------------- access paths
 
 def access_info(conn: sqlite3.Connection, settings: Settings) -> tuple[int, dict]:
     adapter = get_adapter(settings)
+    registry = _registry(settings)
+    active = targets.find_target(registry, None)
     return ok({"active": adapter.capabilities(), "modes": cmis_spec.ACCESS_MODES,
                "service": public_settings(settings),
-               "spec_releases": cmis_spec.SPEC_RELEASES})
+               "spec_releases": cmis_spec.SPEC_RELEASES,
+               "targets": {"file": str(settings.targets_file),
+                           "active_target": registry.get("active_target", ""),
+                           "count": len(registry.get("targets", [])),
+                           "active": targets.public_target(active) if active else None}})
 
 
 def access_probe(conn: sqlite3.Connection, settings: Settings, body: Any) -> tuple[int, dict]:
-    adapter = get_adapter(settings)
+    device_id = str((body or {}).get("device_id") or "").strip() if isinstance(body, dict) else ""
+    effective, target = _device_settings(settings, device_id)
     try:
-        result = adapter.probe()
+        result = get_adapter(effective).probe()
     except AdapterError as exc:
         raise ApiError(exc.status, exc.code, exc.message, exc.details)
-    return ok({"probe": result, "access_mode": settings.access_mode})
+    return ok({"probe": result, "access_mode": effective.access_mode,
+               "device_id": (target or {}).get("device_id", "")})
 
 
 def register_read(conn: sqlite3.Connection, settings: Settings, query: dict) -> tuple[int, dict]:
@@ -634,8 +709,9 @@ def register_read(conn: sqlite3.Connection, settings: Settings, query: dict) -> 
     page = _q(query, "page") or "00h"
     offset = _int(query, "offset", 0, 0, 255)
     length = _int(query, "length", 1, 1, 128)
+    effective, _ = _device_settings(settings, device_id)
     try:
-        result = get_adapter(settings).read_registers(device_id, "", page, offset, length)
+        result = get_adapter(effective).read_registers(device_id, "", page, offset, length)
     except AdapterError as exc:
         raise ApiError(exc.status, exc.code, exc.message, exc.details)
     return ok({"read": result})
@@ -653,7 +729,8 @@ def register_write(conn: sqlite3.Connection, settings: Settings, body: Any) -> t
         offset = int(body.get("offset", 0))
     except (TypeError, ValueError):
         raise ApiError(400, "BAD_PARAM", "offset must be an integer")
-    adapter = get_adapter(settings)
+    effective, _ = _device_settings(settings, device_id)
+    adapter = get_adapter(effective)
     try:
         adapter.enforce_write_policy(page, offset)
         result = adapter.write_register(device_id, "", page, offset, data_hex)
@@ -672,6 +749,7 @@ ENDPOINTS = [
     "POST /api/config-items/{id}/validate", "PUT /api/config-items/{id}",
     "GET /api/changes", "GET /api/sections", "GET /api/cmis/module?device_id=&section=",
     "GET /api/access", "POST /api/access/probe",
+    "GET /api/targets", "PUT /api/targets", "POST /api/targets/probe",
     "GET /api/registers/read", "POST /api/registers/write",
     "GET /api/cdb/commands", "POST /api/cdb/compose", "POST /api/cdb/execute",
     "GET /api/cdb/status", "GET /api/cdb/history",
@@ -740,6 +818,12 @@ def _route(conn: sqlite3.Connection, settings: Settings, method: str, path: str,
         return access_info(conn, settings)
     if path == "/api/access/probe" and method == "POST":
         return access_probe(conn, settings, body)
+    if path == "/api/targets" and method == "GET":
+        return list_targets(settings)
+    if path == "/api/targets" and method == "PUT":
+        return save_targets(settings, body)
+    if path == "/api/targets/probe" and method == "POST":
+        return probe_target(settings, body)
     if path == "/api/registers/read" and method == "GET":
         return register_read(conn, settings, query)
     if path == "/api/registers/write" and method == "POST":
@@ -790,7 +874,8 @@ def _route(conn: sqlite3.Connection, settings: Settings, method: str, path: str,
     if path.startswith("/api/"):
         known = path.split("?")[0]
         for probe in ("/api/devices", "/api/fields", "/api/config-items", "/api/changes",
-                      "/api/kg", "/api/cdb", "/api/access", "/api/registers", "/api/sections"):
+                      "/api/kg", "/api/cdb", "/api/access", "/api/registers", "/api/sections",
+                      "/api/targets"):
             if known.startswith(probe):
                 raise ApiError(405, "METHOD_NOT_ALLOWED", f"{method} {known} is not supported")
         raise ApiError(404, "ENDPOINT_NOT_FOUND", f"Unknown endpoint: {known}")

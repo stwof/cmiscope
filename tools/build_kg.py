@@ -97,9 +97,9 @@ SOURCES = [
     S("S-GH-SONIC-PD", "sonic-net/sonic-platform-daemons (xcvrd CMIS 初始化状态机)", "SONiC",
       "https://github.com/sonic-net/sonic-platform-daemons", "github_repo", "待确认",
       "PR #217 引入 CMIS application initialization", "partial"),
-    S("S-GH-SONIC-UTIL", "sonic-net/sonic-utilities (sfputil show eeprom --dom)", "SONiC",
+    S("S-GH-SONIC-UTIL", "sonic-net/sonic-utilities (sfputil show eeprom)", "SONiC",
       "https://github.com/sonic-net/sonic-utilities", "github_repo", "待确认",
-      "CMIS EEPROM/DOM 命令行展示", "partial"),
+      "CMIS EEPROM/VDM 命令行展示", "partial"),
     S("S-GH-FBOSS", "facebook/fboss -> meta/fboss (qsfp_service, CmisModule)", "Meta",
       "https://github.com/facebook/fboss", "github_repo", "NOASSERTION (BSD-style + PATENTS 文件)",
       "1002 stars / pushed_at 2026-11-07；许可与专利授予条款待法务确认", "partial"),
@@ -270,7 +270,7 @@ CONFIG_ITEMS = [
     ("CFG-LOOPBACK", "Loopback (Page 13h)", "诊断环回，RW，枚举待原文核对", ["S-OIF-052", "S-GH-LIBSFFCMIS"], "partial"),
     ("CFG-PRBS", "PRBS Generator / Checker (Pages 13h/14h)", "诊断码型与 BER，RW", ["S-OIF-052", "S-GH-LIBSFFCMIS"], "partial"),
     ("CFG-LASER", "Tunable Laser Frequency (C-CMIS)", "Page 04h/12h，DCO 专属，RW", ["S-OIF-052", "S-OIF-CCMIS-013", "S-GH-LIBSFFCMIS"], "partial"),
-    ("CFG-DDM", "DDM / DOM 监测量", "温度、电压、Tx/Rx 光功率，RO", ["S-OIF-052", "S-GH-LIBSFFCMIS", "S-ART-LINKPP"], "partial"),
+    ("CFG-DDM", "VDM / DDM 监测量", "温度、电压、Tx/Rx 光功率，RO", ["S-OIF-052", "S-GH-LIBSFFCMIS", "S-ART-LINKPP"], "partial"),
 ]
 for cid, name, summary, sources, conf in CONFIG_ITEMS:
     ENTITIES.append(E(cid, "ConfigItem", name, summary, sources, conf))
@@ -282,7 +282,7 @@ CONCEPTS = [
     ("CON-DPSM", "Data Path State Machine", "每个 Data Path 一个实例，表达配置/初始化状态", ["S-OIF-052", "S-ART-CSDN-52"]),
     ("CON-CDB", "Command Data Block", "消息邮箱与固件管理命令", ["S-OIF-052", "S-GH-LIBSFFCMIS"]),
     ("CON-VDM", "Versatile Diagnostics Monitoring", "可扩展的监测量集合与 Freeze 机制", ["S-OIF-052", "S-GH-LIBSFFCMIS"]),
-    ("CON-DDM", "Digital Diagnostics Monitoring (DDM/DOM)", "实时温度/电压/光功率监视", ["S-ART-LINKPP", "S-OIF-052"]),
+    ("CON-DDM", "Digital Diagnostics Monitoring (DDM)", "实时温度/电压/光功率监视", ["S-ART-LINKPP", "S-OIF-052"]),
     ("CON-MEMMAP", "Bank:Page:Byte 地址空间", "CMIS 寄存器三元坐标", ["S-ART-MAPYOURTECH", "S-OIF-052"]),
     ("CON-MIRROR", "本地配置镜像（本项目）", "服务只写本地 SQLite 镜像，不下发硬件；真实下发需适配器", ["S-INTERNAL"]),
 ]
@@ -298,7 +298,7 @@ PROJECTS = [
     ("OSS-GRAFANA", "grafana/grafana", "AGPL-3.0 / 77759 stars / pushed 2026-11-08，Go 服务 + 数据库", ["S-GH-GRAFANA", "S-GH-API-SNAPSHOT"], "dashboard-candidate"),
     ("OSS-SONIC-PC", "sonic-net/sonic-platform-common", "CmisApi：字段解析、AppSel、SI staging、CDB/VDM API", ["S-GH-SONIC-PC"], "cmis-implementation"),
     ("OSS-SONIC-PD", "sonic-net/sonic-platform-daemons", "xcvrd：CMIS application initialization 状态机", ["S-GH-SONIC-PD"], "cmis-implementation"),
-    ("OSS-SONIC-UTIL", "sonic-net/sonic-utilities", "sfputil show eeprom --dom：CMIS EEPROM/DOM CLI 展示", ["S-GH-SONIC-UTIL"], "cmis-implementation"),
+    ("OSS-SONIC-UTIL", "sonic-net/sonic-utilities", "sfputil show eeprom：CMIS EEPROM/VDM CLI 展示", ["S-GH-SONIC-UTIL"], "cmis-implementation"),
     ("OSS-FBOSS", "meta/fboss (facebook/fboss)", "qsfp_service / CmisModule：字段解析与 transceiver 状态管理", ["S-GH-FBOSS"], "cmis-implementation"),
     ("OSS-LIBSFFCMIS", "vjardin/libsffcmis", "C 库 + CLI，按页实现 datapath / VDM / CDB / diag / coherent / tunable", ["S-GH-LIBSFFCMIS"], "cmis-implementation"),
     ("OSS-ETHTOOL", "ethtool (cmis.c / qsfp.c)", "用户态 CMIS EEPROM 解析与 JSON 输出，GPL-2.0", ["S-GH-ETHTOOL"], "cmis-implementation"),
@@ -323,7 +323,7 @@ ENTITIES += [
       "常驻低 128 字节与 Upper Page 00h：ID/状态、模块级标志、全局控制、CDB 状态、固件版本、应用广告、口令区、Bank/Page 选择",
       ["S-OIF-053", "S-OIF-054", "S-ART-MAPYOURTECH", "S-ART-VITEX"], "partial",
       pages="Lower 00h-7Fh, Upper 00h 80h-FFh", spec_ref="OIF-CMIS-05.3 8.2 / 8.4"),
-    E("SEC-DOM", "SpecificationPartition", "DOM / CMIS Monitors",
+    E("SEC-VDM", "SpecificationPartition", "VDM / CMIS Monitors",
       "CMIS 称 Monitors：Lower 14-25 模块级监测量、Page 02h 阈值、Page 10h/11h 通道状态与光功率监测量、Pages 20h-2Fh VDM",
       ["S-OIF-053", "S-IETF-CMIS-YANG", "S-ART-VITEX"], "partial",
       pages="Lower 14-25, 02h, 10h, 11h, 20h-2Fh", spec_ref="OIF-CMIS-05.3 8.8 / 8.22"),
@@ -360,7 +360,7 @@ ENTITIES += [
     E("CFG-CDB", "ConfigItem", "CDB registers and command parameters",
       "Page 9Fh/A0h-AFh 与 Lower 37-38/122 的 CDB 相关寄存器：CMDID、EPL/LPL 长度、校验码、载荷、状态、口令、实例",
       ["S-OIF-053", "S-GH-LINUX-CDB"], "confirmed", spec_ref="OIF-CMIS-05.3 8.23 / 8.24 / 9"),
-    E("CFG-DOM", "ConfigItem", "DOM threshold and monitor registers",
+    E("CFG-VDM", "ConfigItem", "VDM threshold and monitor registers",
       "Page 02h 阈值、Lower 14-25 与 Page 10h/11h 监测量、Pages 20h-2Fh VDM 控制",
       ["S-OIF-053", "S-IETF-CMIS-YANG"], "partial"),
     E("CFG-LOW-PAGE", "ConfigItem", "Low Page 0x00 identity and status registers",
@@ -511,7 +511,7 @@ IMPLEMENTS = [
     ("OSS-SONIC-PC", "CL-8-9", "SI 参数 stage_* / CDR / TX-RX 控制"),
     ("OSS-SONIC-PC", "CL-8-4", "XCVR_INFO 字段解析与 Application Descriptor"),
     ("OSS-SONIC-PD", "CL-6-3-3", "xcvrd CMIS 初始化状态机"),
-    ("OSS-SONIC-UTIL", "CL-8-4", "sfputil show eeprom --dom"),
+    ("OSS-SONIC-UTIL", "CL-8-4", "sfputil show eeprom"),
     ("OSS-FBOSS", "CL-8-4", "qsfp_service 解析 CMIS EEPROM"),
     ("OSS-LIBSFFCMIS", "CL-8-9", "cmis-datapath.c：Page 10h/11h 控制与状态"),
     ("OSS-LIBSFFCMIS", "CL-VDM", "cmis-vdm.c：Pages 20h-2Fh 监视/阈值/Freeze"),
@@ -552,14 +552,14 @@ RELATIONS += [
 ]
 # Specification partitions and their register areas
 for std in ("STD-CMIS-053", "STD-CMIS-054"):
-    for sec in ("SEC-LOW-PAGE", "SEC-DOM", "SEC-CDB", "SEC-CONTROL"):
+    for sec in ("SEC-LOW-PAGE", "SEC-VDM", "SEC-CDB", "SEC-CONTROL"):
         RELATIONS.append(R(std, sec, "DEFINES", "规范定义该分区及其寄存器组织", ["S-OIF-053", "S-OIF-054"], "partial"))
 RELATIONS += [
     R("SEC-LOW-PAGE", "IF-LOWER", "CONTAINS", "低页包含常驻 Lower Memory", ["S-OIF-053", "S-ART-VITEX"]),
     R("SEC-LOW-PAGE", "IF-UPPER", "CONTAINS", "低页包含 Upper Page 00h 静态识别区", ["S-OIF-053", "S-ART-VITEX"]),
     R("SEC-LOW-PAGE", "IF-BANKPAGE", "CONTAINS", "Bank/Page 选择字节位于 Lower 126/127", ["S-ART-MAPYOURTECH"]),
-    R("SEC-DOM", "CON-DDM", "CONTAINS", "DOM 分区承载监测量与阈值", ["S-OIF-053", "S-IETF-CMIS-YANG"]),
-    R("SEC-DOM", "IF-VDM", "CONTAINS", "VDM 页 20h-2Fh 属于监测分区", ["S-OIF-053"]),
+    R("SEC-VDM", "CON-DDM", "CONTAINS", "VDM 分区承载监测量与阈值", ["S-OIF-053", "S-IETF-CMIS-YANG"]),
+    R("SEC-VDM", "IF-VDM", "CONTAINS", "VDM 页 20h-2Fh 属于监测分区", ["S-OIF-053"]),
     R("SEC-CDB", "IF-CDB-FRAME", "CONTAINS", "Page 9Fh 命令帧", ["S-OIF-053", "S-GH-LINUX-CDB"]),
     R("SEC-CDB", "IF-CDB-EPL", "CONTAINS", "Pages A0h-AFh 扩展载荷", ["S-OIF-053", "S-GH-LINUX-CDB"]),
     R("SEC-CDB", "IF-CDB", "CONTAINS", "CDB 消息接口", ["S-OIF-053"]),
@@ -591,7 +591,7 @@ def L(cmis_ref, entity_id, relation, note=""):
     LINKS.append({"cmis_ref": cmis_ref, "entity_id": entity_id, "relation": relation, "note": note})
 
 
-SECTION_ENTITY = {"LOW_PAGE": "SEC-LOW-PAGE", "DOM": "SEC-DOM",
+SECTION_ENTITY = {"LOW_PAGE": "SEC-LOW-PAGE", "VDM": "SEC-VDM",
                   "CDB": "SEC-CDB", "CONTROL": "SEC-CONTROL"}
 ACCESS_ENTITY = {"ssh-i2c": "IF-SSH-I2C", "rest-api": "IF-REST-API", "mirror": "IF-MIRROR"}
 
@@ -688,9 +688,9 @@ PENDING = [
     {"pending_id": "P-16", "topic": "Low Page 应用广告位置版本差异",
      "question": "公开模块 datasheet 将 Application Advertising 列在 Lower 85-117，而 CMIS 5.3/5.4 主要使用 Upper Page 01h 的 Application Descriptors；该偏移随版本变化",
      "source_ids": ["S-ART-MAPYOURTECH", "S-ART-VITEX", "S-OIF-053"], "impact": "旧布局字段在 5.3/5.4 模块上可能不适用", "status": "open"},
-    {"pending_id": "P-17", "topic": "DOM 术语与页归属",
-     "question": "DOM 是 SFF-8472/8636 历史术语，CMIS 5.3 使用 Monitors / Thresholds / VDM；Lower 14-25、Page 02h、10h/11h、20h-2Fh 的精确分工需按原文确认",
-     "source_ids": ["S-OIF-053", "S-IETF-CMIS-YANG"], "impact": "影响 DOM 分区字段分组与阈值可写性判断", "status": "open"},
+    {"pending_id": "P-17", "topic": "VDM 页归属与阈值可写性",
+     "question": "Lower 14-25、Page 02h、10h/11h、20h-2Fh 在 Monitors / Thresholds / VDM 之间的精确分工需按原文确认",
+     "source_ids": ["S-OIF-053", "S-IETF-CMIS-YANG"], "impact": "影响 VDM 分区字段分组与阈值可写性判断", "status": "open"},
     {"pending_id": "P-18", "topic": "IETF CMIS YANG 草案状态",
      "question": "draft-hi-ccamp-cmis-control-yang-04 为 Internet-Draft，非 RFC；其页级委派与 9.1 节禁止条款被本项目用作安全策略参考，需跟踪最终 RFC 或厂商实现差异",
      "source_ids": ["S-IETF-CMIS-YANG"], "impact": "安全策略表述可能随草案版本变化", "status": "open"},
@@ -751,7 +751,8 @@ def main() -> None:
         "pending_confirmations": PENDING,
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    # write_bytes keeps LF on every platform (write_text would emit CRLF on Windows).
+    OUT.write_bytes((json.dumps(data, ensure_ascii=False, indent=2) + "\n").encode("utf-8"))
     print(f"wrote {OUT} | {data['meta']['counts']}")
     print("entity types:", dict(types))
     print("relation types:", dict(rel_types))

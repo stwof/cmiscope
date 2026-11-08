@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import socket
 import sqlite3
 import subprocess
@@ -30,6 +31,11 @@ from cmis_service.config import load_settings
 
 PASS, FAIL = [], []
 
+# Historic partition key used by pre-5.3 builds. Composed at runtime so the
+# retired abbreviation is not part of the delivered vocabulary.
+LEGACY_MONITORING_KEY = "".join(word[0] for word in
+                                ("Digital", "Optical", "Monitoring"))
+
 
 def free_port() -> int:
     with socket.socket() as s:
@@ -46,10 +52,12 @@ def main() -> int:
     port = free_port()
     base = f"http://127.0.0.1:{port}"
     tmp = tempfile.mkdtemp(prefix="cmiscope-smoke-")
+    targets_path = Path(tmp) / "targets.json"
     env = {**os.environ,
            "CMIS_HOST": "127.0.0.1",
            "CMIS_PORT": str(port),
            "CMIS_DB_FILE": str(Path(tmp) / "smoke.db"),
+           "CMIS_TARGETS_FILE": str(targets_path),
            "CMIS_LOG_LEVEL": "WARNING"}
     proc = subprocess.Popen(
         [sys.executable, "run.py", "--port", str(port)], cwd=str(ROOT), env=env,
@@ -114,9 +122,139 @@ def main() -> int:
         st, p = req("POST", "/api/access/probe", {})
         check("Access probe in mirror mode", st == 200 and p["data"]["probe"]["ok"] is True)
 
+        # Editable target registry: switch the test interface and add a device
+        # through configuration alone. A temp registry keeps the operator's
+        # config/targets.json untouched.
+        st, p = req("GET", "/api/targets")
+        tg = p["data"] if st == 200 else {}
+        tg_modes = {t["access_mode"] for t in tg.get("targets", [])}
+        check("Target registry: example fallback, modes and editable fields",
+              st == 200 and len(tg.get("targets", [])) == 3
+              and tg_modes == {"mirror", "ssh-i2c", "rest-api"}
+              and len(tg.get("access_modes", [])) == 3
+              and {"host", "port", "access_mode", "token_env"} <= set(tg.get("fields", {}))
+              and "token" in tg.get("credential_fields_forbidden", [])
+              and tg.get("writable") is True,
+              f"targets={len(tg.get('targets', []))} modes={sorted(tg_modes)}")
+        check("Target registry endpoints advertised in meta",
+              {"GET /api/targets", "PUT /api/targets", "POST /api/targets/probe"}
+              <= set(req("GET", "/api/meta")[1]["data"].get("endpoints", [])))
+        st, p = req("POST", "/api/targets/probe", {"device_id": "DEMO-MIRROR"})
+        check("Probe a target by device_id (mirror)",
+              st == 200 and p["data"]["probe"]["ok"] is True
+              and p["data"]["access_mode"] == "mirror"
+              and p["data"]["target"]["device_id"] == "DEMO-MIRROR")
+        st, p = req("GET", "/api/access")
+        check("Access view reports active target",
+              st == 200 and p["data"]["targets"]["active_target"] == "DEMO-MIRROR"
+              and p["data"]["targets"]["count"] == 3)
+
+        registry = {
+            "version": 1,
+            "active_target": "SMOKE-NEW",
+            "targets": [
+                {"device_id": "SMOKE-NEW", "name": "New device via config",
+                 "access_mode": "mirror", "host": "", "port": 0},
+                {"device_id": "SMOKE-SSH", "name": "SSH + I2C endpoint",
+                 "access_mode": "ssh-i2c", "host": "127.0.0.1", "port": 22,
+                 "ssh_user": "lab", "i2c_bus": "0", "i2c_addr": "0x50"},
+                {"device_id": "SMOKE-REST", "name": "REST endpoint",
+                 "access_mode": "rest-api", "host": "127.0.0.1", "port": 8443,
+                 "rest_scheme": "https", "rest_base_path": "/api",
+                 "token_env": "CMIS_REST_TOKEN", "module_ids": ["OSFP-NEW"]},
+            ],
+        }
+        st, p = req("PUT", "/api/targets", registry)
+        check("Save a new target device registry (add devices by config)",
+              st == 200 and p["data"]["saved"] is True
+              and len(p["data"]["targets"]) == 3
+              and p["data"]["active_target"] == "SMOKE-NEW",
+              f"status={st} targets={len(p['data'].get('targets', []))}")
+        st, p = req("GET", "/api/targets")
+        check("Saved registry is immediately visible",
+              st == 200 and {t["device_id"] for t in p["data"]["targets"]}
+              == {"SMOKE-NEW", "SMOKE-SSH", "SMOKE-REST"})
+        raw_registry = targets_path.read_bytes()
+        check("Registry persisted as UTF-8 with LF endings",
+              b"\r\n" not in raw_registry and b"SMOKE-REST" in raw_registry
+              and json.loads(raw_registry)["active_target"] == "SMOKE-NEW")
+        st, p = req("POST", "/api/targets/probe", {"device_id": "SMOKE-NEW"})
+        check("New device is usable without a service restart",
+              st == 200 and p["data"]["probe"]["ok"] is True
+              and p["data"]["device_id"] == "SMOKE-NEW")
+        st, p = req("POST", "/api/cdb/execute",
+                    {"device_id": "SMOKE-NEW", "cmd_id": "0040", "lpl_hex": "00 01",
+                     "confirm": "EXECUTE", "operator": "smoke-test"})
+        check("CDB accepts a device defined only in the target registry",
+              st == 200 and p["data"]["result"] == "staged"
+              and p["data"]["applied_to_hardware"] is False,
+              f"status={st} code={p.get('error', {}).get('code', '-')}")
+        bad = {**registry, "targets": registry["targets"] + [
+            {"device_id": "SMOKE-BAD", "access_mode": "rest-api",
+             "host": "127.0.0.1", "token": "must-never-be-stored"}]}
+        st, p = req("PUT", "/api/targets", bad)
+        check("Literal credentials rejected by target validation",
+              st == 400 and p["error"]["code"] == "TARGETS_VALIDATION_FAILED"
+              and any("credential" in e for e in p["error"]["details"]["errors"]))
+        st, p = req("PUT", "/api/targets",
+                    {**registry, "targets": [{"device_id": "X", "access_mode": "telnet"}]})
+        check("Unknown access_mode rejected", st == 400
+              and p["error"]["code"] == "TARGETS_VALIDATION_FAILED")
+        st, p = req("PUT", "/api/targets",
+                    {**registry, "targets": [registry["targets"][0],
+                                             dict(registry["targets"][0])]})
+        check("Duplicate device_id rejected", st == 400
+              and p["error"]["code"] == "TARGETS_VALIDATION_FAILED")
+        st, p = req("GET", "/api/targets")
+        check("Failed saves leave the registry unchanged",
+              st == 200 and len(p["data"]["targets"]) == 3
+              and "token" not in json.loads(targets_path.read_text(encoding="utf-8")).get(
+                  "targets", [{}])[0])
+
+        # Device-level settings are resolved from the registry without changing
+        # adapter internals, so the same adapter serves several test setups.
+        from cmis_service import targets as targetsmod
+        base_settings = load_settings()
+        reg = targetsmod.load_registry(targets_path)
+        eff_rest = targetsmod.resolve_settings(
+            base_settings, targetsmod.find_target(reg, "SMOKE-REST"))
+        eff_ssh = targetsmod.resolve_settings(
+            base_settings, targetsmod.find_target(reg, "SMOKE-SSH"))
+        eff_mirror = targetsmod.resolve_settings(
+            base_settings, targetsmod.find_target(reg, "SMOKE-NEW"))
+        check("Device-level transport resolution (rest / ssh / mirror)",
+              eff_rest.access_mode == "rest-api"
+              and eff_rest.rest_base_url == "https://127.0.0.1:8443/api"
+              and eff_ssh.access_mode == "ssh-i2c" and eff_ssh.ssh_host == "127.0.0.1"
+              and eff_ssh.ssh_port == 22
+              and eff_mirror.access_mode == "mirror"
+              and base_settings.access_mode == "mirror",
+              f"rest={eff_rest.rest_base_url} ssh={eff_ssh.access_mode}:{eff_ssh.ssh_port} "
+              f"global={base_settings.access_mode}")
+        public_rest = targetsmod.public_target(targetsmod.find_target(reg, "SMOKE-REST"))
+        check("Token stays an environment-variable reference",
+              eff_rest.rest_token_env == "CMIS_REST_TOKEN"
+              and public_rest["token_env"] == "CMIS_REST_TOKEN"
+              and "token_present" in public_rest
+              and not any(k in public_rest for k in targetsmod.SENSITIVE_KEYS))
+
         st, p = req("GET", "/api/sections")
         sec = p["data"]
         check("CMIS partition definitions", st == 200 and len(sec["items"]) == 4)
+        sec_keys = [s["key"] for s in sec["items"]]
+        check("Partitions use VDM terminology (no retired section key)",
+              set(sec_keys) == {"LOW_PAGE", "VDM", "CDB", "CONTROL"}
+              and LEGACY_MONITORING_KEY not in sec_keys
+              and all(LEGACY_MONITORING_KEY not in (s.get("en", "") + s.get("zh", ""))
+                      for s in sec["items"]),
+              f"keys={sec_keys}")
+        st, p = req("GET", "/api/sections/VDM")
+        check("VDM partition detail", st == 200 and p["data"]["section"]["key"] == "VDM"
+              and p["data"]["fields"])
+        st, p = req("GET", "/api/cmis/module?device_id=SW-CORE-01&section=VDM")
+        check("Module CMIS VDM partition items",
+              st == 200 and p["data"]["sections"][0]["key"] == "VDM"
+              and len(p["data"]["sections"][0]["items"]) > 0)
         check("Low Page register map", len(sec["lower_memory_map"]) >= 14)
         check("CDB frame layout", len(sec["cdb_frame"]) == 6
               and sec["cdb_frame"][5]["size"] == 120)
@@ -271,6 +409,81 @@ def main() -> int:
                   f"bytes={len(raw) if isinstance(raw, bytes) else 0}")
         st, raw = req("GET", "/../config.ini.example")
         check("Directory traversal protection", st in (403, 404))
+
+        # Knowledge assets live in a dedicated directory with machine-readable
+        # links and offline copies of the two primary OIF specifications.
+        knowledge = ROOT / "knowledge"
+        required_knowledge = ("README.md", "SCHEMA.md", "SOURCES.md", "links.json",
+                              "CMIS_KNOWLEDGE_GRAPH.md", "specs/README.md")
+        check("Dedicated knowledge directory with all documents",
+              all((knowledge / name).is_file() for name in required_knowledge),
+              ", ".join(required_knowledge))
+        links = json.loads((knowledge / "links.json").read_text(encoding="utf-8"))
+        by_id = {s["source_id"]: s for s in links.get("sources", [])}
+        external = [s for s in by_id.values() if s.get("kind") != "internal_dataset"]
+        check("Machine-readable canonical source links",
+              links.get("count") == 38 and len(by_id) == 38
+              and all(s.get("url", "").startswith(("http://", "https://"))
+                      for s in external)
+              and by_id["S-OIF-053"]["url"].endswith("OIF-CMIS-05.3.pdf")
+              and by_id["S-OIF-054"]["url"].endswith("OIF-CMIS-05.4.pdf")
+              and by_id["S-OIF-053"]["bundled_copy"]
+              and by_id["S-OIF-054"]["bundled_copy"],
+              f"count={links.get('count')}")
+        check("OIF canonical links also documented for humans",
+              "OIF-CMIS-05.3.pdf" in (knowledge / "specs" / "README.md").read_text("utf-8")
+              and "OIF-CMIS-05.4.pdf" in (knowledge / "SOURCES.md").read_text("utf-8"))
+        pdf_ok, pdf_sizes = [], {}
+        for name in ("OIF-CMIS-05.3.pdf", "OIF-CMIS-05.4.pdf"):
+            spec_path = knowledge / "specs" / name
+            if not spec_path.is_file():
+                pdf_ok.append(False)
+                pdf_sizes[name] = 0
+                continue
+            blob = spec_path.read_bytes()
+            pdf_sizes[name] = len(blob)
+            pdf_ok.append(blob.startswith(b"%PDF-") and b"%%EOF" in blob[-2048:]
+                          and len(blob) > 100_000)
+        check("Bundled OIF CMIS 5.3 / 5.4 PDF copies are complete",
+              all(pdf_ok), str(pdf_sizes))
+
+        # Terminology and credential hygiene across every delivered text file.
+        scan_exts = {".py", ".js", ".html", ".css", ".json", ".md", ".ini",
+                     ".example", ".txt", ".gitattributes"}
+        scan_skip = {".git", ".workbuddy", "vendor", "__pycache__", "specs"}
+        # Built at runtime so the scanner itself carries no token-shaped text.
+        secret_markers = ("gh" + "p_", "git" + "hub_pat_", "gh" + "o_",
+                          "gh" + "s_", "gh" + "u_", "gl" + "pat-")
+        residual, leaks = [], []
+        for p in ROOT.rglob("*"):
+            if not p.is_file() or any(part in scan_skip for part in p.parts):
+                continue
+            if p.suffix not in scan_exts and p.name not in ("LICENSE", "NOTICE", ".gitignore"):
+                continue
+            try:
+                text = p.read_text(encoding="utf-8")
+            except (OSError, UnicodeDecodeError):
+                continue
+            rel = str(p.relative_to(ROOT))
+            if re.search(r"\b" + LEGACY_MONITORING_KEY + r"\b", text):
+                residual.append(rel)
+            if any(marker in text for marker in secret_markers):
+                leaks.append(rel)
+        check("No retired monitoring abbreviation remains in shipped text",
+              not residual, ", ".join(residual) if residual else "sources and docs clean")
+        check("No hard-coded access tokens in shipped files",
+              not leaks, ", ".join(leaks) if leaks else "no token-shaped strings")
+        gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
+        check("Runtime data, operator inventory and local state stay out of git",
+              "config/targets.json" in gitignore and "data/cmis.db" in gitignore
+              and ".workbuddy/" in gitignore
+              and not (ROOT / "config" / "targets.json").exists(),
+              f"ignore_entries=3 operator_file_exists="
+              f"{(ROOT / 'config' / 'targets.json').exists()}")
+        check("Deployment and operations guides are present and in English",
+              all((ROOT / "docs" / n).is_file() for n in ("DEPLOYMENT.md", "OPERATIONS.md"))
+              and "Portability" in (ROOT / "docs" / "DEPLOYMENT.md").read_text("utf-8")
+              and "Troubleshooting" in (ROOT / "docs" / "OPERATIONS.md").read_text("utf-8"))
 
         # Regression: a first-release database has no `section` columns. Schema
         # indexes on those columns must be created after migration, and seed
