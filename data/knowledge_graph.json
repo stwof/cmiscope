@@ -1,0 +1,7609 @@
+{
+  "meta": {
+    "name": "CMIS Knowledge Graph",
+    "version": "1.0.0",
+    "generated_at": "2026-11-08",
+    "generator": "tools/build_kg.py",
+    "description": "覆盖设备、模块、接口、配置项、规范条款/文档、概念、开源项目、组织与服务；每条实体/关系标注来源与置信度。",
+    "entity_types": {
+      "Organization": 5,
+      "Standard": 13,
+      "SpecClause": 20,
+      "Interface": 14,
+      "Module": 8,
+      "Device": 8,
+      "ConfigItem": 31,
+      "Concept": 9,
+      "OpenSourceProject": 13,
+      "Service": 1,
+      "SpecificationPartition": 4,
+      "AccessPath": 3
+    },
+    "relation_types": {
+      "DEFINES": 90,
+      "DERIVES_FROM": 4,
+      "CONSTRAINS": 19,
+      "REFERENCES": 22,
+      "CONTAINS": 62,
+      "ADVERTISES": 5,
+      "INSTANTIATES": 2,
+      "CONFIGURES": 22,
+      "MONITORS": 5,
+      "IMPLEMENTS": 24,
+      "INTEGRATES": 2
+    },
+    "counts": {
+      "sources": 38,
+      "entities": 129,
+      "relations": 257,
+      "links": 268,
+      "pending_confirmations": 19
+    },
+    "confidence_legend": {
+      "confirmed": "可由官方页面 / GitHub API / 文档编号直接核实",
+      "partial": "来自第三方解读或开源实现引用，条款号/地址需复核",
+      "pending": "推断或社区资料，明确待确认"
+    },
+    "relation_legend": {
+      "CONTAINS": "包含",
+      "DEFINES": "定义",
+      "CONSTRAINS": "约束",
+      "IMPLEMENTS": "实现",
+      "REFERENCES": "引用",
+      "ADVERTISES": "声明能力",
+      "CONFIGURES": "配置",
+      "MONITORS": "监控",
+      "INTEGRATES": "集成",
+      "DERIVES_FROM": "派生自",
+      "INSTANTIATES": "实例化"
+    }
+  },
+  "sources": [
+    {
+      "source_id": "S-OIF-INDEX",
+      "title": "OIF Implementation Agreements - Management Interface Specifications",
+      "publisher": "OIF",
+      "url": "https://www.oiforum.com/technical-work/implementation-agreements/",
+      "kind": "oif_page",
+      "license": "公开 IA 索引（文档条款以各 PDF 为准）",
+      "retrieved_at": "2026-11-08",
+      "note": "核对了 05.2/05.3/05.4、Errata、C-CMIS 01.1-01.5、VCS、FF、ELSFP-CMIS、LT 的编号与发布日期",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-OIF-052",
+      "title": "OIF-CMIS-05.2 Common Management Interface Specification Rev 5.2 (April 2022)",
+      "publisher": "OIF",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-05.2.pdf",
+      "kind": "oif_ia",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "note": "首个由 OIF 完成接管后发布的 CMIS 版本",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-OIF-053",
+      "title": "OIF-CMIS-05.3 CMIS Rev 5.3 (September 2024)",
+      "publisher": "OIF",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-05.3.pdf",
+      "kind": "oif_ia",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "note": "",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-OIF-054",
+      "title": "OIF-CMIS-05.4 CMIS Rev 5.4 (May 2026)",
+      "publisher": "OIF",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-05.4.pdf",
+      "kind": "oif_ia",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "note": "本次整理时 OIF 官网列出的最新主规范",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-OIF-ERRATA",
+      "title": "OIF-CMIS-05-Errata-01.0 Errata and Corrigenda for CMIS 5.x Rev 1.0 (February 2025)",
+      "publisher": "OIF",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-05-Errata-01.0.pdf",
+      "kind": "oif_ia",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "note": "",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-IETF-CMIS-YANG",
+      "title": "draft-hi-ccamp-cmis-control-yang-04 - A YANG Data Model for CMIS Access and Control",
+      "publisher": "IETF",
+      "url": "https://datatracker.ietf.org/doc/html/draft-hi-ccamp-cmis-control-yang-04",
+      "kind": "ietf_draft",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "note": "Section 3 page classification table and section 9.1 security rules: Lower Memory writes and CDB pages 9Fh-AFh MUST NOT be remotely writable",
+      "confidence": "partial"
+    },
+    {
+      "source_id": "S-GH-LINUX-CDB",
+      "title": "Linux kernel net/ethtool/cmis_cdb.c and cmis.h (GPL-2.0)",
+      "publisher": "Linux Foundation",
+      "url": "https://github.com/torvalds/linux/blob/master/net/ethtool/cmis_cdb.c",
+      "kind": "github_repo",
+      "license": "GPL-2.0",
+      "retrieved_at": "2026-11-08",
+      "note": "CDB request frame layout (CMDID / EPL len / LPL len / check code / 120-byte LPL), EPL pages A0h-AFh, password at 0x7A, command IDs 0000h-010Ah",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-ART-VITEX",
+      "title": "AI Data Center Engineering Guide - CMIS 5.3 EEPROM map (Vitex)",
+      "publisher": "Vitex",
+      "url": "https://cdn.asp.events/CLIENT_Kisaco_R_E0D4AD69_B740_B124_D2ADF5A777880773/sites/AI-Infra-Summit-2026/media/libraries/sponsor-editorial/9781-vitex-eeprom-guide-2026.pdf",
+      "kind": "vendor_guide",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "note": "Lower/Upper memory split, Page 00h identity fields, Page 01h Application Descriptors, Page 02h thresholds, 10h-11h lane monitoring, Page 9Fh CDB",
+      "confidence": "partial"
+    },
+    {
+      "source_id": "S-OIF-CCMIS-013",
+      "title": "OIF-C-CMIS-01.3 Implementation Agreement for Coherent CMIS (October 2023)",
+      "publisher": "OIF",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-C-CMIS-01.3.pdf",
+      "kind": "oif_ia",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "note": "",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-OIF-CCMIS-015",
+      "title": "OIF-C-CMIS-01.5 Implementation Agreement for Coherent CMIS (September 2026)",
+      "publisher": "OIF",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-C-CMIS-01.5.pdf",
+      "kind": "oif_ia",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "note": "",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-OIF-VCS-011",
+      "title": "OIF-CMIS-VCS-01.1 CMIS Versatile Control Set Rev 1.1 (July 2025)",
+      "publisher": "OIF",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-VCS-01.1.pdf",
+      "kind": "oif_ia",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "note": "",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-OIF-FF-010",
+      "title": "OIF-CMIS-FF-01.0 Formfactor Specific Hardware Management CMIS-FF (September 2024)",
+      "publisher": "OIF",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-FF-01.0.pdf",
+      "kind": "oif_ia",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "note": "",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-OIF-ELSFP-010",
+      "title": "OIF-ELSFP-CMIS-01.0 ELSFP CMIS (September 2024)",
+      "publisher": "OIF",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-ELSFP-CMIS-01.0.pdf",
+      "kind": "oif_ia",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "note": "",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-OIF-LT-010",
+      "title": "OIF-CMIS-LT-01.0 CMIS Out of Band Link Training (September 2026)",
+      "publisher": "OIF",
+      "url": "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-LT-01.0.pdf",
+      "kind": "oif_ia",
+      "license": "OIF IA（公开 PDF）",
+      "retrieved_at": "2026-11-08",
+      "note": "",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-SFF-8024",
+      "title": "SNIA SFF-8024 - SFF Module / Interface Identifier Codes",
+      "publisher": "SNIA SFF TWG",
+      "url": "https://www.snia.org/technology-communities/sff/specifications",
+      "kind": "standard_index",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "note": "Host/Media Interface ID、Module Identifier 编码来源；具体 Revision 待确认",
+      "confidence": "partial"
+    },
+    {
+      "source_id": "S-SFF-8636",
+      "title": "SFF-8636 - QSFP+ / QSFP28 Management Interface (legacy)",
+      "publisher": "SNIA SFF TWG",
+      "url": "https://www.snia.org/technology-communities/sff/specifications",
+      "kind": "standard_index",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "note": "CMIS 之前的 QSFP 管理接口，用于对比，非本次配置项来源",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-QSFPDD-MSA",
+      "title": "QSFP-DD MSA CMIS 4.0 / 5.0（CMIS 前身）",
+      "publisher": "QSFP-DD MSA",
+      "url": "http://www.qsfp-dd.com/",
+      "kind": "msa",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "note": "CMIS 2022 年移交 OIF 前的版本谱系；精确文档编号待确认",
+      "confidence": "partial"
+    },
+    {
+      "source_id": "S-GH-API-SNAPSHOT",
+      "title": "GitHub REST API /repos 元数据快照 (2026-11-08)",
+      "publisher": "GitHub",
+      "url": "https://api.github.com",
+      "kind": "github_api",
+      "license": "API 数据",
+      "retrieved_at": "2026-11-08",
+      "note": "star / license / pushed_at / archived 均为本次构建时实时读取",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-GH-TABLER",
+      "title": "tabler/tabler - HTML Dashboard UI Kit (v1.7.3, MIT)",
+      "publisher": "Tabler Authors",
+      "url": "https://github.com/tabler/tabler",
+      "kind": "github_repo",
+      "license": "MIT",
+      "retrieved_at": "2026-11-08",
+      "note": "42021 stars / 4433 forks / pushed_at 2026-11-07；本项目选定并 vendored 的前端框架",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-GH-TABLER-ICONS",
+      "title": "tabler/tabler-icons (MIT)",
+      "publisher": "Tabler Authors",
+      "url": "https://github.com/tabler/tabler-icons",
+      "kind": "github_repo",
+      "license": "MIT",
+      "retrieved_at": "2026-11-08",
+      "note": "22579 stars / pushed_at 2026-11-07；配套图标字体",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-GH-ADMINLTE",
+      "title": "ColorlibHQ/AdminLTE (MIT)",
+      "publisher": "ColorlibHQ",
+      "url": "https://github.com/ColorlibHQ/AdminLTE",
+      "kind": "github_repo",
+      "license": "MIT",
+      "retrieved_at": "2026-11-08",
+      "note": "45678 stars / pushed_at 2026-11-04；选型候选",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-GH-DASHY",
+      "title": "Lissy93/dashy (MIT)",
+      "publisher": "Lissy93",
+      "url": "https://github.com/Lissy93/dashy",
+      "kind": "github_repo",
+      "license": "MIT",
+      "retrieved_at": "2026-11-08",
+      "note": "26940 stars / pushed_at 2026-11-07；选型候选（Vue/Node 构建链）",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-GH-GRAFANA",
+      "title": "grafana/grafana (AGPL-3.0)",
+      "publisher": "Grafana Labs",
+      "url": "https://github.com/grafana/grafana",
+      "kind": "github_repo",
+      "license": "AGPL-3.0",
+      "retrieved_at": "2026-11-08",
+      "note": "77759 stars / pushed_at 2026-11-08；选型候选（Go 服务 + 数据库，重量级）",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-GH-SONIC-PC",
+      "title": "sonic-net/sonic-platform-common (CMIS API: sonic_xcvr/api/public/cmis.py)",
+      "publisher": "SONiC",
+      "url": "https://github.com/sonic-net/sonic-platform-common",
+      "kind": "github_repo",
+      "license": "NOASSERTION (GitHub 未识别)",
+      "retrieved_at": "2026-11-08",
+      "note": "61 stars / 255 forks / pushed_at 2026-11-04；CmisApi 实现字段解析、AppSel、SI staging；许可待法务确认",
+      "confidence": "partial"
+    },
+    {
+      "source_id": "S-GH-SONIC-PD",
+      "title": "sonic-net/sonic-platform-daemons (xcvrd CMIS 初始化状态机)",
+      "publisher": "SONiC",
+      "url": "https://github.com/sonic-net/sonic-platform-daemons",
+      "kind": "github_repo",
+      "license": "待确认",
+      "retrieved_at": "2026-11-08",
+      "note": "PR #217 引入 CMIS application initialization",
+      "confidence": "partial"
+    },
+    {
+      "source_id": "S-GH-SONIC-UTIL",
+      "title": "sonic-net/sonic-utilities (sfputil show eeprom --dom)",
+      "publisher": "SONiC",
+      "url": "https://github.com/sonic-net/sonic-utilities",
+      "kind": "github_repo",
+      "license": "待确认",
+      "retrieved_at": "2026-11-08",
+      "note": "CMIS EEPROM/DOM 命令行展示",
+      "confidence": "partial"
+    },
+    {
+      "source_id": "S-GH-FBOSS",
+      "title": "facebook/fboss -> meta/fboss (qsfp_service, CmisModule)",
+      "publisher": "Meta",
+      "url": "https://github.com/facebook/fboss",
+      "kind": "github_repo",
+      "license": "NOASSERTION (BSD-style + PATENTS 文件)",
+      "retrieved_at": "2026-11-08",
+      "note": "1002 stars / pushed_at 2026-11-07；许可与专利授予条款待法务确认",
+      "confidence": "partial"
+    },
+    {
+      "source_id": "S-GH-LIBSFFCMIS",
+      "title": "vjardin/libsffcmis (C 库 + CLI, 支持 OIF-CMIS-05.3 / C-CMIS-01.3)",
+      "publisher": "vjardin",
+      "url": "https://github.com/vjardin/libsffcmis",
+      "kind": "github_repo",
+      "license": "README 声明 GPLv2（GitHub 未识别 LICENSE）",
+      "retrieved_at": "2026-11-08",
+      "note": "派生自 ethtool；按页拆分 cmis-datapath / cmis-vdm / cmis-cdb / cmis-diag / cmis-coherent；许可待确认",
+      "confidence": "partial"
+    },
+    {
+      "source_id": "S-GH-ETHTOOL",
+      "title": "ethtool (cmis.c / qsfp.c, GPL-2.0)",
+      "publisher": "kernel.org / GitHub mirrors",
+      "url": "https://github.com/kernelkit/ethtool",
+      "kind": "github_repo",
+      "license": "GPL-2.0",
+      "retrieved_at": "2026-11-08",
+      "note": "cmis.c 注释引用 CMIS Rev.5 §8.4.4 Table 8-40（最大 Bank 数、每 Bank 8 通道）",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-GH-LINUX",
+      "title": "Linux kernel (I2C / SFP 与模块 EEPROM 访问)",
+      "publisher": "Linux Foundation",
+      "url": "https://github.com/torvalds/linux",
+      "kind": "github_repo",
+      "license": "GPL-2.0",
+      "retrieved_at": "2026-11-08",
+      "note": "底层 I2C 访问路径，作为 CMIS 实现的硬件通道背景",
+      "confidence": "partial"
+    },
+    {
+      "source_id": "S-ART-MAPYOURTECH",
+      "title": "CMIS for Pluggable Optics: Management Architecture, State Machines and Comparison",
+      "publisher": "MapYourTech",
+      "url": "https://mapyourtech.com/cmis-for-pluggable-optics-management-architecture-state-machines-and-comparison",
+      "kind": "technical_article",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "note": "引用 OIF CMIS IA clause 5.2.1、Table 10-4；Lower/Upper Memory、Bank:Page:Byte 模型",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-ART-W2W",
+      "title": "CMIS Transceiver Programming & Breakout Configuration Reference Guide v1.0",
+      "publisher": "Wave2Wave",
+      "url": "https://www.wave2wave.io/datasheets/resources/W2W_CMIS-Programming-Breakout-Guide_v1.0.pdf",
+      "kind": "vendor_guide",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "note": "Page 00h/01h 寄存器地址、0xAD AppSel 编码、Lane Count Encoding（第三方解读）",
+      "confidence": "partial"
+    },
+    {
+      "source_id": "S-ART-LINKPP",
+      "title": "CMIS Explained - Common Management Interface",
+      "publisher": "LINK-PP",
+      "url": "https://resources.l-p.com/knowledge-center/cmis-common-management-interface-specification",
+      "kind": "technical_article",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "note": "CMIS 背景、QSFP-DD/OSFP/COBO、应用化配置与 DDM",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-ART-XRDOCS",
+      "title": "DCO configuration using CMIS AppSel (IOS-XR)",
+      "publisher": "Cisco / xrdocs",
+      "url": "https://xrdocs.io/design/blogs/2026-0610-dco-configuration-appsel",
+      "kind": "technical_article",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "note": "400ZR / OpenZR+ / 800ZR 与 AppSel 的工程上下文",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-ART-LIGHTWAVE",
+      "title": "OIF finishes one CMIS project, starts another (2022 Q2)",
+      "publisher": "Lightwave Online",
+      "url": "https://www.lightwaveonline.com/optical-tech/transmission/article/14277596/oif-finishes-one-cmis-project-starts-another",
+      "kind": "news",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "note": "CMIS 5.2 作为首个 OIF IA、由 QSFP-DD MSA 移交 OIF 的背景",
+      "confidence": "confirmed"
+    },
+    {
+      "source_id": "S-ART-CSDN-52",
+      "title": "CMIS 5.2 深度解读：光模块 I2C 管理、LPO 配置与实战排查",
+      "publisher": "CSDN 社区",
+      "url": "https://blog.csdn.net/weixin_32642109/article/details/164407082",
+      "kind": "technical_article",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "note": "I2C 0x50/0x51、Lower/Upper 分页、Module State 中文解读（社区资料，条款号需复核）",
+      "confidence": "partial"
+    },
+    {
+      "source_id": "S-ART-CSDN-53",
+      "title": "CMIS 5.3 vs 5.2：光模块管理接口差异与驱动迁移实践",
+      "publisher": "CSDN 社区",
+      "url": "https://blog.csdn.net/weixin_29193359/article/details/164416903",
+      "kind": "technical_article",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "note": "IntL 中断、密码保护区、消息邮箱（社区资料，条款号需复核）",
+      "confidence": "partial"
+    },
+    {
+      "source_id": "S-INTERNAL",
+      "title": "本项目内部示例设备数据（合成）",
+      "publisher": "本项目",
+      "url": "data/seed.json",
+      "kind": "internal_dataset",
+      "license": "",
+      "retrieved_at": "2026-11-08",
+      "note": "设备/模块/配置项均为演示合成数据，不代表真实网元资产",
+      "confidence": "confirmed"
+    }
+  ],
+  "entities": [
+    {
+      "entity_id": "ORG-OIF",
+      "type": "Organization",
+      "name": "OIF（光互联论坛）",
+      "summary": "CMIS 及其扩展 IA 的维护组织，2022 年从 QSFP-DD MSA 接管 CMIS",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-ART-LIGHTWAVE"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "ORG-SNIA",
+      "type": "Organization",
+      "name": "SNIA SFF TWG",
+      "summary": "SFF-8024 / SFF-8636 等模块编码与管理接口规范维护方",
+      "source_ids": [
+        "S-SFF-8024"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "ORG-QSFPDD",
+      "type": "Organization",
+      "name": "QSFP-DD MSA",
+      "summary": "CMIS 4.0/5.0 的原始发起方",
+      "source_ids": [
+        "S-QSFPDD-MSA",
+        "S-ART-LIGHTWAVE"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "ORG-SONIC",
+      "type": "Organization",
+      "name": "SONiC / Linux Foundation",
+      "summary": "开源网络操作系统，含 CMIS 平台抽象与 xcvrd",
+      "source_ids": [
+        "S-GH-SONIC-PC"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "ORG-META",
+      "type": "Organization",
+      "name": "Meta (FBOSS)",
+      "summary": "FBOSS qsfp_service 的维护方",
+      "source_ids": [
+        "S-GH-FBOSS"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "STD-CMIS-052",
+      "type": "Standard",
+      "name": "OIF-CMIS-05.2 (Rev 5.2, 2022-04)",
+      "summary": "CMIS 规范体系文档：OIF-CMIS-05.2 (Rev 5.2, 2022-04)",
+      "source_ids": [
+        "S-OIF-052",
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "note": "首个 OIF 发布版"
+      }
+    },
+    {
+      "entity_id": "STD-CMIS-053",
+      "type": "Standard",
+      "name": "OIF-CMIS-05.3 (Rev 5.3, 2024-09)",
+      "summary": "CMIS 规范体系文档：OIF-CMIS-05.3 (Rev 5.3, 2024-09)",
+      "source_ids": [
+        "S-OIF-053",
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "note": ""
+      }
+    },
+    {
+      "entity_id": "STD-CMIS-054",
+      "type": "Standard",
+      "name": "OIF-CMIS-05.4 (Rev 5.4, 2026-05)",
+      "summary": "CMIS 规范体系文档：OIF-CMIS-05.4 (Rev 5.4, 2026-05)",
+      "source_ids": [
+        "S-OIF-054",
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "note": "本次调研时最新主规范"
+      }
+    },
+    {
+      "entity_id": "STD-CMIS-ERRATA",
+      "type": "Standard",
+      "name": "OIF-CMIS-05-Errata-01.0 (2025-02)",
+      "summary": "CMIS 规范体系文档：OIF-CMIS-05-Errata-01.0 (2025-02)",
+      "source_ids": [
+        "S-OIF-ERRATA",
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "note": "CMIS 5.x 勘误"
+      }
+    },
+    {
+      "entity_id": "STD-CCMIS-013",
+      "type": "Standard",
+      "name": "OIF-C-CMIS-01.3 (2023-10)",
+      "summary": "CMIS 规范体系文档：OIF-C-CMIS-01.3 (2023-10)",
+      "source_ids": [
+        "S-OIF-CCMIS-013",
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "note": ""
+      }
+    },
+    {
+      "entity_id": "STD-CCMIS-015",
+      "type": "Standard",
+      "name": "OIF-C-CMIS-01.5 (2026-09)",
+      "summary": "CMIS 规范体系文档：OIF-C-CMIS-01.5 (2026-09)",
+      "source_ids": [
+        "S-OIF-CCMIS-015",
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "note": ""
+      }
+    },
+    {
+      "entity_id": "STD-VCS-011",
+      "type": "Standard",
+      "name": "OIF-CMIS-VCS-01.1 (2025-07)",
+      "summary": "CMIS 规范体系文档：OIF-CMIS-VCS-01.1 (2025-07)",
+      "source_ids": [
+        "S-OIF-VCS-011",
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "note": "Versatile Control Set"
+      }
+    },
+    {
+      "entity_id": "STD-FF-010",
+      "type": "Standard",
+      "name": "OIF-CMIS-FF-01.0 (2024-09)",
+      "summary": "CMIS 规范体系文档：OIF-CMIS-FF-01.0 (2024-09)",
+      "source_ids": [
+        "S-OIF-FF-010",
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "note": "封装相关硬件管理"
+      }
+    },
+    {
+      "entity_id": "STD-ELSFP-010",
+      "type": "Standard",
+      "name": "OIF-ELSFP-CMIS-01.0 (2024-09)",
+      "summary": "CMIS 规范体系文档：OIF-ELSFP-CMIS-01.0 (2024-09)",
+      "source_ids": [
+        "S-OIF-ELSFP-010",
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "note": "外置激光器"
+      }
+    },
+    {
+      "entity_id": "STD-LT-010",
+      "type": "Standard",
+      "name": "OIF-CMIS-LT-01.0 (2026-09)",
+      "summary": "CMIS 规范体系文档：OIF-CMIS-LT-01.0 (2026-09)",
+      "source_ids": [
+        "S-OIF-LT-010",
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "note": "带外链路训练"
+      }
+    },
+    {
+      "entity_id": "STD-SFF-8024",
+      "type": "Standard",
+      "name": "SFF-8024 模块/接口编码表",
+      "summary": "CMIS 规范体系文档：SFF-8024 模块/接口编码表",
+      "source_ids": [
+        "S-SFF-8024"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "note": "版本待确认"
+      }
+    },
+    {
+      "entity_id": "STD-SFF-8636",
+      "type": "Standard",
+      "name": "SFF-8636（旧版 QSFP 管理接口）",
+      "summary": "CMIS 规范体系文档：SFF-8636（旧版 QSFP 管理接口）",
+      "source_ids": [
+        "S-SFF-8636"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "note": "对比参照"
+      }
+    },
+    {
+      "entity_id": "STD-QSFPDD-CMIS",
+      "type": "Standard",
+      "name": "QSFP-DD MSA CMIS 4.0/5.0",
+      "summary": "CMIS 规范体系文档：QSFP-DD MSA CMIS 4.0/5.0",
+      "source_ids": [
+        "S-QSFPDD-MSA",
+        "S-ART-LIGHTWAVE"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "note": "文档编号待确认"
+      }
+    },
+    {
+      "entity_id": "CL-5-2-1",
+      "type": "SpecClause",
+      "name": "§5.2.1 管理接口地址空间",
+      "summary": "Lower 00h-7Fh 固定；Upper 80h-FFh 由 Bank/Page 选择映射",
+      "source_ids": [
+        "S-ART-MAPYOURTECH",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-6-2-1",
+      "type": "SpecClause",
+      "name": "§6.2.1 Application / Application Advertising",
+      "summary": "模块通过 Page 00h Application Descriptor 声明支持的 Host/Media 接口与 lane 组合",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-6-2-2",
+      "type": "SpecClause",
+      "name": "§6.2.2 Data Path 定义",
+      "summary": "Data Path = 一组 Host 通道 + Media 通道 + 模块内部资源，实现某 Application",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-CSDN-52"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-6-2-3",
+      "type": "SpecClause",
+      "name": "§6.2.3 Control Set",
+      "summary": "Staged / Active Control Set 与 VDM/VCS 控制集模型",
+      "source_ids": [
+        "S-OIF-052",
+        "S-OIF-VCS-011"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-6-3-2",
+      "type": "SpecClause",
+      "name": "§6.3.2 Module State Machine",
+      "summary": "ModuleReset / LowPwr / PwrUp / Ready / Fault 等状态与迁移条件",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-CSDN-52"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-6-3-3",
+      "type": "SpecClause",
+      "name": "§6.3.3 DPSM 数据路径状态机",
+      "summary": "DPDeactivated -> DPInit -> DPActivated；每个 Data Path 一个 DPSM 实例",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-CSDN-52"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-8-2",
+      "type": "SpecClause",
+      "name": "§8.2 内存映射总览",
+      "summary": "寄存器地址 = Bank:Page:Byte；Flat memory 模块仅 Lower + Page 00h",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-MAPYOURTECH"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-8-4",
+      "type": "SpecClause",
+      "name": "§8.4 Page 00h 管理与广告信息",
+      "summary": "厂商信息、Module Type、Application Descriptor（86-... 起）",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-8-4-4",
+      "type": "SpecClause",
+      "name": "§8.4.4 / Table 8-40 Bank 与通道上限",
+      "summary": "最大 4 个 Bank、每 Bank 8 通道（ethtool cmis.c 注释引用）",
+      "source_ids": [
+        "S-GH-ETHTOOL",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-8-9",
+      "type": "SpecClause",
+      "name": "§8.9 Page 10h/11h 数据路径控制与状态",
+      "summary": "TxDisable、DataPathInit、DPState、ConfigError、Staged Control Set",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-8-9-2",
+      "type": "SpecClause",
+      "name": "§8.9.2 Output Status",
+      "summary": "Tx/Rx 方向输出状态独立上报，不与 DPSM 状态混同",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-CSDN-52"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-10-4",
+      "type": "SpecClause",
+      "name": "Table 10-4 页切换保持时间 tBPC",
+      "summary": "Bank/Page 切换后 ≤ 10 ms 访问保持时间",
+      "source_ids": [
+        "S-ART-MAPYOURTECH",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-APSEL",
+      "type": "SpecClause",
+      "name": "§6.3 Application Select 激活",
+      "summary": "AppSel 0xAD 编码，Page 01h 逐 lane 选择 Application 与 DataPath ID",
+      "source_ids": [
+        "S-ART-W2W",
+        "S-OIF-052",
+        "S-ART-XRDOCS"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-THRESH",
+      "type": "SpecClause",
+      "name": "Page 02h Alarm/Warning Thresholds",
+      "summary": "温度/电压/功率告警与预警门限",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-MAPYOURTECH",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-CDB",
+      "type": "SpecClause",
+      "name": "Page 9Fh / A0h-AFh CDB 命令与扩展载荷",
+      "summary": "固件管理、结构化命令邮箱",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-VDM",
+      "type": "SpecClause",
+      "name": "Pages 20h-2Fh VDM 可观测量",
+      "summary": "VDM 监视、阈值与 Freeze 原子读取",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-DIAG",
+      "type": "SpecClause",
+      "name": "Pages 13h/14h 诊断（PRBS / Loopback / BER）",
+      "summary": "链路诊断能力",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-TUNABLE",
+      "type": "SpecClause",
+      "name": "Pages 04h/12h 可调激光器能力",
+      "summary": "DCO 频率/波长配置能力",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-LIBSFFCMIS",
+        "S-OIF-CCMIS-013"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-CCMIS-PM",
+      "type": "SpecClause",
+      "name": "C-CMIS 性能监测（Pages 34h/35h、Flag 33h/3Bh）",
+      "summary": "相干模块 PM / FEC / Flag 解码",
+      "source_ids": [
+        "S-OIF-CCMIS-013",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CL-PROTECTED",
+      "type": "SpecClause",
+      "name": "受保护区与密码机制",
+      "summary": "写保护控制字段需密码解锁（社区资料，条款待核）",
+      "source_ids": [
+        "S-ART-CSDN-53"
+      ],
+      "confidence": "pending",
+      "status": "needs_review",
+      "attrs": {}
+    },
+    {
+      "entity_id": "IF-TWI",
+      "type": "Interface",
+      "name": "TWI / I2C 两线管理接口 (0x50)",
+      "summary": "Host 与模块之间的物理管理通道，256 字节可见窗口",
+      "source_ids": [
+        "S-ART-MAPYOURTECH",
+        "S-ART-CSDN-52",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "IF-LOWER",
+      "type": "Interface",
+      "name": "Lower Memory (00h-7Fh)",
+      "summary": "固定映射：模块状态、Flag、中断掩码、CDB 状态、Bank/Page Select",
+      "source_ids": [
+        "S-ART-MAPYOURTECH",
+        "S-OIF-052"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "IF-UPPER",
+      "type": "Interface",
+      "name": "Upper Memory (80h-FFh)",
+      "summary": "分页映射：一次只暴露一个 Bank:Page 的 128 字节",
+      "source_ids": [
+        "S-ART-MAPYOURTECH",
+        "S-OIF-052"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "IF-BANKPAGE",
+      "type": "Interface",
+      "name": "Bank/Page 选择寄存器 (7Eh / 7Fh)",
+      "summary": "决定 Upper Memory 映射；切换需遵守 tBPC",
+      "source_ids": [
+        "S-ART-MAPYOURTECH",
+        "S-OIF-052",
+        "S-GH-ETHTOOL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "IF-HOST-ELEC",
+      "type": "Interface",
+      "name": "Host Electrical Interface",
+      "summary": "主机侧电接口（如 100GAUI-1-S C2M / 400GAUI-8），编码见 SFF-8024",
+      "source_ids": [
+        "S-OIF-052",
+        "S-SFF-8024",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "IF-MEDIA",
+      "type": "Interface",
+      "name": "Media Interface",
+      "summary": "线路侧光/铜接口（如 800GBASE-SR8 / 400G FR4 / 400ZR），编码见 SFF-8024",
+      "source_ids": [
+        "S-OIF-052",
+        "S-SFF-8024",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "IF-DATAPATH",
+      "type": "Interface",
+      "name": "Data Path",
+      "summary": "由 Host/Media lane 与模块内部资源构成的双向数据通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-CSDN-52"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "IF-LANE",
+      "type": "Interface",
+      "name": "Host / Media Lane",
+      "summary": "按 lane 的通道控制与状态（8 lanes / Bank）",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-ETHTOOL",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "IF-CDB",
+      "type": "Interface",
+      "name": "Command Data Block (CDB)",
+      "summary": "结构化命令/固件管理消息接口，Page 9Fh + A0h-AFh",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "IF-VDM",
+      "type": "Interface",
+      "name": "VDM 观测接口 (Pages 20h-2Fh)",
+      "summary": "Versatile Diagnostics Monitoring 可观测量",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "IF-NETPATH",
+      "type": "Interface",
+      "name": "Network Path (Pages 16h/17h)",
+      "summary": "网络路径控制/状态（libsffcmis cmis-netpath.c）",
+      "source_ids": [
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "IF-CONTROLSET",
+      "type": "Interface",
+      "name": "Staged / Active Control Set",
+      "summary": "先 stage 再 apply 的控制集模型（VCS 扩展）",
+      "source_ids": [
+        "S-OIF-052",
+        "S-OIF-VCS-011",
+        "S-GH-SONIC-PC"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "MOD-QSFPDD",
+      "type": "Module",
+      "name": "QSFP-DD 光模块",
+      "summary": "8 lane 可插拔封装，CMIS 主要承载对象；Identifier 编码 0x18 待复核",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "MOD-OSFP",
+      "type": "Module",
+      "name": "OSFP 光模块",
+      "summary": "8 lane 可插拔封装，带散热鳍片；Identifier 0x19 待复核",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "MOD-QSFP112",
+      "type": "Module",
+      "name": "QSFP112 光模块",
+      "summary": "4 lane 112G/lane 封装；Identifier 0x1E 待复核",
+      "source_ids": [
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "MOD-COBO",
+      "type": "Module",
+      "name": "COBO 板载光模块",
+      "summary": "CMIS 支持板载形态",
+      "source_ids": [
+        "S-ART-LINKPP",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "MOD-DCO",
+      "type": "Module",
+      "name": "相干 DCO (400ZR / 800ZR / OpenZR+)",
+      "summary": "C-CMIS 扩展的相干可插拔模块，频率/PM 配置",
+      "source_ids": [
+        "S-OIF-CCMIS-013",
+        "S-OIF-CCMIS-015",
+        "S-ART-XRDOCS"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "MOD-ELSFP",
+      "type": "Module",
+      "name": "ELSFP 外置激光器模块",
+      "summary": "OIF-ELSFP-CMIS-01.0 定义其 CMIS 扩展",
+      "source_ids": [
+        "S-OIF-ELSFP-010"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "MOD-FLAT",
+      "type": "Module",
+      "name": "Flat Memory 模块（无源铜缆等）",
+      "summary": "仅 Lower + Page 00h，只读 EEPROM",
+      "source_ids": [
+        "S-ART-MAPYOURTECH",
+        "S-OIF-052"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "MOD-CPO",
+      "type": "Module",
+      "name": "共封装光学 (CPO)",
+      "summary": "OIF 后续 CMIS 项目方向之一",
+      "source_ids": [
+        "S-ART-LIGHTWAVE"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "DEV-SW-CORE-01",
+      "type": "Device",
+      "name": "核心交换机 01",
+      "summary": "Acme AC-8800 @ DC-A / Rack-A03 / U12 | CMIS 5.3 | online",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "online",
+      "attrs": {
+        "device_id": "SW-CORE-01",
+        "device_type": "switch",
+        "form_factor": "QSFP-DD",
+        "data_nature": "synthetic"
+      }
+    },
+    {
+      "entity_id": "DEV-SW-CORE-02",
+      "type": "Device",
+      "name": "核心交换机 02",
+      "summary": "Acme AC-8800 @ DC-A / Rack-A04 / U12 | CMIS 5.3 | online",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "online",
+      "attrs": {
+        "device_id": "SW-CORE-02",
+        "device_type": "switch",
+        "form_factor": "QSFP-DD",
+        "data_nature": "synthetic"
+      }
+    },
+    {
+      "entity_id": "DEV-SW-AGG-11",
+      "type": "Device",
+      "name": "汇聚交换机 11",
+      "summary": "BetaNet BN-6400 @ DC-A / Rack-B07 / U20 | CMIS 5.3 | online",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "online",
+      "attrs": {
+        "device_id": "SW-AGG-11",
+        "device_type": "switch",
+        "form_factor": "OSFP",
+        "data_nature": "synthetic"
+      }
+    },
+    {
+      "entity_id": "DEV-SW-AGG-12",
+      "type": "Device",
+      "name": "汇聚交换机 12",
+      "summary": "BetaNet BN-6400 @ DC-A / Rack-B08 / U20 | CMIS 5.3 | maintenance",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "maintenance",
+      "attrs": {
+        "device_id": "SW-AGG-12",
+        "device_type": "switch",
+        "form_factor": "QSFP112",
+        "data_nature": "synthetic"
+      }
+    },
+    {
+      "entity_id": "DEV-RTR-EDGE-01",
+      "type": "Device",
+      "name": "边缘路由器 01",
+      "summary": "Acme AR-4000 @ DC-B / Rack-C02 / U06 | CMIS 5.3 | online",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "online",
+      "attrs": {
+        "device_id": "RTR-EDGE-01",
+        "device_type": "router",
+        "form_factor": "QSFP-DD",
+        "data_nature": "synthetic"
+      }
+    },
+    {
+      "entity_id": "DEV-RTR-EDGE-02",
+      "type": "Device",
+      "name": "边缘路由器 02",
+      "summary": "Acme AR-8000 @ DC-B / Rack-C03 / U06 | CMIS 5.4 | online",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "online",
+      "attrs": {
+        "device_id": "RTR-EDGE-02",
+        "device_type": "router",
+        "form_factor": "OSFP",
+        "data_nature": "synthetic"
+      }
+    },
+    {
+      "entity_id": "DEV-LAB-TB-01",
+      "type": "Device",
+      "name": "光模块测试台 01",
+      "summary": "Internal TB-CMIS-1 @ LAB / Bench-3 | CMIS 5.4 | offline",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "offline",
+      "attrs": {
+        "device_id": "LAB-TB-01",
+        "device_type": "testbench",
+        "form_factor": "QSFP-DD",
+        "data_nature": "synthetic"
+      }
+    },
+    {
+      "entity_id": "DEV-SW-800G-01",
+      "type": "Device",
+      "name": "800G 交换机 01",
+      "summary": "Acme AC-8800X @ DC-A / Rack-A09 / U04 | CMIS 5.4 | online",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "online",
+      "attrs": {
+        "device_id": "SW-800G-01",
+        "device_type": "switch",
+        "form_factor": "OSFP",
+        "data_nature": "synthetic"
+      }
+    },
+    {
+      "entity_id": "CFG-IDENT",
+      "type": "ConfigItem",
+      "name": "Module Identifier",
+      "summary": "Lower 00h，SFF-8024 编码，RO",
+      "source_ids": [
+        "S-SFF-8024",
+        "S-OIF-052",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-REV",
+      "type": "ConfigItem",
+      "name": "CMIS Revision",
+      "summary": "Lower 01h，版本字节，RO",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-MSTATE",
+      "type": "ConfigItem",
+      "name": "Module State",
+      "summary": "Lower 03h，模块状态机状态，RO",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-SONIC-PC"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-FLAGS",
+      "type": "ConfigItem",
+      "name": "Module Flags",
+      "summary": "Lower Flag summary，RO",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-VENDOR",
+      "type": "ConfigItem",
+      "name": "Vendor Name / PN / SN / Date Code",
+      "summary": "Page 00h ASCII 静态信息，RO，精确偏移待核对",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-PN",
+      "type": "ConfigItem",
+      "name": "Vendor Part Number",
+      "summary": "Page 00h ASCII 料号，RO",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-SN",
+      "type": "ConfigItem",
+      "name": "Vendor Serial Number",
+      "summary": "Page 00h ASCII 序列号，RO",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-MTYPE",
+      "type": "ConfigItem",
+      "name": "Module Type Encoding",
+      "summary": "Page 00h byte 85，RO",
+      "source_ids": [
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-HOSTIF",
+      "type": "ConfigItem",
+      "name": "Host Electrical Interface ID",
+      "summary": "Application Descriptor byte 0，RO",
+      "source_ids": [
+        "S-OIF-052",
+        "S-SFF-8024",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-MEDIAIF",
+      "type": "ConfigItem",
+      "name": "Media Interface ID",
+      "summary": "Application Descriptor byte 1，RO",
+      "source_ids": [
+        "S-OIF-052",
+        "S-SFF-8024",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-LANECNT",
+      "type": "ConfigItem",
+      "name": "Host/Media Lane Count",
+      "summary": "Application Descriptor byte 2（0x88 / 0x44 / 0x48 等），RO",
+      "source_ids": [
+        "S-ART-W2W",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-LANEASSIGN",
+      "type": "ConfigItem",
+      "name": "Host/Media Lane Assignment Options",
+      "summary": "Application Descriptor 中的 lane 分配位图，RO",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-DPSTATE",
+      "type": "ConfigItem",
+      "name": "DPState / ConfigError",
+      "summary": "Page 11h 数据路径状态与配置错误码，RO",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-SONIC-PC"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-CFGERR",
+      "type": "ConfigItem",
+      "name": "Config Error Code",
+      "summary": "Page 11h 配置错误枚举，RO",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-SONIC-PC"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-BANKSEL",
+      "type": "ConfigItem",
+      "name": "Bank Select (7Eh)",
+      "summary": "Lower 7Eh，RW，最大 Bank 数见 Table 8-40",
+      "source_ids": [
+        "S-ART-MAPYOURTECH",
+        "S-GH-ETHTOOL",
+        "S-OIF-052"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-PAGESEL",
+      "type": "ConfigItem",
+      "name": "Page Select (7Fh)",
+      "summary": "Lower 7Fh，RW，切换需等待 tBPC",
+      "source_ids": [
+        "S-ART-MAPYOURTECH",
+        "S-OIF-052"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-APPSEL",
+      "type": "ConfigItem",
+      "name": "AppSel (Page 01h, 逐 lane)",
+      "summary": "0xAD 编码，RW，必须引用模块已广告的 Application",
+      "source_ids": [
+        "S-ART-W2W",
+        "S-OIF-052",
+        "S-GH-SONIC-PC",
+        "S-ART-XRDOCS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-LPMODE",
+      "type": "ConfigItem",
+      "name": "LowPwrRequestSW (LPMode)",
+      "summary": "模块级控制位，RW，受 MSM 时序约束",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-SONIC-PC"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-TXDIS",
+      "type": "ConfigItem",
+      "name": "TxDisable",
+      "summary": "Page 10h 通道发射关闭，RW",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-DPINIT",
+      "type": "ConfigItem",
+      "name": "DataPathInit",
+      "summary": "Page 10h 触发 DPSM 初始化，RW",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-SONIC-PC"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-TXEQ",
+      "type": "ConfigItem",
+      "name": "Tx EQ / Amplitude (Staged Control Set)",
+      "summary": "Page 10h SI 参数，RW，先 stage 后 apply",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-SONIC-PC",
+        "S-OIF-VCS-011"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-CDR",
+      "type": "ConfigItem",
+      "name": "CDR Enable TX/RX",
+      "summary": "Staged Control Set 位，RW",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-THRESH",
+      "type": "ConfigItem",
+      "name": "Alarm / Warning Thresholds (Page 02h)",
+      "summary": "温度/电压/功率门限，RW，告警须高于预警",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-MAPYOURTECH",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-VDMFREEZE",
+      "type": "ConfigItem",
+      "name": "VDM Freeze",
+      "summary": "Pages 20h-2Fh 原子读取控制，RW",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-LOOPBACK",
+      "type": "ConfigItem",
+      "name": "Loopback (Page 13h)",
+      "summary": "诊断环回，RW，枚举待原文核对",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-PRBS",
+      "type": "ConfigItem",
+      "name": "PRBS Generator / Checker (Pages 13h/14h)",
+      "summary": "诊断码型与 BER，RW",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-LASER",
+      "type": "ConfigItem",
+      "name": "Tunable Laser Frequency (C-CMIS)",
+      "summary": "Page 04h/12h，DCO 专属，RW",
+      "source_ids": [
+        "S-OIF-052",
+        "S-OIF-CCMIS-013",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-DDM",
+      "type": "ConfigItem",
+      "name": "DDM / DOM 监测量",
+      "summary": "温度、电压、Tx/Rx 光功率，RO",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-LIBSFFCMIS",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CON-APP",
+      "type": "Concept",
+      "name": "Application / Application Descriptor",
+      "summary": "Page 00h 中 4 字节一组的接口能力声明（Host ID / Media ID / Lane Count / Lane Assignment）",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CON-MSM",
+      "type": "Concept",
+      "name": "Module State Machine",
+      "summary": "模块上电/低功耗/就绪/故障的状态机",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-CSDN-52"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CON-DPSM",
+      "type": "Concept",
+      "name": "Data Path State Machine",
+      "summary": "每个 Data Path 一个实例，表达配置/初始化状态",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-CSDN-52"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CON-CDB",
+      "type": "Concept",
+      "name": "Command Data Block",
+      "summary": "消息邮箱与固件管理命令",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CON-VDM",
+      "type": "Concept",
+      "name": "Versatile Diagnostics Monitoring",
+      "summary": "可扩展的监测量集合与 Freeze 机制",
+      "source_ids": [
+        "S-OIF-052",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CON-DDM",
+      "type": "Concept",
+      "name": "Digital Diagnostics Monitoring (DDM/DOM)",
+      "summary": "实时温度/电压/光功率监视",
+      "source_ids": [
+        "S-ART-LINKPP",
+        "S-OIF-052"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CON-MEMMAP",
+      "type": "Concept",
+      "name": "Bank:Page:Byte 地址空间",
+      "summary": "CMIS 寄存器三元坐标",
+      "source_ids": [
+        "S-ART-MAPYOURTECH",
+        "S-OIF-052"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CON-MIRROR",
+      "type": "Concept",
+      "name": "本地配置镜像（本项目）",
+      "summary": "服务只写本地 SQLite 镜像，不下发硬件；真实下发需适配器",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "OSS-TABLER",
+      "type": "OpenSourceProject",
+      "name": "tabler/tabler",
+      "summary": "MIT / 42021 stars / pushed 2026-11-07 / Bootstrap 5 单 CSS+JS 仪表盘 UI Kit",
+      "source_ids": [
+        "S-GH-TABLER",
+        "S-GH-API-SNAPSHOT"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "category": "dashboard"
+      }
+    },
+    {
+      "entity_id": "OSS-TABLER-ICONS",
+      "type": "OpenSourceProject",
+      "name": "tabler/tabler-icons",
+      "summary": "MIT / 22579 stars / 6000+ SVG 图标",
+      "source_ids": [
+        "S-GH-TABLER-ICONS",
+        "S-GH-API-SNAPSHOT"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "category": "dashboard"
+      }
+    },
+    {
+      "entity_id": "OSS-ADMINLTE",
+      "type": "OpenSourceProject",
+      "name": "ColorlibHQ/AdminLTE",
+      "summary": "MIT / 45678 stars / pushed 2026-11-04，jQuery+Bootstrap 模板",
+      "source_ids": [
+        "S-GH-ADMINLTE",
+        "S-GH-API-SNAPSHOT"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "category": "dashboard-candidate"
+      }
+    },
+    {
+      "entity_id": "OSS-DASHY",
+      "type": "OpenSourceProject",
+      "name": "Lissy93/dashy",
+      "summary": "MIT / 26940 stars / pushed 2026-11-07，Vue+Node 导航型 dashboard",
+      "source_ids": [
+        "S-GH-DASHY",
+        "S-GH-API-SNAPSHOT"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "category": "dashboard-candidate"
+      }
+    },
+    {
+      "entity_id": "OSS-GRAFANA",
+      "type": "OpenSourceProject",
+      "name": "grafana/grafana",
+      "summary": "AGPL-3.0 / 77759 stars / pushed 2026-11-08，Go 服务 + 数据库",
+      "source_ids": [
+        "S-GH-GRAFANA",
+        "S-GH-API-SNAPSHOT"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "category": "dashboard-candidate"
+      }
+    },
+    {
+      "entity_id": "OSS-SONIC-PC",
+      "type": "OpenSourceProject",
+      "name": "sonic-net/sonic-platform-common",
+      "summary": "CmisApi：字段解析、AppSel、SI staging、CDB/VDM API",
+      "source_ids": [
+        "S-GH-SONIC-PC"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "category": "cmis-implementation"
+      }
+    },
+    {
+      "entity_id": "OSS-SONIC-PD",
+      "type": "OpenSourceProject",
+      "name": "sonic-net/sonic-platform-daemons",
+      "summary": "xcvrd：CMIS application initialization 状态机",
+      "source_ids": [
+        "S-GH-SONIC-PD"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "category": "cmis-implementation"
+      }
+    },
+    {
+      "entity_id": "OSS-SONIC-UTIL",
+      "type": "OpenSourceProject",
+      "name": "sonic-net/sonic-utilities",
+      "summary": "sfputil show eeprom --dom：CMIS EEPROM/DOM CLI 展示",
+      "source_ids": [
+        "S-GH-SONIC-UTIL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "category": "cmis-implementation"
+      }
+    },
+    {
+      "entity_id": "OSS-FBOSS",
+      "type": "OpenSourceProject",
+      "name": "meta/fboss (facebook/fboss)",
+      "summary": "qsfp_service / CmisModule：字段解析与 transceiver 状态管理",
+      "source_ids": [
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "category": "cmis-implementation"
+      }
+    },
+    {
+      "entity_id": "OSS-LIBSFFCMIS",
+      "type": "OpenSourceProject",
+      "name": "vjardin/libsffcmis",
+      "summary": "C 库 + CLI，按页实现 datapath / VDM / CDB / diag / coherent / tunable",
+      "source_ids": [
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "category": "cmis-implementation"
+      }
+    },
+    {
+      "entity_id": "OSS-ETHTOOL",
+      "type": "OpenSourceProject",
+      "name": "ethtool (cmis.c / qsfp.c)",
+      "summary": "用户态 CMIS EEPROM 解析与 JSON 输出，GPL-2.0",
+      "source_ids": [
+        "S-GH-ETHTOOL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "category": "cmis-implementation"
+      }
+    },
+    {
+      "entity_id": "OSS-LINUX",
+      "type": "OpenSourceProject",
+      "name": "Linux kernel (I2C / SFP)",
+      "summary": "底层两线访问与模块 EEPROM 框架",
+      "source_ids": [
+        "S-GH-LINUX"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "category": "cmis-implementation"
+      }
+    },
+    {
+      "entity_id": "OSS-THIS-SERVICE",
+      "type": "OpenSourceProject",
+      "name": "本项目 CMIS Dashboard Service",
+      "summary": "Python 标准库 + SQLite + vendored Tabler 的轻量本地服务",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "category": "internal"
+      }
+    },
+    {
+      "entity_id": "SVC-CMIS-DASH",
+      "type": "Service",
+      "name": "CMIScope - Lightweight CMIS Dashboard",
+      "summary": "本地 dashboard：按 CMIS 分区查询/展示模块信息、配置项编辑校验、CDB 命令编排、知识图谱关联查询",
+      "source_ids": [
+        "S-INTERNAL",
+        "S-GH-TABLER"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "runtime": "Python 3 stdlib + SQLite",
+        "frontend": "Tabler 1.7.3 (MIT)",
+        "access_modes": "mirror / ssh-i2c / rest-api",
+        "default_language": "zh",
+        "optional_language": "en"
+      }
+    },
+    {
+      "entity_id": "SEC-LOW-PAGE",
+      "type": "SpecificationPartition",
+      "name": "Low Page 0x00 (Lower + Upper 00h)",
+      "summary": "常驻低 128 字节与 Upper Page 00h：ID/状态、模块级标志、全局控制、CDB 状态、固件版本、应用广告、口令区、Bank/Page 选择",
+      "source_ids": [
+        "S-OIF-053",
+        "S-OIF-054",
+        "S-ART-MAPYOURTECH",
+        "S-ART-VITEX"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "pages": "Lower 00h-7Fh, Upper 00h 80h-FFh",
+        "spec_ref": "OIF-CMIS-05.3 8.2 / 8.4"
+      }
+    },
+    {
+      "entity_id": "SEC-DOM",
+      "type": "SpecificationPartition",
+      "name": "DOM / CMIS Monitors",
+      "summary": "CMIS 称 Monitors：Lower 14-25 模块级监测量、Page 02h 阈值、Page 10h/11h 通道状态与光功率监测量、Pages 20h-2Fh VDM",
+      "source_ids": [
+        "S-OIF-053",
+        "S-IETF-CMIS-YANG",
+        "S-ART-VITEX"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "pages": "Lower 14-25, 02h, 10h, 11h, 20h-2Fh",
+        "spec_ref": "OIF-CMIS-05.3 8.8 / 8.22"
+      }
+    },
+    {
+      "entity_id": "SEC-CDB",
+      "type": "SpecificationPartition",
+      "name": "CDB (Command Data Block)",
+      "summary": "Page 9Fh 命令帧与 120 字节 LPL、Pages A0h-AFh 最多 2048 字节 EPL、Lower 37-38 状态、Lower 122 口令入口；命令参考见 05.3 第 9 章",
+      "source_ids": [
+        "S-OIF-053",
+        "S-OIF-054",
+        "S-GH-LINUX-CDB"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "pages": "9Fh, A0h-AFh, Lower 37-38, Lower 118-125",
+        "spec_ref": "OIF-CMIS-05.3 8.23 / 8.24 / 9"
+      }
+    },
+    {
+      "entity_id": "SEC-CONTROL",
+      "type": "SpecificationPartition",
+      "name": "Datapath / Diagnostics / Coherent Control",
+      "summary": "Page 01h 应用描述符、Page 10h AppSel/DPSM/Staged Control Set、Pages 13h/14h PRBS 与环回、Page 12h 可调激光器、Pages 30h-4Fh C-CMIS",
+      "source_ids": [
+        "S-OIF-053",
+        "S-IETF-CMIS-YANG",
+        "S-OIF-CCMIS-015"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "pages": "01h, 10h, 12h, 13h, 14h, 30h-4Fh",
+        "spec_ref": "OIF-CMIS-05.3 6.3 / 8.9 / 8.10"
+      }
+    },
+    {
+      "entity_id": "IF-CDB-FRAME",
+      "type": "Interface",
+      "name": "CDB Command Frame (Page 9Fh)",
+      "summary": "128 字节命令帧：CMDID(2) / EPL 长度(2) / LPL 长度(1) / 校验码(1) / 保留(2) / LPL(120)；写入结束于 9Fh:129 触发命令",
+      "source_ids": [
+        "S-OIF-053",
+        "S-GH-LINUX-CDB"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "i2c_address": "0x50",
+        "lpl_max_bytes": 120,
+        "epl_max_bytes": 2048
+      }
+    },
+    {
+      "entity_id": "IF-CDB-EPL",
+      "type": "Interface",
+      "name": "CDB Extended Payload Pages (A0h-AFh)",
+      "summary": "16 页 x 128 字节 = 最多 2048 字节扩展载荷，用于固件块等大数据传输",
+      "source_ids": [
+        "S-OIF-053",
+        "S-GH-LINUX-CDB"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "IF-SSH-I2C",
+      "type": "AccessPath",
+      "name": "Mode A: Test Server -> SSH -> Test Switch -> I2C",
+      "summary": "服务运行在测试 Server，经 SSH 登录测试 Switch 执行 i2cget/i2cset 或厂商 CLI，由交换机完成对模块 EEPROM (0x50) 的两线读写",
+      "source_ids": [
+        "S-INTERNAL",
+        "S-GH-LINUX",
+        "S-OIF-053"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "transport": "ssh + subprocess + i2c-tools",
+        "target": "0x50",
+        "safety": "Lower Memory writes blocked"
+      }
+    },
+    {
+      "entity_id": "IF-REST-API",
+      "type": "AccessPath",
+      "name": "Mode B: Target Device RESTful API",
+      "summary": "服务调用目标设备/NOS 的北向 REST API，由设备侧完成 I2C 事务；读写按页级 allowlist 委派",
+      "source_ids": [
+        "S-INTERNAL",
+        "S-IETF-CMIS-YANG"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "transport": "HTTPS + JSON",
+        "token_env": "CMIS_REST_TOKEN",
+        "safety": "CDB pages are read-only over REST by default"
+      }
+    },
+    {
+      "entity_id": "IF-MIRROR",
+      "type": "AccessPath",
+      "name": "Offline SQLite Mirror",
+      "summary": "默认离线模式：读数来自本地 SQLite，配置写入仅 staged 并记入审计日志，从不访问硬件",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "transport": "sqlite"
+      }
+    },
+    {
+      "entity_id": "CON-PAGE-GOVERNANCE",
+      "type": "Concept",
+      "name": "Page-level Access Governance",
+      "summary": "IETF YANG 草案：remote-read-allowed-pages / remote-write-allowed-pages / default-policy；Lower Memory 与 CDB 页不可委派远程写",
+      "source_ids": [
+        "S-IETF-CMIS-YANG"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-CDB",
+      "type": "ConfigItem",
+      "name": "CDB registers and command parameters",
+      "summary": "Page 9Fh/A0h-AFh 与 Lower 37-38/122 的 CDB 相关寄存器：CMDID、EPL/LPL 长度、校验码、载荷、状态、口令、实例",
+      "source_ids": [
+        "S-OIF-053",
+        "S-GH-LINUX-CDB"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {
+        "spec_ref": "OIF-CMIS-05.3 8.23 / 8.24 / 9"
+      }
+    },
+    {
+      "entity_id": "CFG-DOM",
+      "type": "ConfigItem",
+      "name": "DOM threshold and monitor registers",
+      "summary": "Page 02h 阈值、Lower 14-25 与 Page 10h/11h 监测量、Pages 20h-2Fh VDM 控制",
+      "source_ids": [
+        "S-OIF-053",
+        "S-IETF-CMIS-YANG"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "entity_id": "CFG-LOW-PAGE",
+      "type": "ConfigItem",
+      "name": "Low Page 0x00 identity and status registers",
+      "summary": "Lower 0-127 与 Upper Page 00h 静态识别字段（厂商、OUI、料号、序列号、日期码、校验和、Bank/Page 选择）",
+      "source_ids": [
+        "S-OIF-053",
+        "S-ART-VITEX"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    }
+  ],
+  "relations": [
+    {
+      "relation_id": "REL-001",
+      "src": "ORG-OIF",
+      "dst": "STD-CMIS-052",
+      "type": "DEFINES",
+      "label": "OIF 发布/维护该实现协议",
+      "source_ids": [
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-002",
+      "src": "ORG-OIF",
+      "dst": "STD-CMIS-053",
+      "type": "DEFINES",
+      "label": "OIF 发布/维护该实现协议",
+      "source_ids": [
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-003",
+      "src": "ORG-OIF",
+      "dst": "STD-CMIS-054",
+      "type": "DEFINES",
+      "label": "OIF 发布/维护该实现协议",
+      "source_ids": [
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-004",
+      "src": "ORG-OIF",
+      "dst": "STD-CMIS-ERRATA",
+      "type": "DEFINES",
+      "label": "OIF 发布/维护该实现协议",
+      "source_ids": [
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-005",
+      "src": "ORG-OIF",
+      "dst": "STD-CCMIS-013",
+      "type": "DEFINES",
+      "label": "OIF 发布/维护该实现协议",
+      "source_ids": [
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-006",
+      "src": "ORG-OIF",
+      "dst": "STD-CCMIS-015",
+      "type": "DEFINES",
+      "label": "OIF 发布/维护该实现协议",
+      "source_ids": [
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-007",
+      "src": "ORG-OIF",
+      "dst": "STD-VCS-011",
+      "type": "DEFINES",
+      "label": "OIF 发布/维护该实现协议",
+      "source_ids": [
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-008",
+      "src": "ORG-OIF",
+      "dst": "STD-FF-010",
+      "type": "DEFINES",
+      "label": "OIF 发布/维护该实现协议",
+      "source_ids": [
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-009",
+      "src": "ORG-OIF",
+      "dst": "STD-ELSFP-010",
+      "type": "DEFINES",
+      "label": "OIF 发布/维护该实现协议",
+      "source_ids": [
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-010",
+      "src": "ORG-OIF",
+      "dst": "STD-LT-010",
+      "type": "DEFINES",
+      "label": "OIF 发布/维护该实现协议",
+      "source_ids": [
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-011",
+      "src": "ORG-SNIA",
+      "dst": "STD-SFF-8024",
+      "type": "DEFINES",
+      "label": "SFF TWG 维护编码表",
+      "source_ids": [
+        "S-SFF-8024"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-012",
+      "src": "ORG-SNIA",
+      "dst": "STD-SFF-8636",
+      "type": "DEFINES",
+      "label": "SFF TWG 维护旧版管理接口",
+      "source_ids": [
+        "S-SFF-8636"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-013",
+      "src": "ORG-QSFPDD",
+      "dst": "STD-QSFPDD-CMIS",
+      "type": "DEFINES",
+      "label": "MSA 发布 CMIS 前身",
+      "source_ids": [
+        "S-QSFPDD-MSA",
+        "S-ART-LIGHTWAVE"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-014",
+      "src": "STD-CMIS-052",
+      "dst": "STD-QSFPDD-CMIS",
+      "type": "DERIVES_FROM",
+      "label": "CMIS 由 QSFP-DD MSA 移交 OIF 后延续",
+      "source_ids": [
+        "S-ART-LIGHTWAVE",
+        "S-OIF-INDEX"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-015",
+      "src": "STD-CMIS-053",
+      "dst": "STD-CMIS-052",
+      "type": "DERIVES_FROM",
+      "label": "5.3 继承并扩展 5.2",
+      "source_ids": [
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-016",
+      "src": "STD-CMIS-054",
+      "dst": "STD-CMIS-053",
+      "type": "DERIVES_FROM",
+      "label": "5.4 继承并扩展 5.3",
+      "source_ids": [
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-017",
+      "src": "STD-CMIS-ERRATA",
+      "dst": "STD-CMIS-052",
+      "type": "CONSTRAINS",
+      "label": "勘误适用于 CMIS 5.x 系列",
+      "source_ids": [
+        "S-OIF-INDEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-018",
+      "src": "STD-CMIS-052",
+      "dst": "STD-SFF-8024",
+      "type": "REFERENCES",
+      "label": "Interface ID / Identifier 编码引用 SFF-8024",
+      "source_ids": [
+        "S-SFF-8024",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-019",
+      "src": "STD-SFF-8636",
+      "dst": "STD-CMIS-052",
+      "type": "REFERENCES",
+      "label": "旧版 QSFP 管理接口作为对照",
+      "source_ids": [
+        "S-SFF-8636",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-020",
+      "src": "STD-CCMIS-013",
+      "dst": "STD-CMIS-052",
+      "type": "REFERENCES",
+      "label": "C-CMIS 基于 CMIS 主规范扩展相干能力",
+      "source_ids": [
+        "S-OIF-CCMIS-013"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-021",
+      "src": "STD-VCS-011",
+      "dst": "STD-CMIS-053",
+      "type": "REFERENCES",
+      "label": "VCS 扩展 Control Set 模型",
+      "source_ids": [
+        "S-OIF-VCS-011"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-022",
+      "src": "STD-ELSFP-010",
+      "dst": "STD-CMIS-053",
+      "type": "REFERENCES",
+      "label": "ELSFP 的 CMIS 扩展",
+      "source_ids": [
+        "S-OIF-ELSFP-010"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-023",
+      "src": "STD-LT-010",
+      "dst": "STD-CMIS-054",
+      "type": "REFERENCES",
+      "label": "带外链路训练 CMIS 扩展",
+      "source_ids": [
+        "S-OIF-LT-010"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-024",
+      "src": "STD-FF-010",
+      "dst": "STD-CMIS-053",
+      "type": "REFERENCES",
+      "label": "封装相关硬件管理扩展",
+      "source_ids": [
+        "S-OIF-FF-010"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-025",
+      "src": "STD-CMIS-052",
+      "dst": "CL-5-2-1",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-026",
+      "src": "STD-CMIS-052",
+      "dst": "CL-6-2-1",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-027",
+      "src": "STD-CMIS-052",
+      "dst": "CL-6-2-2",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-028",
+      "src": "STD-CMIS-052",
+      "dst": "CL-6-2-3",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-029",
+      "src": "STD-CMIS-052",
+      "dst": "CL-6-3-2",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-030",
+      "src": "STD-CMIS-052",
+      "dst": "CL-6-3-3",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-031",
+      "src": "STD-CMIS-052",
+      "dst": "CL-8-2",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-032",
+      "src": "STD-CMIS-052",
+      "dst": "CL-8-4",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-033",
+      "src": "STD-CMIS-052",
+      "dst": "CL-8-4-4",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-034",
+      "src": "STD-CMIS-052",
+      "dst": "CL-8-9",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-035",
+      "src": "STD-CMIS-052",
+      "dst": "CL-8-9-2",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-036",
+      "src": "STD-CMIS-052",
+      "dst": "CL-10-4",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-037",
+      "src": "STD-CMIS-052",
+      "dst": "CL-APSEL",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-038",
+      "src": "STD-CMIS-052",
+      "dst": "CL-THRESH",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-039",
+      "src": "STD-CMIS-052",
+      "dst": "CL-CDB",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-040",
+      "src": "STD-CMIS-052",
+      "dst": "CL-VDM",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-041",
+      "src": "STD-CMIS-052",
+      "dst": "CL-DIAG",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-042",
+      "src": "STD-CMIS-052",
+      "dst": "CL-TUNABLE",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-043",
+      "src": "STD-CCMIS-013",
+      "dst": "CL-CCMIS-PM",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-044",
+      "src": "STD-CMIS-053",
+      "dst": "CL-PROTECTED",
+      "type": "DEFINES",
+      "label": "规范定义该条款/章节",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-052"
+      ],
+      "confidence": "pending",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-045",
+      "src": "CL-5-2-1",
+      "dst": "IF-LOWER",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-046",
+      "src": "CL-5-2-1",
+      "dst": "IF-UPPER",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-047",
+      "src": "CL-8-2",
+      "dst": "CON-MEMMAP",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-048",
+      "src": "CL-8-4-4",
+      "dst": "IF-BANKPAGE",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-049",
+      "src": "CL-10-4",
+      "dst": "IF-BANKPAGE",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-050",
+      "src": "CL-6-2-1",
+      "dst": "CON-APP",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-051",
+      "src": "CL-6-2-1",
+      "dst": "IF-HOST-ELEC",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-052",
+      "src": "CL-6-2-1",
+      "dst": "IF-MEDIA",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-053",
+      "src": "CL-6-2-2",
+      "dst": "IF-DATAPATH",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-054",
+      "src": "CL-6-2-3",
+      "dst": "IF-CONTROLSET",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-055",
+      "src": "CL-6-3-2",
+      "dst": "CON-MSM",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-056",
+      "src": "CL-6-3-3",
+      "dst": "CON-DPSM",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-057",
+      "src": "CL-CDB",
+      "dst": "IF-CDB",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-058",
+      "src": "CL-CDB",
+      "dst": "CON-CDB",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-059",
+      "src": "CL-VDM",
+      "dst": "IF-VDM",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-060",
+      "src": "CL-VDM",
+      "dst": "CON-VDM",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-061",
+      "src": "CL-8-9",
+      "dst": "IF-LANE",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-062",
+      "src": "CL-THRESH",
+      "dst": "CON-DDM",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-063",
+      "src": "CL-APSEL",
+      "dst": "CFG-APPSEL",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-064",
+      "src": "CL-8-9",
+      "dst": "CFG-DPSTATE",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-065",
+      "src": "CL-8-9",
+      "dst": "CFG-TXDIS",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-066",
+      "src": "CL-8-9",
+      "dst": "CFG-DPINIT",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-067",
+      "src": "CL-8-9",
+      "dst": "CFG-TXEQ",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-068",
+      "src": "CL-8-9",
+      "dst": "CFG-CDR",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-069",
+      "src": "CL-6-3-2",
+      "dst": "CFG-LPMODE",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-070",
+      "src": "CL-THRESH",
+      "dst": "CFG-THRESH",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-071",
+      "src": "CL-8-4",
+      "dst": "CFG-VENDOR",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-072",
+      "src": "CL-8-4",
+      "dst": "CFG-HOSTIF",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-073",
+      "src": "CL-8-4",
+      "dst": "CFG-MEDIAIF",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-074",
+      "src": "CL-8-4",
+      "dst": "CFG-LANECNT",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-075",
+      "src": "CL-8-4",
+      "dst": "CFG-LANEASSIGN",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-076",
+      "src": "CL-8-4",
+      "dst": "CFG-MTYPE",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-077",
+      "src": "CL-8-4-4",
+      "dst": "CFG-BANKSEL",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-078",
+      "src": "CL-5-2-1",
+      "dst": "CFG-PAGESEL",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-079",
+      "src": "CL-VDM",
+      "dst": "CFG-VDMFREEZE",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-080",
+      "src": "CL-DIAG",
+      "dst": "CFG-LOOPBACK",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-081",
+      "src": "CL-DIAG",
+      "dst": "CFG-PRBS",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-082",
+      "src": "CL-TUNABLE",
+      "dst": "CFG-LASER",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-083",
+      "src": "CL-CCMIS-PM",
+      "dst": "CFG-LASER",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-084",
+      "src": "CL-8-9-2",
+      "dst": "CFG-DDM",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-085",
+      "src": "CL-8-2",
+      "dst": "CFG-IDENT",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-086",
+      "src": "CL-8-2",
+      "dst": "CFG-REV",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-087",
+      "src": "CL-6-3-2",
+      "dst": "CFG-MSTATE",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-088",
+      "src": "CL-5-2-1",
+      "dst": "CFG-FLAGS",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-089",
+      "src": "CL-8-4",
+      "dst": "CFG-PN",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-090",
+      "src": "CL-8-4",
+      "dst": "CFG-SN",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-091",
+      "src": "CL-8-9",
+      "dst": "CFG-CFGERR",
+      "type": "DEFINES",
+      "label": "条款定义该实体",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-092",
+      "src": "CL-APSEL",
+      "dst": "CFG-APPSEL",
+      "type": "CONSTRAINS",
+      "label": "Application 编号必须落在模块已广告列表中",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "rule_note": "Application 编号必须落在模块已广告列表中"
+      }
+    },
+    {
+      "relation_id": "REL-093",
+      "src": "CL-6-2-1",
+      "dst": "CFG-APPSEL",
+      "type": "CONSTRAINS",
+      "label": "AppSel 只能引用 Application Descriptor 声明的能力",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "rule_note": "AppSel 只能引用 Application Descriptor 声明的能力"
+      }
+    },
+    {
+      "relation_id": "REL-094",
+      "src": "CL-6-3-3",
+      "dst": "CFG-DPINIT",
+      "type": "CONSTRAINS",
+      "label": "DPSM 状态迁移决定 DataPathInit 生效时机",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "rule_note": "DPSM 状态迁移决定 DataPathInit 生效时机"
+      }
+    },
+    {
+      "relation_id": "REL-095",
+      "src": "CL-6-3-2",
+      "dst": "CFG-LPMODE",
+      "type": "CONSTRAINS",
+      "label": "MSM 状态约束低功耗切换时序",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "rule_note": "MSM 状态约束低功耗切换时序"
+      }
+    },
+    {
+      "relation_id": "REL-096",
+      "src": "CL-10-4",
+      "dst": "CFG-PAGESEL",
+      "type": "CONSTRAINS",
+      "label": "页切换后需等待 tBPC ≤ 10 ms",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "rule_note": "页切换后需等待 tBPC ≤ 10 ms"
+      }
+    },
+    {
+      "relation_id": "REL-097",
+      "src": "CL-8-4-4",
+      "dst": "CFG-BANKSEL",
+      "type": "CONSTRAINS",
+      "label": "Bank 取值上限（最大 4 Bank）",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "rule_note": "Bank 取值上限（最大 4 Bank）"
+      }
+    },
+    {
+      "relation_id": "REL-098",
+      "src": "CL-THRESH",
+      "dst": "CFG-THRESH",
+      "type": "CONSTRAINS",
+      "label": "告警阈值应高于预警阈值，且落在规范量纲/范围内",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "rule_note": "告警阈值应高于预警阈值，且落在规范量纲/范围内"
+      }
+    },
+    {
+      "relation_id": "REL-099",
+      "src": "CL-8-9",
+      "dst": "CFG-TXDIS",
+      "type": "CONSTRAINS",
+      "label": "TxDisable 与 DPInit 不应同时置位（本服务实现为校验规则）",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "rule_note": "TxDisable 与 DPInit 不应同时置位（本服务实现为校验规则）"
+      }
+    },
+    {
+      "relation_id": "REL-100",
+      "src": "CL-8-9",
+      "dst": "CFG-TXEQ",
+      "type": "CONSTRAINS",
+      "label": "SI 参数取值受模块广告能力上限约束",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "rule_note": "SI 参数取值受模块广告能力上限约束"
+      }
+    },
+    {
+      "relation_id": "REL-101",
+      "src": "CL-PROTECTED",
+      "dst": "CFG-APPSEL",
+      "type": "CONSTRAINS",
+      "label": "受保护区写入可能需密码解锁（待确认）",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "rule_note": "受保护区写入可能需密码解锁（待确认）"
+      }
+    },
+    {
+      "relation_id": "REL-102",
+      "src": "CL-8-9-2",
+      "dst": "CFG-DPSTATE",
+      "type": "CONSTRAINS",
+      "label": "Output Status 与 DPSM 状态需分别判读",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {
+        "rule_note": "Output Status 与 DPSM 状态需分别判读"
+      }
+    },
+    {
+      "relation_id": "REL-103",
+      "src": "MOD-QSFPDD",
+      "dst": "IF-TWI",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-104",
+      "src": "MOD-QSFPDD",
+      "dst": "IF-LOWER",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-105",
+      "src": "MOD-QSFPDD",
+      "dst": "IF-BANKPAGE",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-106",
+      "src": "MOD-QSFPDD",
+      "dst": "IF-HOST-ELEC",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-107",
+      "src": "MOD-QSFPDD",
+      "dst": "IF-MEDIA",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-108",
+      "src": "MOD-QSFPDD",
+      "dst": "IF-DATAPATH",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-109",
+      "src": "MOD-QSFPDD",
+      "dst": "IF-LANE",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-110",
+      "src": "MOD-QSFPDD",
+      "dst": "IF-CONTROLSET",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-111",
+      "src": "MOD-OSFP",
+      "dst": "IF-TWI",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-112",
+      "src": "MOD-OSFP",
+      "dst": "IF-LOWER",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-113",
+      "src": "MOD-OSFP",
+      "dst": "IF-BANKPAGE",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-114",
+      "src": "MOD-OSFP",
+      "dst": "IF-HOST-ELEC",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-115",
+      "src": "MOD-OSFP",
+      "dst": "IF-MEDIA",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-116",
+      "src": "MOD-OSFP",
+      "dst": "IF-DATAPATH",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-117",
+      "src": "MOD-OSFP",
+      "dst": "IF-LANE",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-118",
+      "src": "MOD-OSFP",
+      "dst": "IF-CONTROLSET",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-119",
+      "src": "MOD-QSFP112",
+      "dst": "IF-TWI",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-120",
+      "src": "MOD-QSFP112",
+      "dst": "IF-LOWER",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-121",
+      "src": "MOD-QSFP112",
+      "dst": "IF-BANKPAGE",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-122",
+      "src": "MOD-QSFP112",
+      "dst": "IF-HOST-ELEC",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-123",
+      "src": "MOD-QSFP112",
+      "dst": "IF-MEDIA",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-124",
+      "src": "MOD-QSFP112",
+      "dst": "IF-DATAPATH",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-125",
+      "src": "MOD-QSFP112",
+      "dst": "IF-LANE",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-126",
+      "src": "MOD-QSFP112",
+      "dst": "IF-CONTROLSET",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-127",
+      "src": "MOD-DCO",
+      "dst": "IF-TWI",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-128",
+      "src": "MOD-DCO",
+      "dst": "IF-LOWER",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-129",
+      "src": "MOD-DCO",
+      "dst": "IF-BANKPAGE",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-130",
+      "src": "MOD-DCO",
+      "dst": "IF-HOST-ELEC",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-131",
+      "src": "MOD-DCO",
+      "dst": "IF-MEDIA",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-132",
+      "src": "MOD-DCO",
+      "dst": "IF-DATAPATH",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-133",
+      "src": "MOD-DCO",
+      "dst": "IF-LANE",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-134",
+      "src": "MOD-DCO",
+      "dst": "IF-CONTROLSET",
+      "type": "CONTAINS",
+      "label": "模块包含该接口/通道",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-LINKPP"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-135",
+      "src": "MOD-QSFPDD",
+      "dst": "CON-APP",
+      "type": "ADVERTISES",
+      "label": "模块广告其 Application 能力",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-136",
+      "src": "MOD-OSFP",
+      "dst": "CON-APP",
+      "type": "ADVERTISES",
+      "label": "模块广告其 Application 能力",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-137",
+      "src": "MOD-QSFP112",
+      "dst": "CON-APP",
+      "type": "ADVERTISES",
+      "label": "模块广告其 Application 能力",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-138",
+      "src": "MOD-DCO",
+      "dst": "CON-APP",
+      "type": "ADVERTISES",
+      "label": "模块广告其 Application 能力",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-139",
+      "src": "MOD-COBO",
+      "dst": "CON-APP",
+      "type": "ADVERTISES",
+      "label": "模块广告其 Application 能力",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-140",
+      "src": "MOD-QSFPDD",
+      "dst": "IF-UPPER",
+      "type": "CONTAINS",
+      "label": "分页 Upper Memory",
+      "source_ids": [
+        "S-ART-MAPYOURTECH"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-141",
+      "src": "MOD-QSFPDD",
+      "dst": "IF-CDB",
+      "type": "CONTAINS",
+      "label": "支持 CDB 命令接口",
+      "source_ids": [
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-142",
+      "src": "MOD-QSFPDD",
+      "dst": "IF-VDM",
+      "type": "CONTAINS",
+      "label": "支持 VDM 观测",
+      "source_ids": [
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-143",
+      "src": "MOD-OSFP",
+      "dst": "IF-UPPER",
+      "type": "CONTAINS",
+      "label": "分页 Upper Memory",
+      "source_ids": [
+        "S-ART-MAPYOURTECH"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-144",
+      "src": "MOD-OSFP",
+      "dst": "IF-CDB",
+      "type": "CONTAINS",
+      "label": "支持 CDB 命令接口",
+      "source_ids": [
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-145",
+      "src": "MOD-OSFP",
+      "dst": "IF-VDM",
+      "type": "CONTAINS",
+      "label": "支持 VDM 观测",
+      "source_ids": [
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-146",
+      "src": "MOD-DCO",
+      "dst": "IF-UPPER",
+      "type": "CONTAINS",
+      "label": "分页 Upper Memory",
+      "source_ids": [
+        "S-ART-MAPYOURTECH"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-147",
+      "src": "MOD-DCO",
+      "dst": "IF-CDB",
+      "type": "CONTAINS",
+      "label": "支持 CDB 命令接口",
+      "source_ids": [
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-148",
+      "src": "MOD-DCO",
+      "dst": "IF-VDM",
+      "type": "CONTAINS",
+      "label": "支持 VDM 观测",
+      "source_ids": [
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-149",
+      "src": "MOD-DCO",
+      "dst": "MOD-QSFPDD",
+      "type": "INSTANTIATES",
+      "label": "相干模块常采用 QSFP-DD 封装",
+      "source_ids": [
+        "S-ART-XRDOCS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-150",
+      "src": "MOD-DCO",
+      "dst": "MOD-OSFP",
+      "type": "INSTANTIATES",
+      "label": "800ZR 相干模块采用 OSFP 封装",
+      "source_ids": [
+        "S-ART-XRDOCS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-151",
+      "src": "MOD-DCO",
+      "dst": "IF-NETPATH",
+      "type": "CONTAINS",
+      "label": "相干模块网络路径相关页",
+      "source_ids": [
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-152",
+      "src": "MOD-FLAT",
+      "dst": "IF-LOWER",
+      "type": "CONTAINS",
+      "label": "Flat memory 仅固定 Lower 区",
+      "source_ids": [
+        "S-ART-MAPYOURTECH"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-153",
+      "src": "MOD-ELSFP",
+      "dst": "IF-CDB",
+      "type": "CONTAINS",
+      "label": "ELSFP CMIS 扩展管理",
+      "source_ids": [
+        "S-OIF-ELSFP-010"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-154",
+      "src": "STD-CMIS-052",
+      "dst": "MOD-QSFPDD",
+      "type": "CONSTRAINS",
+      "label": "规范约束模块管理行为",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-155",
+      "src": "STD-CCMIS-013",
+      "dst": "MOD-DCO",
+      "type": "CONSTRAINS",
+      "label": "C-CMIS 约束相干模块扩展",
+      "source_ids": [
+        "S-OIF-CCMIS-013"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-156",
+      "src": "STD-ELSFP-010",
+      "dst": "MOD-ELSFP",
+      "type": "CONSTRAINS",
+      "label": "ELSFP-CMIS 约束外置激光器模块",
+      "source_ids": [
+        "S-OIF-ELSFP-010"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-157",
+      "src": "STD-CMIS-052",
+      "dst": "MOD-CPO",
+      "type": "REFERENCES",
+      "label": "OIF 后续项目面向共封装光学",
+      "source_ids": [
+        "S-ART-LIGHTWAVE"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-158",
+      "src": "DEV-SW-CORE-01",
+      "dst": "MOD-QSFPDD",
+      "type": "CONTAINS",
+      "label": "该设备端口上的模块封装类型",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-159",
+      "src": "DEV-SW-CORE-01",
+      "dst": "CFG-APPSEL",
+      "type": "CONFIGURES",
+      "label": "设备端口的 Application 选择",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-160",
+      "src": "DEV-SW-CORE-02",
+      "dst": "MOD-QSFPDD",
+      "type": "CONTAINS",
+      "label": "该设备端口上的模块封装类型",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-161",
+      "src": "DEV-SW-CORE-02",
+      "dst": "CFG-APPSEL",
+      "type": "CONFIGURES",
+      "label": "设备端口的 Application 选择",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-162",
+      "src": "DEV-SW-AGG-11",
+      "dst": "MOD-OSFP",
+      "type": "CONTAINS",
+      "label": "该设备端口上的模块封装类型",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-163",
+      "src": "DEV-SW-AGG-11",
+      "dst": "CFG-APPSEL",
+      "type": "CONFIGURES",
+      "label": "设备端口的 Application 选择",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-164",
+      "src": "DEV-SW-AGG-12",
+      "dst": "MOD-QSFP112",
+      "type": "CONTAINS",
+      "label": "该设备端口上的模块封装类型",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-165",
+      "src": "DEV-SW-AGG-12",
+      "dst": "CFG-APPSEL",
+      "type": "CONFIGURES",
+      "label": "设备端口的 Application 选择",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-166",
+      "src": "DEV-RTR-EDGE-01",
+      "dst": "MOD-QSFPDD",
+      "type": "CONTAINS",
+      "label": "该设备端口上的模块封装类型",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-167",
+      "src": "DEV-RTR-EDGE-01",
+      "dst": "CFG-APPSEL",
+      "type": "CONFIGURES",
+      "label": "设备端口的 Application 选择",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-168",
+      "src": "DEV-RTR-EDGE-02",
+      "dst": "MOD-OSFP",
+      "type": "CONTAINS",
+      "label": "该设备端口上的模块封装类型",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-169",
+      "src": "DEV-RTR-EDGE-02",
+      "dst": "CFG-APPSEL",
+      "type": "CONFIGURES",
+      "label": "设备端口的 Application 选择",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-170",
+      "src": "DEV-LAB-TB-01",
+      "dst": "MOD-QSFPDD",
+      "type": "CONTAINS",
+      "label": "该设备端口上的模块封装类型",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-171",
+      "src": "DEV-LAB-TB-01",
+      "dst": "CFG-APPSEL",
+      "type": "CONFIGURES",
+      "label": "设备端口的 Application 选择",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-172",
+      "src": "DEV-SW-800G-01",
+      "dst": "MOD-OSFP",
+      "type": "CONTAINS",
+      "label": "该设备端口上的模块封装类型",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-173",
+      "src": "DEV-SW-800G-01",
+      "dst": "CFG-APPSEL",
+      "type": "CONFIGURES",
+      "label": "设备端口的 Application 选择",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-174",
+      "src": "CFG-APPSEL",
+      "dst": "IF-DATAPATH",
+      "type": "CONFIGURES",
+      "label": "配置项configures目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-175",
+      "src": "CFG-DPINIT",
+      "dst": "IF-DATAPATH",
+      "type": "CONFIGURES",
+      "label": "配置项configures目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-176",
+      "src": "CFG-TXDIS",
+      "dst": "IF-LANE",
+      "type": "CONFIGURES",
+      "label": "配置项configures目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-177",
+      "src": "CFG-TXEQ",
+      "dst": "IF-CONTROLSET",
+      "type": "CONFIGURES",
+      "label": "配置项configures目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-178",
+      "src": "CFG-CDR",
+      "dst": "IF-CONTROLSET",
+      "type": "CONFIGURES",
+      "label": "配置项configures目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-179",
+      "src": "CFG-LPMODE",
+      "dst": "IF-TWI",
+      "type": "CONFIGURES",
+      "label": "配置项configures目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-180",
+      "src": "CFG-BANKSEL",
+      "dst": "IF-BANKPAGE",
+      "type": "CONFIGURES",
+      "label": "配置项configures目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-181",
+      "src": "CFG-PAGESEL",
+      "dst": "IF-BANKPAGE",
+      "type": "CONFIGURES",
+      "label": "配置项configures目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-182",
+      "src": "CFG-THRESH",
+      "dst": "CON-DDM",
+      "type": "CONSTRAINS",
+      "label": "配置项constrains目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-183",
+      "src": "CFG-VDMFREEZE",
+      "dst": "IF-VDM",
+      "type": "CONFIGURES",
+      "label": "配置项configures目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-184",
+      "src": "CFG-LOOPBACK",
+      "dst": "IF-LANE",
+      "type": "CONFIGURES",
+      "label": "配置项configures目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-185",
+      "src": "CFG-PRBS",
+      "dst": "IF-LANE",
+      "type": "CONFIGURES",
+      "label": "配置项configures目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-186",
+      "src": "CFG-LASER",
+      "dst": "IF-MEDIA",
+      "type": "CONFIGURES",
+      "label": "配置项configures目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-187",
+      "src": "CFG-DDM",
+      "dst": "CON-DDM",
+      "type": "MONITORS",
+      "label": "配置项monitors目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-188",
+      "src": "CFG-MSTATE",
+      "dst": "CON-MSM",
+      "type": "MONITORS",
+      "label": "配置项monitors目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-189",
+      "src": "CFG-DPSTATE",
+      "dst": "CON-DPSM",
+      "type": "MONITORS",
+      "label": "配置项monitors目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-190",
+      "src": "CFG-CFGERR",
+      "dst": "CON-DPSM",
+      "type": "MONITORS",
+      "label": "配置项monitors目标",
+      "source_ids": [
+        "S-OIF-052",
+        "S-INTERNAL"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-191",
+      "src": "OSS-SONIC-PC",
+      "dst": "CL-APSEL",
+      "type": "IMPLEMENTS",
+      "label": "CmisApi.set_application / get_application",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-192",
+      "src": "OSS-SONIC-PC",
+      "dst": "CL-6-3-3",
+      "type": "IMPLEMENTS",
+      "label": "CMIS application initialization 与 DPState 轮询",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-193",
+      "src": "OSS-SONIC-PC",
+      "dst": "CL-8-9",
+      "type": "IMPLEMENTS",
+      "label": "SI 参数 stage_* / CDR / TX-RX 控制",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-194",
+      "src": "OSS-SONIC-PC",
+      "dst": "CL-8-4",
+      "type": "IMPLEMENTS",
+      "label": "XCVR_INFO 字段解析与 Application Descriptor",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-195",
+      "src": "OSS-SONIC-PD",
+      "dst": "CL-6-3-3",
+      "type": "IMPLEMENTS",
+      "label": "xcvrd CMIS 初始化状态机",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-196",
+      "src": "OSS-SONIC-UTIL",
+      "dst": "CL-8-4",
+      "type": "IMPLEMENTS",
+      "label": "sfputil show eeprom --dom",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-197",
+      "src": "OSS-FBOSS",
+      "dst": "CL-8-4",
+      "type": "IMPLEMENTS",
+      "label": "qsfp_service 解析 CMIS EEPROM",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-198",
+      "src": "OSS-LIBSFFCMIS",
+      "dst": "CL-8-9",
+      "type": "IMPLEMENTS",
+      "label": "cmis-datapath.c：Page 10h/11h 控制与状态",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-199",
+      "src": "OSS-LIBSFFCMIS",
+      "dst": "CL-VDM",
+      "type": "IMPLEMENTS",
+      "label": "cmis-vdm.c：Pages 20h-2Fh 监视/阈值/Freeze",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-200",
+      "src": "OSS-LIBSFFCMIS",
+      "dst": "CL-CDB",
+      "type": "IMPLEMENTS",
+      "label": "cmis-cdb.c：Page 9Fh 命令与固件管理",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-201",
+      "src": "OSS-LIBSFFCMIS",
+      "dst": "CL-DIAG",
+      "type": "IMPLEMENTS",
+      "label": "cmis-diag.c：PRBS / Loopback / BER",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-202",
+      "src": "OSS-LIBSFFCMIS",
+      "dst": "CL-CCMIS-PM",
+      "type": "IMPLEMENTS",
+      "label": "cmis-coherent.c：Pages 34h/35h 与 FEC/Flag",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-203",
+      "src": "OSS-LIBSFFCMIS",
+      "dst": "CL-TUNABLE",
+      "type": "IMPLEMENTS",
+      "label": "cmis-tunable.c：Pages 04h/12h",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-204",
+      "src": "OSS-ETHTOOL",
+      "dst": "CL-8-4",
+      "type": "IMPLEMENTS",
+      "label": "cmis.c / qsfp.c EEPROM 解析",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-205",
+      "src": "OSS-ETHTOOL",
+      "dst": "CL-8-4-4",
+      "type": "IMPLEMENTS",
+      "label": "CMIS_MAX_BANKS 定义与 Table 8-40 引用",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-206",
+      "src": "OSS-LINUX",
+      "dst": "IF-TWI",
+      "type": "IMPLEMENTS",
+      "label": "I2C 设备层访问",
+      "source_ids": [
+        "S-GH-SONIC-PC",
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL",
+        "S-GH-FBOSS"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-207",
+      "src": "OSS-SONIC-PC",
+      "dst": "STD-CMIS-052",
+      "type": "REFERENCES",
+      "label": "实现引用 CMIS 主规范",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-208",
+      "src": "OSS-FBOSS",
+      "dst": "STD-CMIS-052",
+      "type": "REFERENCES",
+      "label": "实现引用 CMIS 主规范",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-209",
+      "src": "OSS-LIBSFFCMIS",
+      "dst": "STD-CMIS-052",
+      "type": "REFERENCES",
+      "label": "实现引用 CMIS 主规范",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-210",
+      "src": "OSS-ETHTOOL",
+      "dst": "STD-CMIS-052",
+      "type": "REFERENCES",
+      "label": "实现引用 CMIS 主规范",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-211",
+      "src": "OSS-LIBSFFCMIS",
+      "dst": "STD-CMIS-053",
+      "type": "REFERENCES",
+      "label": "声明支持 OIF-CMIS-05.3",
+      "source_ids": [
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-212",
+      "src": "OSS-LIBSFFCMIS",
+      "dst": "STD-CCMIS-013",
+      "type": "REFERENCES",
+      "label": "声明支持 C-CMIS-01.3",
+      "source_ids": [
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-213",
+      "src": "OSS-LIBSFFCMIS",
+      "dst": "OSS-ETHTOOL",
+      "type": "DERIVES_FROM",
+      "label": "由 ethtool cmis.c 引导派生",
+      "source_ids": [
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-214",
+      "src": "ORG-SONIC",
+      "dst": "OSS-SONIC-PC",
+      "type": "DEFINES",
+      "label": "SONiC 社区维护平台公共库",
+      "source_ids": [
+        "S-GH-SONIC-PC"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-215",
+      "src": "ORG-META",
+      "dst": "OSS-FBOSS",
+      "type": "DEFINES",
+      "label": "Meta 维护 FBOSS",
+      "source_ids": [
+        "S-GH-FBOSS"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-216",
+      "src": "SVC-CMIS-DASH",
+      "dst": "OSS-TABLER",
+      "type": "INTEGRATES",
+      "label": "使用 vendored Tabler 1.7.3 (MIT) 作为 dashboard 框架",
+      "source_ids": [
+        "S-GH-TABLER",
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-217",
+      "src": "SVC-CMIS-DASH",
+      "dst": "OSS-TABLER-ICONS",
+      "type": "INTEGRATES",
+      "label": "使用 Tabler Icons 图标字体",
+      "source_ids": [
+        "S-GH-TABLER-ICONS"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-218",
+      "src": "SVC-CMIS-DASH",
+      "dst": "STD-CMIS-052",
+      "type": "REFERENCES",
+      "label": "字段/条款/来源说明引用 OIF CMIS 5.2",
+      "source_ids": [
+        "S-OIF-052"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-219",
+      "src": "SVC-CMIS-DASH",
+      "dst": "CON-MIRROR",
+      "type": "IMPLEMENTS",
+      "label": "配置写入采用本地镜像模式",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-220",
+      "src": "SVC-CMIS-DASH",
+      "dst": "CFG-APPSEL",
+      "type": "CONFIGURES",
+      "label": "提供 AppSel 查看/编辑/校验",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-221",
+      "src": "SVC-CMIS-DASH",
+      "dst": "CFG-THRESH",
+      "type": "CONFIGURES",
+      "label": "提供阈值查看/编辑/校验",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-222",
+      "src": "SVC-CMIS-DASH",
+      "dst": "CON-DDM",
+      "type": "MONITORS",
+      "label": "展示 DDM 监测量",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-223",
+      "src": "SVC-CMIS-DASH",
+      "dst": "STD-CMIS-053",
+      "type": "REFERENCES",
+      "label": "CMIS 分区与 CDB 命令目录依据 OIF-CMIS-05.3",
+      "source_ids": [
+        "S-OIF-053"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-224",
+      "src": "SVC-CMIS-DASH",
+      "dst": "STD-CMIS-054",
+      "type": "REFERENCES",
+      "label": "最新 CMIS 5.4 作为版本对齐目标",
+      "source_ids": [
+        "S-OIF-054"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-225",
+      "src": "SVC-CMIS-DASH",
+      "dst": "IF-SSH-I2C",
+      "type": "IMPLEMENTS",
+      "label": "实现测试 Server -> SSH -> Switch -> I2C 接入适配器",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-226",
+      "src": "SVC-CMIS-DASH",
+      "dst": "IF-REST-API",
+      "type": "IMPLEMENTS",
+      "label": "实现目标设备 RESTful API 接入适配器",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-227",
+      "src": "SVC-CMIS-DASH",
+      "dst": "IF-MIRROR",
+      "type": "IMPLEMENTS",
+      "label": "默认离线 SQLite 镜像适配器",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-228",
+      "src": "SVC-CMIS-DASH",
+      "dst": "CON-PAGE-GOVERNANCE",
+      "type": "IMPLEMENTS",
+      "label": "按页级委派规则阻止 Lower Memory 与 CDB 页的远程写",
+      "source_ids": [
+        "S-IETF-CMIS-YANG"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-229",
+      "src": "STD-CMIS-053",
+      "dst": "SEC-LOW-PAGE",
+      "type": "DEFINES",
+      "label": "规范定义该分区及其寄存器组织",
+      "source_ids": [
+        "S-OIF-053",
+        "S-OIF-054"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-230",
+      "src": "STD-CMIS-053",
+      "dst": "SEC-DOM",
+      "type": "DEFINES",
+      "label": "规范定义该分区及其寄存器组织",
+      "source_ids": [
+        "S-OIF-053",
+        "S-OIF-054"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-231",
+      "src": "STD-CMIS-053",
+      "dst": "SEC-CDB",
+      "type": "DEFINES",
+      "label": "规范定义该分区及其寄存器组织",
+      "source_ids": [
+        "S-OIF-053",
+        "S-OIF-054"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-232",
+      "src": "STD-CMIS-053",
+      "dst": "SEC-CONTROL",
+      "type": "DEFINES",
+      "label": "规范定义该分区及其寄存器组织",
+      "source_ids": [
+        "S-OIF-053",
+        "S-OIF-054"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-233",
+      "src": "STD-CMIS-054",
+      "dst": "SEC-LOW-PAGE",
+      "type": "DEFINES",
+      "label": "规范定义该分区及其寄存器组织",
+      "source_ids": [
+        "S-OIF-053",
+        "S-OIF-054"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-234",
+      "src": "STD-CMIS-054",
+      "dst": "SEC-DOM",
+      "type": "DEFINES",
+      "label": "规范定义该分区及其寄存器组织",
+      "source_ids": [
+        "S-OIF-053",
+        "S-OIF-054"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-235",
+      "src": "STD-CMIS-054",
+      "dst": "SEC-CDB",
+      "type": "DEFINES",
+      "label": "规范定义该分区及其寄存器组织",
+      "source_ids": [
+        "S-OIF-053",
+        "S-OIF-054"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-236",
+      "src": "STD-CMIS-054",
+      "dst": "SEC-CONTROL",
+      "type": "DEFINES",
+      "label": "规范定义该分区及其寄存器组织",
+      "source_ids": [
+        "S-OIF-053",
+        "S-OIF-054"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-237",
+      "src": "SEC-LOW-PAGE",
+      "dst": "IF-LOWER",
+      "type": "CONTAINS",
+      "label": "低页包含常驻 Lower Memory",
+      "source_ids": [
+        "S-OIF-053",
+        "S-ART-VITEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-238",
+      "src": "SEC-LOW-PAGE",
+      "dst": "IF-UPPER",
+      "type": "CONTAINS",
+      "label": "低页包含 Upper Page 00h 静态识别区",
+      "source_ids": [
+        "S-OIF-053",
+        "S-ART-VITEX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-239",
+      "src": "SEC-LOW-PAGE",
+      "dst": "IF-BANKPAGE",
+      "type": "CONTAINS",
+      "label": "Bank/Page 选择字节位于 Lower 126/127",
+      "source_ids": [
+        "S-ART-MAPYOURTECH"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-240",
+      "src": "SEC-DOM",
+      "dst": "CON-DDM",
+      "type": "CONTAINS",
+      "label": "DOM 分区承载监测量与阈值",
+      "source_ids": [
+        "S-OIF-053",
+        "S-IETF-CMIS-YANG"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-241",
+      "src": "SEC-DOM",
+      "dst": "IF-VDM",
+      "type": "CONTAINS",
+      "label": "VDM 页 20h-2Fh 属于监测分区",
+      "source_ids": [
+        "S-OIF-053"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-242",
+      "src": "SEC-CDB",
+      "dst": "IF-CDB-FRAME",
+      "type": "CONTAINS",
+      "label": "Page 9Fh 命令帧",
+      "source_ids": [
+        "S-OIF-053",
+        "S-GH-LINUX-CDB"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-243",
+      "src": "SEC-CDB",
+      "dst": "IF-CDB-EPL",
+      "type": "CONTAINS",
+      "label": "Pages A0h-AFh 扩展载荷",
+      "source_ids": [
+        "S-OIF-053",
+        "S-GH-LINUX-CDB"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-244",
+      "src": "SEC-CDB",
+      "dst": "IF-CDB",
+      "type": "CONTAINS",
+      "label": "CDB 消息接口",
+      "source_ids": [
+        "S-OIF-053"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-245",
+      "src": "SEC-CONTROL",
+      "dst": "IF-DATAPATH",
+      "type": "CONTAINS",
+      "label": "Page 10h 数据通路控制",
+      "source_ids": [
+        "S-OIF-053"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-246",
+      "src": "SEC-CONTROL",
+      "dst": "IF-LANE",
+      "type": "CONTAINS",
+      "label": "诊断与通道控制",
+      "source_ids": [
+        "S-OIF-053"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-247",
+      "src": "CON-PAGE-GOVERNANCE",
+      "dst": "SEC-LOW-PAGE",
+      "type": "CONSTRAINS",
+      "label": "Lower Memory 远程写 MUST NOT permitted",
+      "source_ids": [
+        "S-IETF-CMIS-YANG"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-248",
+      "src": "CON-PAGE-GOVERNANCE",
+      "dst": "SEC-CDB",
+      "type": "CONSTRAINS",
+      "label": "CDB 页 9Fh-AFh MUST NOT be in remote-write-allowed-pages",
+      "source_ids": [
+        "S-IETF-CMIS-YANG"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-249",
+      "src": "IF-SSH-I2C",
+      "dst": "IF-TWI",
+      "type": "IMPLEMENTS",
+      "label": "Mode A 经交换机 I2C 总线访问模块 EEPROM",
+      "source_ids": [
+        "S-GH-LINUX"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-250",
+      "src": "IF-SSH-I2C",
+      "dst": "MOD-QSFPDD",
+      "type": "REFERENCES",
+      "label": "目标为 CMIS 可插拔光模块",
+      "source_ids": [
+        "S-OIF-053"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-251",
+      "src": "IF-REST-API",
+      "dst": "CON-PAGE-GOVERNANCE",
+      "type": "CONSTRAINS",
+      "label": "Mode B 遵循页级读写委派",
+      "source_ids": [
+        "S-IETF-CMIS-YANG"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-252",
+      "src": "IF-REST-API",
+      "dst": "IF-CDB",
+      "type": "REFERENCES",
+      "label": "REST 模式默认将 CDB 视为只读",
+      "source_ids": [
+        "S-IETF-CMIS-YANG"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-253",
+      "src": "OSS-LIBSFFCMIS",
+      "dst": "SEC-CDB",
+      "type": "IMPLEMENTS",
+      "label": "cmis-cdb.c 实现 Page 9Fh 命令",
+      "source_ids": [
+        "S-GH-LIBSFFCMIS"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-254",
+      "src": "OSS-LINUX",
+      "dst": "IF-CDB-FRAME",
+      "type": "IMPLEMENTS",
+      "label": "内核 net/ethtool/cmis_cdb.c 结构体印证命令帧字段宽度",
+      "source_ids": [
+        "S-GH-LINUX-CDB"
+      ],
+      "confidence": "partial",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-255",
+      "src": "OSS-ADMINLTE",
+      "dst": "OSS-TABLER",
+      "type": "REFERENCES",
+      "label": "选型对比候选（未采用）",
+      "source_ids": [
+        "S-GH-API-SNAPSHOT"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-256",
+      "src": "OSS-DASHY",
+      "dst": "OSS-TABLER",
+      "type": "REFERENCES",
+      "label": "选型对比候选（未采用）",
+      "source_ids": [
+        "S-GH-API-SNAPSHOT"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    },
+    {
+      "relation_id": "REL-257",
+      "src": "OSS-GRAFANA",
+      "dst": "OSS-TABLER",
+      "type": "REFERENCES",
+      "label": "选型对比候选（未采用）",
+      "source_ids": [
+        "S-GH-API-SNAPSHOT"
+      ],
+      "confidence": "confirmed",
+      "status": "active",
+      "attrs": {}
+    }
+  ],
+  "links": [
+    {
+      "cmis_ref": "ModuleIdentifier",
+      "entity_id": "CFG-IDENT",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "ModuleIdentifier",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "ModuleIdentifier",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "CmisRevision",
+      "entity_id": "CFG-REV",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "CmisRevision",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "CmisRevision",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "ModuleState",
+      "entity_id": "CFG-MSTATE",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "ModuleState",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "ModuleState",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "ModuleFlags",
+      "entity_id": "CFG-FLAGS",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "ModuleFlags",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "ModuleFlags",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "LaneFlagSummary",
+      "entity_id": "CFG-FLAGS",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "LaneFlagSummary",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "LaneFlagSummary",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "VendorName",
+      "entity_id": "CFG-VENDOR",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "VendorName",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "VendorName",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "VendorOUI",
+      "entity_id": "CFG-VENDOR",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "VendorOUI",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "VendorOUI",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "VendorPartNumber",
+      "entity_id": "CFG-PN",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "VendorPartNumber",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "VendorPartNumber",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "VendorSerialNumber",
+      "entity_id": "CFG-SN",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "VendorSerialNumber",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "VendorSerialNumber",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "DateCode",
+      "entity_id": "CFG-SN",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "DateCode",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "DateCode",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "CcBase",
+      "entity_id": "CFG-IDENT",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "CcBase",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "CcBase",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "CcExt",
+      "entity_id": "CFG-IDENT",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "CcExt",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "CcExt",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "ModuleTypeEncoding",
+      "entity_id": "CFG-MTYPE",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "ModuleTypeEncoding",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "ModuleTypeEncoding",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "HostInterfaceId",
+      "entity_id": "CFG-HOSTIF",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "HostInterfaceId",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "HostInterfaceId",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "MediaInterfaceId",
+      "entity_id": "CFG-MEDIAIF",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "MediaInterfaceId",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "MediaInterfaceId",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "HostMediaLaneCount",
+      "entity_id": "CFG-LANECNT",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "HostMediaLaneCount",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "HostMediaLaneCount",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "HostLaneAssignmentOptions",
+      "entity_id": "CFG-LANEASSIGN",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "HostLaneAssignmentOptions",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "HostLaneAssignmentOptions",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "ModuleGlobalControls",
+      "entity_id": "CFG-LPMODE",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "ModuleGlobalControls",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "ModuleGlobalControls",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "ModuleLevelFlagMasks",
+      "entity_id": "CFG-FLAGS",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "ModuleLevelFlagMasks",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "ModuleLevelFlagMasks",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "ModuleFirmwareVersion",
+      "entity_id": "CFG-CDB",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "ModuleFirmwareVersion",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "ModuleFirmwareVersion",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "ModuleFirmwareVersion",
+      "entity_id": "OSS-ETHTOOL",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "InactiveFirmwareVersion",
+      "entity_id": "CFG-CDB",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "InactiveFirmwareVersion",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "InactiveFirmwareVersion",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "InactiveFirmwareVersion",
+      "entity_id": "OSS-ETHTOOL",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "CdbStatusLower",
+      "entity_id": "CFG-CDB",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "CdbStatusLower",
+      "entity_id": "SEC-CDB",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "CdbStatusLower",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "CdbStatusLower",
+      "entity_id": "OSS-ETHTOOL",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "ApplicationAdvertisingLegacy",
+      "entity_id": "CFG-APPSEL",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "ApplicationAdvertisingLegacy",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "ApplicationAdvertisingLegacy",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "BankSelect",
+      "entity_id": "CFG-BANKSEL",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "BankSelect",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "BankSelect",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "BankSelect",
+      "entity_id": "OSS-ETHTOOL",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "PageSelect",
+      "entity_id": "CFG-PAGESEL",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "PageSelect",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "PageSelect",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "ModuleLevelMonitors",
+      "entity_id": "CFG-DDM",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "ModuleLevelMonitors",
+      "entity_id": "SEC-DOM",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "ModuleLevelMonitors",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "ModuleTemperature",
+      "entity_id": "CFG-DDM",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "ModuleTemperature",
+      "entity_id": "SEC-DOM",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "ModuleTemperature",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "ModuleTemperature",
+      "entity_id": "OSS-LIBSFFCMIS",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "ModuleVoltage",
+      "entity_id": "CFG-DDM",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "ModuleVoltage",
+      "entity_id": "SEC-DOM",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "ModuleVoltage",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "ModuleVoltage",
+      "entity_id": "OSS-LIBSFFCMIS",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "TxPowerDbm",
+      "entity_id": "CFG-DDM",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "TxPowerDbm",
+      "entity_id": "SEC-DOM",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "TxPowerDbm",
+      "entity_id": "CL-VDM",
+      "relation": "defined_by",
+      "note": "字段关联的规范条款（依据 spec_ref 推断，条款号待复核）"
+    },
+    {
+      "cmis_ref": "TxPowerDbm",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "TxPowerDbm",
+      "entity_id": "OSS-LIBSFFCMIS",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "RxPowerDbm",
+      "entity_id": "CFG-DDM",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "RxPowerDbm",
+      "entity_id": "SEC-DOM",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "RxPowerDbm",
+      "entity_id": "CL-VDM",
+      "relation": "defined_by",
+      "note": "字段关联的规范条款（依据 spec_ref 推断，条款号待复核）"
+    },
+    {
+      "cmis_ref": "RxPowerDbm",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "RxPowerDbm",
+      "entity_id": "OSS-LIBSFFCMIS",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "TxBiasLane1",
+      "entity_id": "CFG-DDM",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "TxBiasLane1",
+      "entity_id": "SEC-DOM",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "TxBiasLane1",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "TxBiasLane1",
+      "entity_id": "OSS-LIBSFFCMIS",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "RxLosLane1",
+      "entity_id": "CFG-DDM",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "RxLosLane1",
+      "entity_id": "SEC-DOM",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "RxLosLane1",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "TempHighAlarmThreshold",
+      "entity_id": "CFG-THRESH",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "TempHighAlarmThreshold",
+      "entity_id": "SEC-DOM",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "TempHighAlarmThreshold",
+      "entity_id": "CL-THRESH",
+      "relation": "defined_by",
+      "note": "字段关联的规范条款（依据 spec_ref 推断，条款号待复核）"
+    },
+    {
+      "cmis_ref": "TempHighAlarmThreshold",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "TempHighAlarmThreshold",
+      "entity_id": "OSS-LIBSFFCMIS",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "TempHighWarningThreshold",
+      "entity_id": "CFG-THRESH",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "TempHighWarningThreshold",
+      "entity_id": "SEC-DOM",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "TempHighWarningThreshold",
+      "entity_id": "CL-THRESH",
+      "relation": "defined_by",
+      "note": "字段关联的规范条款（依据 spec_ref 推断，条款号待复核）"
+    },
+    {
+      "cmis_ref": "TempHighWarningThreshold",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "TempHighWarningThreshold",
+      "entity_id": "OSS-LIBSFFCMIS",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "TempLowWarningThreshold",
+      "entity_id": "CFG-THRESH",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "TempLowWarningThreshold",
+      "entity_id": "SEC-DOM",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "TempLowWarningThreshold",
+      "entity_id": "CL-THRESH",
+      "relation": "defined_by",
+      "note": "字段关联的规范条款（依据 spec_ref 推断，条款号待复核）"
+    },
+    {
+      "cmis_ref": "TempLowWarningThreshold",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "VccHighAlarmThreshold",
+      "entity_id": "CFG-THRESH",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "VccHighAlarmThreshold",
+      "entity_id": "SEC-DOM",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "VccHighAlarmThreshold",
+      "entity_id": "CL-THRESH",
+      "relation": "defined_by",
+      "note": "字段关联的规范条款（依据 spec_ref 推断，条款号待复核）"
+    },
+    {
+      "cmis_ref": "VccHighAlarmThreshold",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "VdmFreeze",
+      "entity_id": "CFG-VDMFREEZE",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "VdmFreeze",
+      "entity_id": "SEC-DOM",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "VdmFreeze",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "VdmFreeze",
+      "entity_id": "OSS-LIBSFFCMIS",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "CdbCmdId",
+      "entity_id": "CFG-CDB",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "CdbCmdId",
+      "entity_id": "SEC-CDB",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "CdbCmdId",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "CdbCmdId",
+      "entity_id": "OSS-ETHTOOL",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "CdbEplLength",
+      "entity_id": "CFG-CDB",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "CdbEplLength",
+      "entity_id": "SEC-CDB",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "CdbEplLength",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "CdbEplLength",
+      "entity_id": "OSS-ETHTOOL",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "CdbLplLength",
+      "entity_id": "CFG-CDB",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "CdbLplLength",
+      "entity_id": "SEC-CDB",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "CdbLplLength",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "CdbLplLength",
+      "entity_id": "OSS-ETHTOOL",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "CdbCheckCode",
+      "entity_id": "CFG-CDB",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "CdbCheckCode",
+      "entity_id": "SEC-CDB",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "CdbCheckCode",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "CdbCheckCode",
+      "entity_id": "OSS-ETHTOOL",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "CdbLocalPayload",
+      "entity_id": "CFG-CDB",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "CdbLocalPayload",
+      "entity_id": "SEC-CDB",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "CdbLocalPayload",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "CdbLocalPayload",
+      "entity_id": "OSS-ETHTOOL",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "CdbExtendedPayload",
+      "entity_id": "CFG-CDB",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "CdbExtendedPayload",
+      "entity_id": "SEC-CDB",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "CdbExtendedPayload",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "CdbExtendedPayload",
+      "entity_id": "OSS-ETHTOOL",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "CdbPasswordEntry",
+      "entity_id": "CFG-CDB",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "CdbPasswordEntry",
+      "entity_id": "SEC-CDB",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "CdbPasswordEntry",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "CdbPasswordEntry",
+      "entity_id": "OSS-ETHTOOL",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "CdbMaxCompletionTime",
+      "entity_id": "CFG-CDB",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "CdbMaxCompletionTime",
+      "entity_id": "SEC-CDB",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "CdbMaxCompletionTime",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "CdbMaxCompletionTime",
+      "entity_id": "OSS-ETHTOOL",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "CdbInstance",
+      "entity_id": "CFG-CDB",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "CdbInstance",
+      "entity_id": "SEC-CDB",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "CdbInstance",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "DpState",
+      "entity_id": "CFG-DPSTATE",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "DpState",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "DpState",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "ConfigErrorCode",
+      "entity_id": "CFG-CFGERR",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "ConfigErrorCode",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "ConfigErrorCode",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "ConfigErrorCode",
+      "entity_id": "OSS-SONIC-PC",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "AppSelLane1",
+      "entity_id": "CFG-APPSEL",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "AppSelLane1",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "AppSelLane1",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "AppSelLane1",
+      "entity_id": "OSS-SONIC-PC",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "AppSelLane2",
+      "entity_id": "CFG-APPSEL",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "AppSelLane2",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "AppSelLane2",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "AppSelLane2",
+      "entity_id": "OSS-SONIC-PC",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "AppSelLane3",
+      "entity_id": "CFG-APPSEL",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "AppSelLane3",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "AppSelLane3",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "AppSelLane3",
+      "entity_id": "OSS-SONIC-PC",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "AppSelLane4",
+      "entity_id": "CFG-APPSEL",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "AppSelLane4",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "AppSelLane4",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "AppSelLane4",
+      "entity_id": "OSS-SONIC-PC",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "LPMode",
+      "entity_id": "CFG-LPMODE",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "LPMode",
+      "entity_id": "SEC-LOW-PAGE",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "LPMode",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "LPMode",
+      "entity_id": "OSS-SONIC-PC",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "TxDisable",
+      "entity_id": "CFG-TXDIS",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "TxDisable",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "TxDisable",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "TxDisable",
+      "entity_id": "OSS-LIBSFFCMIS",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "DataPathInit",
+      "entity_id": "CFG-DPINIT",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "DataPathInit",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "DataPathInit",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "DataPathInit",
+      "entity_id": "OSS-SONIC-PC",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "TxEqPreCursor",
+      "entity_id": "CFG-TXEQ",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "TxEqPreCursor",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "TxEqPreCursor",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "TxEqPreCursor",
+      "entity_id": "OSS-SONIC-PC",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "TxEqPostCursor",
+      "entity_id": "CFG-TXEQ",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "TxEqPostCursor",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "TxEqPostCursor",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "TxEqPostCursor",
+      "entity_id": "OSS-SONIC-PC",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "TxAmplitude",
+      "entity_id": "CFG-TXEQ",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "TxAmplitude",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "TxAmplitude",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "TxAmplitude",
+      "entity_id": "OSS-SONIC-PC",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "CdrEnableTx",
+      "entity_id": "CFG-CDR",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "CdrEnableTx",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "CdrEnableTx",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "CdrEnableTx",
+      "entity_id": "OSS-SONIC-PC",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "CdrEnableRx",
+      "entity_id": "CFG-CDR",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "CdrEnableRx",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "CdrEnableRx",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "CdrEnableRx",
+      "entity_id": "OSS-SONIC-PC",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "Loopback",
+      "entity_id": "CFG-LOOPBACK",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "Loopback",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "Loopback",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "Loopback",
+      "entity_id": "OSS-LIBSFFCMIS",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "PrbsGenerator",
+      "entity_id": "CFG-PRBS",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "PrbsGenerator",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "PrbsGenerator",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "PrbsGenerator",
+      "entity_id": "OSS-LIBSFFCMIS",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "PrbsChecker",
+      "entity_id": "CFG-PRBS",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "PrbsChecker",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "PrbsChecker",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "PrbsChecker",
+      "entity_id": "OSS-LIBSFFCMIS",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "LaserFrequency",
+      "entity_id": "CFG-LASER",
+      "relation": "config_item",
+      "note": "字段对应的图谱配置项实体"
+    },
+    {
+      "cmis_ref": "LaserFrequency",
+      "entity_id": "SEC-CONTROL",
+      "relation": "belongs_to_section",
+      "note": "字段归属的 CMIS 规范分区"
+    },
+    {
+      "cmis_ref": "LaserFrequency",
+      "entity_id": "CL-CCMIS-PM",
+      "relation": "defined_by",
+      "note": "字段关联的规范条款（依据 spec_ref 推断，条款号待复核）"
+    },
+    {
+      "cmis_ref": "LaserFrequency",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "字段定义引用 CMIS 主规范"
+    },
+    {
+      "cmis_ref": "LaserFrequency",
+      "entity_id": "OSS-LIBSFFCMIS",
+      "relation": "implemented_by",
+      "note": "该字段有对应开源实现"
+    },
+    {
+      "cmis_ref": "SW-CORE-01",
+      "entity_id": "DEV-SW-CORE-01",
+      "relation": "device_entity",
+      "note": "设备实体（内部合成数据）"
+    },
+    {
+      "cmis_ref": "SW-CORE-01",
+      "entity_id": "MOD-QSFPDD",
+      "relation": "module_type",
+      "note": "端口模块封装类型"
+    },
+    {
+      "cmis_ref": "SW-CORE-01",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "设备管理接口遵循 CMIS"
+    },
+    {
+      "cmis_ref": "SW-CORE-01",
+      "entity_id": "IF-SSH-I2C",
+      "relation": "accessed_via",
+      "note": "该设备演示数据所标注的接入方式"
+    },
+    {
+      "cmis_ref": "SW-CORE-02",
+      "entity_id": "DEV-SW-CORE-02",
+      "relation": "device_entity",
+      "note": "设备实体（内部合成数据）"
+    },
+    {
+      "cmis_ref": "SW-CORE-02",
+      "entity_id": "MOD-QSFPDD",
+      "relation": "module_type",
+      "note": "端口模块封装类型"
+    },
+    {
+      "cmis_ref": "SW-CORE-02",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "设备管理接口遵循 CMIS"
+    },
+    {
+      "cmis_ref": "SW-CORE-02",
+      "entity_id": "IF-SSH-I2C",
+      "relation": "accessed_via",
+      "note": "该设备演示数据所标注的接入方式"
+    },
+    {
+      "cmis_ref": "SW-AGG-11",
+      "entity_id": "DEV-SW-AGG-11",
+      "relation": "device_entity",
+      "note": "设备实体（内部合成数据）"
+    },
+    {
+      "cmis_ref": "SW-AGG-11",
+      "entity_id": "MOD-OSFP",
+      "relation": "module_type",
+      "note": "端口模块封装类型"
+    },
+    {
+      "cmis_ref": "SW-AGG-11",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "设备管理接口遵循 CMIS"
+    },
+    {
+      "cmis_ref": "SW-AGG-11",
+      "entity_id": "IF-REST-API",
+      "relation": "accessed_via",
+      "note": "该设备演示数据所标注的接入方式"
+    },
+    {
+      "cmis_ref": "SW-AGG-12",
+      "entity_id": "DEV-SW-AGG-12",
+      "relation": "device_entity",
+      "note": "设备实体（内部合成数据）"
+    },
+    {
+      "cmis_ref": "SW-AGG-12",
+      "entity_id": "MOD-QSFP112",
+      "relation": "module_type",
+      "note": "端口模块封装类型"
+    },
+    {
+      "cmis_ref": "SW-AGG-12",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "设备管理接口遵循 CMIS"
+    },
+    {
+      "cmis_ref": "SW-AGG-12",
+      "entity_id": "IF-REST-API",
+      "relation": "accessed_via",
+      "note": "该设备演示数据所标注的接入方式"
+    },
+    {
+      "cmis_ref": "RTR-EDGE-01",
+      "entity_id": "DEV-RTR-EDGE-01",
+      "relation": "device_entity",
+      "note": "设备实体（内部合成数据）"
+    },
+    {
+      "cmis_ref": "RTR-EDGE-01",
+      "entity_id": "MOD-QSFPDD",
+      "relation": "module_type",
+      "note": "端口模块封装类型"
+    },
+    {
+      "cmis_ref": "RTR-EDGE-01",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "设备管理接口遵循 CMIS"
+    },
+    {
+      "cmis_ref": "RTR-EDGE-01",
+      "entity_id": "IF-REST-API",
+      "relation": "accessed_via",
+      "note": "该设备演示数据所标注的接入方式"
+    },
+    {
+      "cmis_ref": "RTR-EDGE-02",
+      "entity_id": "DEV-RTR-EDGE-02",
+      "relation": "device_entity",
+      "note": "设备实体（内部合成数据）"
+    },
+    {
+      "cmis_ref": "RTR-EDGE-02",
+      "entity_id": "MOD-OSFP",
+      "relation": "module_type",
+      "note": "端口模块封装类型"
+    },
+    {
+      "cmis_ref": "RTR-EDGE-02",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "设备管理接口遵循 CMIS"
+    },
+    {
+      "cmis_ref": "RTR-EDGE-02",
+      "entity_id": "IF-REST-API",
+      "relation": "accessed_via",
+      "note": "该设备演示数据所标注的接入方式"
+    },
+    {
+      "cmis_ref": "LAB-TB-01",
+      "entity_id": "DEV-LAB-TB-01",
+      "relation": "device_entity",
+      "note": "设备实体（内部合成数据）"
+    },
+    {
+      "cmis_ref": "LAB-TB-01",
+      "entity_id": "MOD-QSFPDD",
+      "relation": "module_type",
+      "note": "端口模块封装类型"
+    },
+    {
+      "cmis_ref": "LAB-TB-01",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "设备管理接口遵循 CMIS"
+    },
+    {
+      "cmis_ref": "LAB-TB-01",
+      "entity_id": "IF-SSH-I2C",
+      "relation": "accessed_via",
+      "note": "该设备演示数据所标注的接入方式"
+    },
+    {
+      "cmis_ref": "SW-800G-01",
+      "entity_id": "DEV-SW-800G-01",
+      "relation": "device_entity",
+      "note": "设备实体（内部合成数据）"
+    },
+    {
+      "cmis_ref": "SW-800G-01",
+      "entity_id": "MOD-OSFP",
+      "relation": "module_type",
+      "note": "端口模块封装类型"
+    },
+    {
+      "cmis_ref": "SW-800G-01",
+      "entity_id": "STD-CMIS-052",
+      "relation": "referenced_spec",
+      "note": "设备管理接口遵循 CMIS"
+    },
+    {
+      "cmis_ref": "SW-800G-01",
+      "entity_id": "IF-REST-API",
+      "relation": "accessed_via",
+      "note": "该设备演示数据所标注的接入方式"
+    }
+  ],
+  "pending_confirmations": [
+    {
+      "pending_id": "P-01",
+      "topic": "寄存器精确地址",
+      "question": "Page 00h/01h/10h/11h/02h 各字段精确 byte offset 与 bit 位置需按模块实际 CMIS Revision 与 OIF 原文 Table 逐条核对；当前多处标为「待确认」",
+      "source_ids": [
+        "S-OIF-052",
+        "S-ART-W2W",
+        "S-ART-MAPYOURTECH"
+      ],
+      "impact": "影响字段检索与配置项写入的准确性",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-02",
+      "topic": "版本差异",
+      "question": "OIF-CMIS-05.3 / 05.4 相对 05.2 的条款增删未逐条比对，本次仅核对官方 IA 编号与发布日期",
+      "source_ids": [
+        "S-OIF-INDEX",
+        "S-OIF-053",
+        "S-OIF-054"
+      ],
+      "impact": "5.4 模块可能包含本图谱未覆盖的新字段",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-03",
+      "topic": "AppSel 编码来源",
+      "question": "0xAD 编码与 Page 01h byte 128-135 的地址来自第三方编程指南，需与 OIF-CMIS-05.2 §6.3/§8 原文核对",
+      "source_ids": [
+        "S-ART-W2W",
+        "S-OIF-052"
+      ],
+      "impact": "影响 appsel_in_advertised 跨字段校验规则",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-04",
+      "topic": "数值编码",
+      "question": "float 型阈值按 1/256 缩放 16-bit 编码推导 raw_hex，属常见实现而非逐条规范核对",
+      "source_ids": [
+        "S-GH-LIBSFFCMIS",
+        "S-GH-ETHTOOL"
+      ],
+      "impact": "raw_hex 仅供参考，不应直接用于硬件写入",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-05",
+      "topic": "开源许可：SONiC",
+      "question": "sonic-net/sonic-platform-common 的 GitHub license 返回 NOASSERTION（仓库内混合许可），集成其代码前需法务确认具体文件许可",
+      "source_ids": [
+        "S-GH-API-SNAPSHOT",
+        "S-GH-SONIC-PC"
+      ],
+      "impact": "合规风险；当前仅作资料引用，未拷贝代码",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-06",
+      "topic": "开源许可：libsffcmis",
+      "question": "README 声明 GPLv2，但 GitHub 未识别 LICENSE 文件，需确认实际授权",
+      "source_ids": [
+        "S-GH-LIBSFFCMIS",
+        "S-GH-API-SNAPSHOT"
+      ],
+      "impact": "合规风险；当前仅作资料引用",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-07",
+      "topic": "开源许可：FBOSS",
+      "question": "meta/fboss GitHub license 为 NOASSERTION，含 BSD-style LICENSE 与 PATENTS 专利授予文件，需评估",
+      "source_ids": [
+        "S-GH-FBOSS",
+        "S-GH-API-SNAPSHOT"
+      ],
+      "impact": "合规风险；当前仅作资料引用",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-08",
+      "topic": "SFF-8024 版本",
+      "question": "Host/Media Interface ID 编码表版本未确认（libsffcmis 提到 SFF-8024 Rev 4.13）",
+      "source_ids": [
+        "S-SFF-8024",
+        "S-GH-LIBSFFCMIS"
+      ],
+      "impact": "接口编码解释可能随版本变化",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-09",
+      "topic": "内部设备数据",
+      "question": "seed.json 中设备/模块/DDM 读数均为合成演示数据，非真实网元资产",
+      "source_ids": [
+        "S-INTERNAL"
+      ],
+      "impact": "接入生产前需替换数据源并做字段映射",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-10",
+      "topic": "配置下发路径",
+      "question": "本服务写入本地 SQLite 镜像（staged），未实现向硬件下发；真实下发需接入 I2C / ethtool / SONiC xcvrd 适配器",
+      "source_ids": [
+        "S-INTERNAL",
+        "S-GH-ETHTOOL",
+        "S-GH-SONIC-PD"
+      ],
+      "impact": "变更结果反馈中的 applied_to_hardware 恒为 false",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-11",
+      "topic": "密码保护/消息邮箱",
+      "question": "受保护区密码机制、CDB 邮箱细节来自社区技术文章，条款编号与适用版本未核实",
+      "source_ids": [
+        "S-ART-CSDN-53"
+      ],
+      "impact": "CL-PROTECTED 条款实体置信度为 pending",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-12",
+      "topic": "扩展 IA 条款",
+      "question": "CMIS-VCS-01.1 / CMIS-FF-01.0 / ELSFP-CMIS-01.0 / CMIS-LT-01.0 与主规范的条款级引用关系未逐条展开",
+      "source_ids": [
+        "S-OIF-INDEX"
+      ],
+      "impact": "扩展规范仅建立文档级关系",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-13",
+      "topic": "元数据时效",
+      "question": "GitHub star / license / pushed_at 为 2026-11-08 API 快照，需定期刷新",
+      "source_ids": [
+        "S-GH-API-SNAPSHOT"
+      ],
+      "impact": "选型说明中的活跃度数据会随时间变化",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-14",
+      "topic": "CDB 命令帧精确位定义",
+      "question": "Page 9Fh 帧字段宽度由 Linux 内核 ethtool_cmis_cdb_request 结构体反推（CMDID 2B / EPL 2B / LPL 1B / 校验码 1B / 保留 2B / LPL 120B）；校验码算法、回复区偏移及触发时序需按 OIF-CMIS-05.3 §8.23 / §9.2 原文逐条核对",
+      "source_ids": [
+        "S-OIF-053",
+        "S-GH-LINUX-CDB"
+      ],
+      "impact": "影响 CDB 命令编排结果的硬件可用性；当前仅用于离线编排与演示",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-15",
+      "topic": "CDB 命令 ID 第三方冲突",
+      "question": "部分中文技术文章把 0100h 写作 Start Firmware Download、0103h 写作 Complete Firmware Download；OIF-CMIS-05.3 第 9 章目录与 Linux 内核枚举一致为 0101h Start / 0107h Complete，本图谱以官方目录+内核为准，仍需原文复核",
+      "source_ids": [
+        "S-OIF-053",
+        "S-GH-LINUX-CDB"
+      ],
+      "impact": "命令目录若与实际模块固件不一致会导致命令被拒绝",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-16",
+      "topic": "Low Page 应用广告位置版本差异",
+      "question": "公开模块 datasheet 将 Application Advertising 列在 Lower 85-117，而 CMIS 5.3/5.4 主要使用 Upper Page 01h 的 Application Descriptors；该偏移随版本变化",
+      "source_ids": [
+        "S-ART-MAPYOURTECH",
+        "S-ART-VITEX",
+        "S-OIF-053"
+      ],
+      "impact": "旧布局字段在 5.3/5.4 模块上可能不适用",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-17",
+      "topic": "DOM 术语与页归属",
+      "question": "DOM 是 SFF-8472/8636 历史术语，CMIS 5.3 使用 Monitors / Thresholds / VDM；Lower 14-25、Page 02h、10h/11h、20h-2Fh 的精确分工需按原文确认",
+      "source_ids": [
+        "S-OIF-053",
+        "S-IETF-CMIS-YANG"
+      ],
+      "impact": "影响 DOM 分区字段分组与阈值可写性判断",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-18",
+      "topic": "IETF CMIS YANG 草案状态",
+      "question": "draft-hi-ccamp-cmis-control-yang-04 为 Internet-Draft，非 RFC；其页级委派与 9.1 节禁止条款被本项目用作安全策略参考，需跟踪最终 RFC 或厂商实现差异",
+      "source_ids": [
+        "S-IETF-CMIS-YANG"
+      ],
+      "impact": "安全策略表述可能随草案版本变化",
+      "status": "open"
+    },
+    {
+      "pending_id": "P-19",
+      "topic": "两种接入方式的设备侧映射",
+      "question": "SSH+I2C 命令模板（i2cdump/i2cset）与 REST 路径（/api/cmis/registers、/api/cmis/cdb）为通用占位实现，真实交换机 CLI、端口到 I2C bus/mux 的映射、REST 认证与字段模型需按目标设备适配",
+      "source_ids": [
+        "S-INTERNAL",
+        "S-OIF-053"
+      ],
+      "impact": "未适配前不得开启 allow_hardware_write",
+      "status": "open"
+    }
+  ]
+}

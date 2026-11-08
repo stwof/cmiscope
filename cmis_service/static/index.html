@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-bs-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CMIScope - Optical Module CMIS Dashboard</title>
+  <link rel="stylesheet" href="vendor/tabler/tabler.min.css">
+  <link rel="stylesheet" href="vendor/tabler/tabler-icons.min.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+<div class="app-shell">
+
+  <aside class="app-sidebar">
+    <a class="brand" href="#overview" data-view="overview">
+      <span class="brand-mark"><i class="ti ti-topology-star-3"></i></span>
+      <span><strong>CMIScope</strong><small data-i18n="brand.sub">光模块 CMIS 工作台</small></span>
+    </a>
+    <nav class="side-nav" id="sideNav">
+      <a href="#overview" data-view="overview" class="active"><i class="ti ti-layout-dashboard"></i><span data-i18n="nav.overview">概览</span></a>
+      <a href="#devices" data-view="devices"><i class="ti ti-server-2"></i><span data-i18n="nav.devices">内部设备</span></a>
+      <a href="#module" data-view="module"><i class="ti ti-cpu"></i><span data-i18n="nav.module">模块 CMIS</span></a>
+      <a href="#config" data-view="config"><i class="ti ti-settings"></i><span data-i18n="nav.config">配置项管理</span></a>
+      <a href="#graph" data-view="graph"><i class="ti ti-hierarchy-3"></i><span data-i18n="nav.graph">知识图谱</span></a>
+      <a href="#sources" data-view="sources"><i class="ti ti-file-description"></i><span data-i18n="nav.sources">来源与待确认</span></a>
+      <a href="#about" data-view="about"><i class="ti ti-info-circle"></i><span data-i18n="nav.about">关于服务</span></a>
+    </nav>
+    <div class="side-foot">
+      <div class="mini-label" data-i18n="side.mode">运行模式</div>
+      <div id="sideMode" class="text-secondary small" data-i18n="side.loading">加载中...</div>
+      <div class="mini-label mt-3" data-i18n="side.access">接入方式</div>
+      <div id="sideAccess" class="small">-</div>
+      <div class="mini-label mt-3" data-i18n="side.framework">前端框架</div>
+      <div class="small"><span class="badge bg-green-lt">Tabler 1.7.3 · MIT</span></div>
+    </div>
+  </aside>
+
+  <div class="app-main">
+    <header class="app-header">
+      <div class="header-title" id="viewTitle" data-i18n="nav.overview">概览</div>
+      <form class="global-search" id="globalSearch">
+        <select class="form-select form-select-sm" id="searchScope" aria-label="Search scope">
+          <option value="all" data-i18n="search.all">全部</option>
+          <option value="device" data-i18n="search.device">设备</option>
+          <option value="field" data-i18n="search.field">字段</option>
+          <option value="config" data-i18n="search.config">配置项</option>
+          <option value="kg" data-i18n="search.kg">图谱</option>
+        </select>
+        <input class="form-control form-control-sm" id="searchInput" data-i18n-ph="search.placeholder"
+               placeholder="检索设备 / 字段 / 配置项 / 图谱实体…" autocomplete="off">
+        <button class="btn btn-primary btn-sm" type="submit"><i class="ti ti-search"></i> <span data-i18n="search.button">检索</span></button>
+      </form>
+      <button class="btn btn-sm btn-outline-secondary lang-toggle" id="langToggle" type="button"
+              data-i18n-title="common.language" title="界面语言">EN</button>
+      <div class="header-status"><span class="status-dot" id="healthDot"></span><span id="healthText" data-i18n="status.connecting">连接中</span></div>
+    </header>
+
+    <main class="app-content">
+
+      <!-- Cross-scope search results -->
+      <section class="view" id="view-search" hidden>
+        <div class="card">
+          <div class="card-header"><h3 class="card-title" data-i18n="common.searchResults">检索结果</h3><div class="text-secondary" id="searchSummary"></div></div>
+          <div class="card-body" id="searchResult"></div>
+        </div>
+      </section>
+
+      <!-- Overview -->
+      <section class="view" id="view-overview">
+        <div class="stat-grid" id="statGrid"></div>
+        <div class="row row-cards mt-3">
+          <div class="col-lg-7">
+            <div class="card h-100">
+              <div class="card-header"><h3 class="card-title" data-i18n="ov.deviceStatus">设备状态分布</h3></div>
+              <div class="card-body" id="statusChart"></div>
+            </div>
+          </div>
+          <div class="col-lg-5">
+            <div class="card h-100">
+              <div class="card-header"><h3 class="card-title" data-i18n="ov.recentChanges">最近变更</h3>
+                <a class="btn btn-sm btn-ghost-secondary" data-view="config" href="#config" data-i18n="ov.viewAll">查看全部</a></div>
+              <div class="card-body p-0"><div class="table-responsive"><table class="table table-vcenter table-sm" id="recentTable"></table></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="row row-cards mt-3">
+          <div class="col-lg-6">
+            <div class="card">
+              <div class="card-header"><h3 class="card-title" data-i18n="ov.kgTypes">知识图谱构成</h3></div>
+              <div class="card-body" id="kgTypeChart"></div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card">
+              <div class="card-header"><h3 class="card-title" data-i18n="ov.serviceInfo">服务信息</h3></div>
+              <div class="card-body" id="serviceInfo"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card mt-3">
+          <div class="card-header"><h3 class="card-title" data-i18n="ov.sections">CMIS 分区字段数</h3></div>
+          <div class="card-body" id="sectionChart"></div>
+        </div>
+      </section>
+
+      <!-- Devices -->
+      <section class="view" id="view-devices" hidden>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title" data-i18n="dev.title">内部设备</h3>
+            <div class="ms-auto d-flex gap-2">
+              <input class="form-control form-control-sm" id="deviceFilter" data-i18n-ph="dev.filter" style="width:240px">
+              <select class="form-select form-select-sm" id="deviceStatus" style="width:130px">
+                <option value="" data-i18n="dev.allStatus">全部状态</option>
+                <option value="online">online</option>
+                <option value="maintenance">maintenance</option>
+                <option value="offline">offline</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table table-vcenter table-hover" id="deviceTable">
+              <thead><tr>
+                <th data-i18n="dev.col.id">设备 ID</th><th data-i18n="dev.col.name">名称</th>
+                <th data-i18n="dev.col.type">类型</th><th data-i18n="dev.col.vendor">厂商 / 型号</th>
+                <th data-i18n="dev.col.location">位置</th><th data-i18n="dev.col.cmis">CMIS</th>
+                <th data-i18n="dev.col.access">接入方式</th><th data-i18n="dev.col.status">状态</th>
+                <th data-i18n="dev.col.count">配置项</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="card-footer text-secondary" id="deviceFooter"></div>
+        </div>
+        <div class="card mt-3" id="deviceDetailCard" hidden>
+          <div class="card-header"><h3 class="card-title" id="deviceDetailTitle" data-i18n="dev.detail">设备详情</h3>
+            <button class="btn btn-sm btn-ghost-secondary ms-auto" id="closeDeviceDetail" data-i18n="dev.collapse">收起</button></div>
+          <div class="card-body" id="deviceDetailBody"></div>
+        </div>
+      </section>
+
+      <!-- Module CMIS by specification partition -->
+      <section class="view" id="view-module" hidden>
+        <div class="card">
+          <div class="card-header flex-wrap gap-2">
+            <h3 class="card-title" data-i18n="mod.title">模块 CMIS（按规范分区）</h3>
+            <div class="ms-auto d-flex gap-2 flex-wrap">
+              <select class="form-select form-select-sm" id="moduleDevice" style="width:230px"></select>
+              <select class="form-select form-select-sm" id="moduleSection" style="width:170px">
+                <option value="" data-i18n="mod.allSections">全部分区</option>
+                <option value="LOW_PAGE" data-i18n="mod.low">低页 0x00</option>
+                <option value="DOM" data-i18n="mod.dom">DOM 监测</option>
+                <option value="CDB" data-i18n="mod.cdb">CDB 命令</option>
+                <option value="CONTROL" data-i18n="mod.control">控制与诊断</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-body" id="moduleSummary"></div>
+        </div>
+        <div id="moduleSections" class="mt-3"></div>
+      </section>
+
+      <!-- Configuration items -->
+      <section class="view" id="view-config" hidden>
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title" data-i18n="cfg.title">CMIS 配置项</h3>
+            <div class="ms-auto d-flex gap-2 flex-wrap">
+              <input class="form-control form-control-sm" id="configFilter" data-i18n-ph="cfg.filter" style="width:220px">
+              <select class="form-select form-select-sm" id="configDevice" style="width:190px"></select>
+              <select class="form-select form-select-sm" id="configSection" style="width:150px"></select>
+              <select class="form-select form-select-sm" id="configWritable" style="width:120px">
+                <option value="" data-i18n="cfg.allPerm">全部权限</option>
+                <option value="1" data-i18n="cfg.writable">可写</option>
+                <option value="0" data-i18n="cfg.readonly">只读</option>
+              </select>
+              <button class="btn btn-sm btn-outline-secondary" id="configReset" data-i18n="cfg.reset">重置</button>
+            </div>
+          </div>
+          <div class="table-responsive" style="max-height:620px">
+            <table class="table table-vcenter table-sm table-hover" id="configTable">
+              <thead class="sticky-top"><tr>
+                <th data-i18n="cfg.col.device">设备</th><th data-i18n="cfg.col.field">字段</th>
+                <th data-i18n="cfg.col.page">页:偏移</th><th data-i18n="cfg.col.value">当前值</th>
+                <th data-i18n="cfg.col.raw">raw</th><th data-i18n="cfg.col.type">类型</th>
+                <th data-i18n="cfg.col.access">权限</th><th data-i18n="cfg.col.spec">规范引用</th>
+                <th data-i18n="cfg.col.action">操作</th>
+              </tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div class="card-footer text-secondary" id="configFooter"></div>
+        </div>
+      </section>
+
+      <!-- Knowledge graph -->
+      <section class="view" id="view-graph" hidden>
+        <div class="row row-cards">
+          <div class="col-lg-4">
+            <div class="card">
+              <div class="card-header"><h3 class="card-title" data-i18n="graph.entities">图谱实体</h3></div>
+              <div class="card-body">
+                <div class="d-flex gap-2 mb-2">
+                  <select class="form-select form-select-sm" id="kgType"></select>
+                  <input class="form-control form-control-sm" id="kgFilter" data-i18n-ph="graph.filter">
+                </div>
+                <div class="kg-list" id="kgEntityList"></div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-8">
+            <div class="card">
+              <div class="card-header"><h3 class="card-title" id="kgDetailTitle" data-i18n="graph.detail">实体详情</h3>
+                <span class="badge bg-blue-lt ms-auto" id="kgDetailType"></span></div>
+              <div class="card-body" id="kgDetailBody"><div class="empty-hint" data-i18n="graph.selectHint">从左侧选择一个实体，查看属性、来源与关联关系。</div></div>
+            </div>
+            <div class="card mt-3">
+              <div class="card-header"><h3 class="card-title" data-i18n="graph.overview">图谱概览（按实体类型）</h3></div>
+              <div class="card-body"><div id="kgGraph" class="kg-graph"></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Sources -->
+      <section class="view" id="view-sources" hidden>
+        <div class="card">
+          <div class="card-header"><h3 class="card-title" data-i18n="src.title">来源清单与覆盖度</h3><span class="text-secondary small" id="sourceCount"></span></div>
+          <div class="table-responsive"><table class="table table-vcenter table-sm" id="sourceTable">
+            <thead><tr>
+              <th data-i18n="src.col.id">来源 ID</th><th data-i18n="src.col.title">标题</th>
+              <th data-i18n="src.col.publisher">发布方</th><th data-i18n="src.col.type">类型</th>
+              <th data-i18n="src.col.license">许可</th><th data-i18n="src.col.coverage">支撑实体/关系</th>
+              <th data-i18n="src.col.link">链接</th>
+            </tr></thead>
+            <tbody></tbody></table></div>
+        </div>
+        <div class="card mt-3">
+          <div class="card-header"><h3 class="card-title" data-i18n="src.pending">待确认项</h3><span class="badge bg-orange-lt" id="pendingCount"></span></div>
+          <div class="card-body" id="pendingList"></div>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section class="view" id="view-about" hidden>
+        <div class="row row-cards">
+          <div class="col-lg-7">
+            <div class="card"><div class="card-header"><h3 class="card-title" data-i18n="about.title">交付说明</h3></div>
+              <div class="card-body" id="aboutBody"></div></div>
+            <div class="card mt-3"><div class="card-header"><h3 class="card-title" data-i18n="about.access">两种接入方式</h3></div>
+              <div class="card-body" id="accessBody"></div></div>
+          </div>
+          <div class="col-lg-5"><div class="card"><div class="card-header"><h3 class="card-title" data-i18n="about.endpoints">API 端点</h3></div>
+            <div class="card-body"><div id="apiList" class="api-list"></div></div></div></div>
+        </div>
+      </section>
+
+    </main>
+    <footer class="app-footer" id="appFooter">CMIScope · Python stdlib + SQLite · Tabler 1.7.3 (MIT) · synthetic demo data</footer>
+  </div>
+</div>
+
+<!-- Configuration editor modal -->
+<div class="modal" id="editModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header"><h5 class="modal-title" id="editTitle" data-i18n="edit.title">编辑配置项</h5>
+        <button type="button" class="btn-close" id="editClose" data-i18n-title="edit.close" aria-label="Close"></button></div>
+      <div class="modal-body">
+        <div id="editMeta" class="mb-3"></div>
+        <div class="mb-3"><label class="form-label"><span data-i18n="edit.newValue">新值</span> <span class="text-secondary small" id="editTypeHint"></span></label>
+          <div id="editInputWrap"><input class="form-control" id="editValue"></div>
+          <div class="form-text" id="editRules"></div></div>
+        <div class="mb-2"><label class="form-label" data-i18n="edit.note">备注（可选）</label><input class="form-control" id="editNote" data-i18n-ph="edit.notePlaceholder"></div>
+        <div id="editReport"></div>
+      </div>
+      <div class="modal-footer">
+        <span class="me-auto text-secondary small" id="editStatus" data-i18n="edit.status">等待输入</span>
+        <button class="btn btn-outline-secondary" id="editValidate"><i class="ti ti-checklist"></i> <span data-i18n="edit.validate">保存前校验</span></button>
+        <button class="btn btn-primary" id="editSave"><i class="ti ti-device-floppy"></i> <span data-i18n="edit.save">保存变更</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop" id="modalBackdrop" hidden></div>
+
+<div class="toast-container" id="toastContainer"></div>
+<script src="vendor/tabler/tabler.min.js" defer></script>
+<script src="js/i18n.js" defer></script>
+<script src="js/app.js" defer></script>
+</body>
+</html>

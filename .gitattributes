@@ -1,0 +1,12 @@
+# Normalize text files to LF in both the repository and the working tree;
+# keep binary assets byte-for-byte so Git never rewrites them.
+* text=auto eol=lf
+
+*.woff2 binary
+*.woff  binary
+*.ttf   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary

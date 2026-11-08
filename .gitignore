@@ -1,0 +1,23 @@
+# Runtime artifacts and machine-local configuration.
+# These are regenerated on startup or supplied per deployment.
+config.ini
+data/cmis.db
+data/cmis.db-journal
+data/cmis.db-wal
+data/cmis.db-shm
+
+# Python bytecode / virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Logs and editor / OS noise
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local WorkBuddy session state (keep on disk, do not publish)
+.workbuddy/

@@ -1,0 +1,74 @@
+# CMIScope example configuration.
+# Copy to config.ini and edit, or override any key with a CMIS_* environment variable.
+# Precedence: built-in defaults < config.ini < environment variables.
+# No secrets belong in this file. Relative paths are resolved against base_dir.
+
+[server]
+host = 127.0.0.1
+port = 8787
+
+[paths]
+data_dir = data
+static_dir = cmis_service/static
+db_file = data/cmis.db
+seed_file = data/seed.json
+kg_file = data/knowledge_graph.json
+
+[app]
+read_only = false
+# access_mode selects the physical access path:
+#   mirror    - offline SQLite mirror, never touches hardware (default, safe)
+#   ssh-i2c   - Mode A: SSH from the test server to the test switch, then I2C
+#   rest-api  - Mode B: northbound RESTful API of the target device / NOS
+access_mode = mirror
+# write_adapter is a backward-compatible alias for access_mode
+write_adapter = mirror
+# UI language: zh (default) or en; the browser can switch at runtime
+default_language = zh
+operator = local-admin
+
+# ---------------------------------------------------------------------------
+# Mode A: test server -> SSH -> test switch -> I2C -> module EEPROM (0x50)
+# Uses the system ssh binary with BatchMode=yes, so an existing ssh-agent key
+# or an SSH config entry is expected. Command templates are argv templates
+# (shlex-split, never a shell); placeholders are whitelisted values.
+# ---------------------------------------------------------------------------
+[ssh]
+host =
+user = admin
+port = 22
+timeout_seconds = 8
+i2c_bus = 0
+i2c_addr = 0x50
+probe_cmd = ssh -p {port} -o BatchMode=yes -o ConnectTimeout={timeout} {user}@{host} echo CMIS-PROBE-OK
+read_cmd = ssh -p {port} -o BatchMode=yes -o ConnectTimeout={timeout} {user}@{host} i2cdump -y {bus} {addr} b
+write_cmd = ssh -p {port} -o BatchMode=yes -o ConnectTimeout={timeout} {user}@{host} i2cset -y {bus} {addr} {offset} {value}
+cdb_cmd =
+
+# ---------------------------------------------------------------------------
+# Mode B: target device RESTful API. The token is read from the environment
+# variable named by token_env (it is never stored here or returned by the API).
+# ---------------------------------------------------------------------------
+[rest]
+base_url =
+token_env = CMIS_REST_TOKEN
+timeout_seconds = 8
+probe_path = /api/cmis/health
+read_path = /api/cmis/registers
+write_path = /api/cmis/registers
+cdb_path = /api/cmis/cdb
+
+# ---------------------------------------------------------------------------
+# Safety gates. All are OFF by default.
+# Lower Memory (0-127) and CDB pages 9Fh-AFh are never remotely writable,
+# following IETF draft-hi-ccamp-cmis-control-yang-04 section 9.1.
+# ---------------------------------------------------------------------------
+[security]
+allow_hardware_write = false
+cdb_allow_firmware = false
+cdb_rest_allowed = false
+cdb_confirm_token = EXECUTE
+
+[limits]
+max_body_bytes = 65536
+log_level = INFO
