@@ -119,5 +119,5 @@ Tabler 只提供样式骨架，不参与语言切换，这正是选择「纯 CSS
 - 双语字典目前覆盖 `index.html` 与 `app.js` 的可见文案；后端规范数据自带 `zh`/`en` 字段，
   新增分区或 CDB 命令时需同步补 `i18n.js` 的键。
 - GitHub star / pushed_at 为 2026-11-08 快照，选型说明中的数据会随时间变化（对应图谱待确认项 `P-13`）。
-- 端到端回归 `python tools/smoke_test.py`（60 项）会检查 `/`、`app.css`、`app.js`、`i18n.js`
+- 端到端回归 `python tools/smoke_test.py`（61 项）会检查 `/`、`app.css`、`app.js`、`i18n.js`
   与 vendor CSS 的可访问性及目录穿越防护，可作为升级后的最低验证门槛。

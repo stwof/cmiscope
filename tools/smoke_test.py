@@ -11,6 +11,7 @@ from __future__ import annotations
 import json
 import os
 import socket
+import sqlite3
 import subprocess
 import sys
 import tempfile
@@ -20,6 +21,13 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))  # imports work when run as `python tools/smoke_test.py`
+
+from dataclasses import replace
+from cmis_service import db as dbmod
+from cmis_service.config import load_settings
+
 PASS, FAIL = [], []
 
 
@@ -263,6 +271,58 @@ def main() -> int:
                   f"bytes={len(raw) if isinstance(raw, bytes) else 0}")
         st, raw = req("GET", "/../config.ini.example")
         check("Directory traversal protection", st in (403, 404))
+
+        # Regression: a first-release database has no `section` columns. Schema
+        # indexes on those columns must be created after migration, and seed
+        # synchronization must not overwrite operator-edited values.
+        legacy_path = Path(tmp) / "legacy.db"
+        legacy = sqlite3.connect(str(legacy_path))
+        legacy.executescript("""
+            CREATE TABLE devices (
+                device_id TEXT PRIMARY KEY, name TEXT NOT NULL,
+                device_type TEXT NOT NULL DEFAULT '', vendor TEXT, model TEXT,
+                location TEXT, status TEXT, cmis_revision TEXT, firmware TEXT,
+                last_seen TEXT, notes TEXT
+            );
+            CREATE TABLE fields (
+                field_key TEXT PRIMARY KEY, name TEXT NOT NULL, page TEXT,
+                byte_offset TEXT, bit_range TEXT, data_type TEXT, unit TEXT,
+                access TEXT, description TEXT, spec_ref TEXT,
+                source_ids TEXT NOT NULL DEFAULT '[]',
+                confidence TEXT NOT NULL DEFAULT 'confirmed', kg_entity_id TEXT
+            );
+            CREATE TABLE config_items (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                device_id TEXT NOT NULL, module_id TEXT, field_key TEXT NOT NULL,
+                label TEXT, page TEXT, byte_offset TEXT, value TEXT, raw_hex TEXT,
+                data_type TEXT, unit TEXT, writable INTEGER NOT NULL DEFAULT 1,
+                allowed_values TEXT NOT NULL DEFAULT '[]', min_value REAL,
+                max_value REAL, regex TEXT, cross_rule TEXT, spec_ref TEXT,
+                source_ids TEXT NOT NULL DEFAULT '[]', updated_at TEXT,
+                version INTEGER NOT NULL DEFAULT 1, UNIQUE(device_id, field_key)
+            );
+            INSERT INTO devices (device_id, name) VALUES ('SW-CORE-01', 'Legacy Device');
+            INSERT INTO fields (field_key, name) VALUES ('AppSelLane1', 'AppSel Lane 1');
+            INSERT INTO config_items (device_id, field_key, value, version)
+                VALUES ('SW-CORE-01', 'AppSelLane1', '0x99', 7);
+        """)
+        legacy.close()
+        upgraded = dbmod.initialize(replace(load_settings(), db_file=legacy_path))
+        cols_f = {r["name"] for r in upgraded.execute("PRAGMA table_info(fields)")}
+        cols_c = {r["name"] for r in upgraded.execute("PRAGMA table_info(config_items)")}
+        idx = {r["name"] for r in upgraded.execute(
+            "SELECT name FROM sqlite_master WHERE type='index' AND name LIKE 'idx_%_section'")}
+        kept = upgraded.execute(
+            "SELECT value, version FROM config_items "
+            "WHERE device_id='SW-CORE-01' AND field_key='AppSelLane1'").fetchone()
+        field_count = upgraded.execute("SELECT COUNT(*) FROM fields").fetchone()[0]
+        upgraded.close()
+        check("Legacy database upgrade without 'no such column: section'",
+              {"section", "name_en"} <= cols_f and {"section", "label_en"} <= cols_c
+              and len(idx) == 2 and field_count == 64
+              and kept["value"] == "0x99" and kept["version"] == 7,
+              f"fields={field_count} indexes={len(idx)} kept_value={kept['value']}")
+
         return finish(proc, tmp)
     except Exception as exc:
         import traceback

@@ -206,7 +206,7 @@ curl "http://127.0.0.1:8787/api/kg/relations?type=CONSTRAINS"
    或 `tools/build_kg.py`（实体/关系/来源/待确认项）。
 2. 运行 `python tools/build_seed.py` 与 `python tools/build_kg.py`；生成器内置一致性自检
    （关系两端实体存在、`source_ids` 均已定义、link 目标存在）。
-3. 运行 `python tools/smoke_test.py`（60 项端到端回归）。
+3. 运行 `python tools/smoke_test.py`（61 项端到端回归）。
 4. 重启服务：图谱表自动以新 JSON 重建；设备数据以 `INSERT OR IGNORE` 幂等同步且**不覆盖用户已编辑的配置值**，
    如需完全重置，删除 `data/cmis.db` 后重启（或指向新的 `CMIS_DB_FILE`）。
 

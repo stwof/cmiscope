@@ -38,7 +38,7 @@
 python run.py                       # 默认 http://127.0.0.1:8787/
 python run.py --port 9000
 python run.py --config config.ini   # 自定义配置
-python tools/smoke_test.py          # 60 项端到端回归（临时库 + 临时端口，不污染交付数据）
+python tools/smoke_test.py          # 61 项端到端回归（临时库 + 临时端口，不污染交付数据）
 ```
 
 配置三层覆盖，环境与代码解耦：**默认值 → `config.ini` → `CMIS_*` 环境变量**。所有相对路径以 `base_dir` 为锚点，整目录复制即可迁移；数据库是单文件 `data/cmis.db`。

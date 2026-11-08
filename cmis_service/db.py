@@ -160,10 +160,8 @@ CREATE TABLE IF NOT EXISTS kg_pending (
 CREATE INDEX IF NOT EXISTS idx_devices_name      ON devices(name);
 CREATE INDEX IF NOT EXISTS idx_modules_device    ON modules(device_id);
 CREATE INDEX IF NOT EXISTS idx_fields_page       ON fields(page);
-CREATE INDEX IF NOT EXISTS idx_fields_section    ON fields(section);
 CREATE INDEX IF NOT EXISTS idx_config_device     ON config_items(device_id);
 CREATE INDEX IF NOT EXISTS idx_config_field      ON config_items(field_key);
-CREATE INDEX IF NOT EXISTS idx_config_section    ON config_items(section);
 CREATE INDEX IF NOT EXISTS idx_changes_device    ON config_changes(device_id, id DESC);
 CREATE INDEX IF NOT EXISTS idx_cdb_device       ON cdb_operations(device_id, id DESC);
 CREATE INDEX IF NOT EXISTS idx_kg_entities_type  ON kg_entities(type);
@@ -171,6 +169,14 @@ CREATE INDEX IF NOT EXISTS idx_kg_relations_src  ON kg_relations(src);
 CREATE INDEX IF NOT EXISTS idx_kg_relations_dst  ON kg_relations(dst);
 CREATE INDEX IF NOT EXISTS idx_kg_relations_type ON kg_relations(type);
 CREATE INDEX IF NOT EXISTS idx_kg_links_ref      ON kg_links(cmis_ref);
+"""
+
+# Indexes on columns introduced by _migrate(). They must be created only after
+# legacy databases have gained those columns, otherwise executescript() fails
+# with "no such column" on an upgraded database.
+POST_MIGRATE_INDEXES = """
+CREATE INDEX IF NOT EXISTS idx_fields_section    ON fields(section);
+CREATE INDEX IF NOT EXISTS idx_config_section    ON config_items(section);
 """
 
 _TABLE_COLUMNS: dict[str, tuple[str, ...]] = {
@@ -325,6 +331,7 @@ def initialize(settings: Settings) -> sqlite3.Connection:
     conn = connect(settings.db_file)
     conn.executescript(SCHEMA)
     _migrate(conn)
+    conn.executescript(POST_MIGRATE_INDEXES)
     _sync_seed(conn, settings.seed_file)
     _import_kg(conn, settings.kg_file)
     return conn
