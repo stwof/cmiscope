@@ -162,6 +162,42 @@ CDB 下发安全策略（非 mirror 模式）：`confirm` 必须等于 `cdb_conf
 | `/css/app.css`、`/js/app.js`、`/js/i18n.js` | 布局、交互与双语字典 |
 | `/vendor/tabler/*` | Tabler 1.7.3 + Icons + LICENSE |
 
+### 2.9 CMIS 5.3 规范参考（只读、强制分页）
+
+来自 `jimfred/CMIS` 的 2442 行字段级内存映射与 48 条 Section 9 CDB 命令，独立于 `/api/fields` 的 64 条演示字段，**不参与任何写入**。详见 [`CMIS53_REFERENCE.md`](CMIS53_REFERENCE.md)。
+
+| 方法 | 路径 | 参数 | 说明 |
+| --- | --- | --- | --- |
+| GET | `/api/reference/meta` | — | 来源、混合许可、21/9 列含义、分区映射规则、统计与输入 SHA-256；数据未生成时返回 `available=false` |
+| GET | `/api/reference/fields` | `q`, `page`, `section`, `access`, `value_type`, `data_type`, `requirement`, `sonic`, `ref_table`, `name`, `lower=1`, `reserved=0`, `limit`(1–500，默认 50), `offset` | 返回 `total`（`COUNT(*)`）、`limit`、`offset`、`items`；`mask_values` 已解析为数组 |
+| GET | `/api/reference/fields/{key_id}` | — | 单条字段 + 对应 `cmis_spec` 分区定义 + `spec_sources`（PDF 溯源）；不存在时 404 `REFERENCE_FIELD_NOT_FOUND` |
+| GET | `/api/reference/cdb-commands` | `q`, `group` | 48 条完整命令目录，每条带 `in_runtime_catalog`（是否在可执行目录 26 条中）与 `spec_pdf_page` |
+| GET | `/api/reference/spec-tables` | `section=8\|9`, `page`, `q`, `limit`, `offset` | 238 张 Section 8/9 规范表目录：表号、短标题、PDF 页码、分区、字段数 |
+| GET | `/api/reference/spec-tables/{table_id}` | `limit`, `offset` | 单表详情 + 引用该表的参考字段（支持 `8-28; 8-30` 这类多表引用）；不存在时 404 `SPEC_TABLE_NOT_FOUND` |
+| GET | `/api/reference/verify` | — | PDF 坐标提取结果与 CSV 参考层的一致性摘要；索引未生成时返回 `available=false` |
+
+```bash
+curl "http://127.0.0.1:8787/api/reference/fields?section=VDM&access=RO&limit=20"
+curl "http://127.0.0.1:8787/api/reference/fields/MemoryModel"
+curl "http://127.0.0.1:8787/api/reference/cdb-commands"
+curl "http://127.0.0.1:8787/api/reference/spec-tables?section=9&limit=10"
+curl "http://127.0.0.1:8787/api/reference/spec-tables/8-10"
+curl "http://127.0.0.1:8787/api/reference/verify"
+```
+
+> `/api/reference/fields` 不使用 `/api/fields` 的固定 `LIMIT 300`；数据量 2442 行，调用方必须显式分页。`GET /api/cdb/commands` 仍是唯一可执行的命令目录，未被本层改动。
+
+### 2.10 规范 PDF 溯源（只读）
+
+`tools/parse_spec_pdf.py` 用纯标准库解析随附的 `knowledge/specs/OIF-CMIS-05.3.pdf`（xref / FlateDecode / `Tm` 坐标），从目录动态发现 Section 8/9 的表号与页码，生成 `data/spec_pdf_index.json`；`tools/import_cmis53.py` 将其合并进参考数据。因此：
+
+- `fields/{key_id}` 的 `spec_sources` 给出该字段所引规范表的 PDF 页码与短标题；
+- `cdb-commands` 的 `spec_pdf_page` 指向命令详情表所在页；
+- `spec-tables` 可按 `section` / `page` / `q` 分页检索 238 张表；
+- `verify` 返回匹配率（明细行 627/685，91.5%）、表溯源覆盖（129/129）、命令覆盖（48/48）与单位推导对照。
+
+> 坐标提取为**尽力而为**，未匹配行不代表 CSV 有误；字段值以 CSV / OIF 原文为准。索引不保存 OIF 描述正文，溯源信息只用于人工核对，不参与校验或写入。详见 [`CMIS53_REFERENCE.md`](CMIS53_REFERENCE.md) 第 7 节。
+
 ---
 
 ## 3. 校验规则

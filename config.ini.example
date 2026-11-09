@@ -13,6 +13,10 @@ static_dir = cmis_service/static
 db_file = data/cmis.db
 seed_file = data/seed.json
 kg_file = data/knowledge_graph.json
+# Read-only CMIS 5.3 field reference. Optional: if missing, the /api/reference
+# endpoints stay empty and the rest of the service is unaffected. Rebuild with
+# python tools/import_cmis53.py after refreshing data/upstream/*.csv.
+reference_file = data/cmis53_reference.json
 # Editable target-device registry. If this file does not exist, the shipped
 # config/targets.example.json is used; PUT /api/targets writes this path.
 targets_file = config/targets.json

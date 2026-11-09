@@ -1,0 +1,3048 @@
+{
+  "meta": {
+    "generator": "tools/diff_spec_versions.py",
+    "schema_version": "1.0",
+    "generated_at": "2026-11-09T15:32:13+00:00",
+    "versions": {
+      "53": {
+        "specification": "OIF-CMIS-05.3",
+        "pdf_file": "knowledge/specs/OIF-CMIS-05.3.pdf",
+        "pdf_sha256": "631c76d0c8292021e61128dd94ed231679ab0703a9070cdd6d125d1f48c00d64",
+        "pdf_pages": 408,
+        "source": "cached index",
+        "tables": 238,
+        "field_rows": 721,
+        "cdb_commands": 48
+      },
+      "54": {
+        "specification": "OIF-CMIS-05.4",
+        "pdf_file": "knowledge/specs/OIF-CMIS-05.4.pdf",
+        "pdf_sha256": "cd57ebb1cfb8e0a9e9c7b63862b5b261855e9b77844f4cf85bd36ea3808911db",
+        "pdf_pages": 456,
+        "source": "parsed PDF",
+        "tables": 258,
+        "field_rows": 754,
+        "cdb_commands": 51
+      }
+    },
+    "reader": "tools/spec_pdf.py (Python standard library only)",
+    "content_policy": "Only factual identifiers are persisted; verbatim OIF description text is not written to disk.",
+    "authority_note": "The OIF specification is authoritative. This is a navigation aid for knowledge-graph item P-02, not a compliance statement."
+  },
+  "summary": {
+    "tables": {
+      "count_53": 238,
+      "count_54": 258,
+      "added": 26,
+      "removed": 6,
+      "renamed": 42,
+      "terminology_updates": 5,
+      "cosmetic_title_changes": 1,
+      "alignment": {
+        "method": "difflib.SequenceMatcher on normalized table captions",
+        "matched_pairs": 185,
+        "dominant_number_shift": 10,
+        "tables_with_dominant_number_shift": 102,
+        "note": "CMIS 5.4 inserts tables in the middle of Section 8; later tables are renumbered. Table IDs are therefore NOT stable across versions and must not be compared directly."
+      },
+      "page_shift": {
+        "min_delta": 0,
+        "max_delta": 44,
+        "modal_delta": 30,
+        "tables_with_modal_delta": 44,
+        "note": "PDF physical page numbers of matched tables. Inserted chapters shift most pages; this is layout, not content."
+      }
+    },
+    "cdb_commands": {
+      "count_53": 48,
+      "count_54": 51,
+      "added": 5,
+      "removed": 2,
+      "changed": 42
+    },
+    "fields_indicative": {
+      "count_53": 719,
+      "count_54": 745,
+      "added": 82,
+      "removed": 56,
+      "changed": 26
+    }
+  },
+  "tables": {
+    "count_53": 238,
+    "count_54": 258,
+    "alignment": {
+      "method": "difflib.SequenceMatcher on normalized table captions",
+      "matched_pairs": 185,
+      "dominant_number_shift": 10,
+      "tables_with_dominant_number_shift": 102,
+      "note": "CMIS 5.4 inserts tables in the middle of Section 8; later tables are renumbered. Table IDs are therefore NOT stable across versions and must not be compared directly."
+    },
+    "added": [
+      {
+        "table_id": "8-23",
+        "section": 8,
+        "title": "Format of Application Descriptor (Flat Memory Modules)",
+        "pdf_page": 183,
+        "field_rows": 0
+      },
+      {
+        "table_id": "8-57",
+        "section": 8,
+        "title": "Host Lane Polarity Inversion Indication (Page 01h)",
+        "pdf_page": 206,
+        "field_rows": 2
+      },
+      {
+        "table_id": "8-58",
+        "section": 8,
+        "title": "Supported Pages and Banks Advertisement (Page 01h)",
+        "pdf_page": 207,
+        "field_rows": 2
+      },
+      {
+        "table_id": "8-69",
+        "section": 8,
+        "title": "Page 0Ch Overview",
+        "pdf_page": 218,
+        "field_rows": 0
+      },
+      {
+        "table_id": "8-70",
+        "section": 8,
+        "title": "Supported Pages Map (Page 0Ch)",
+        "pdf_page": 218,
+        "field_rows": 1
+      },
+      {
+        "table_id": "8-71",
+        "section": 8,
+        "title": "Generic FeatureAdvertisement Data Structure",
+        "pdf_page": 218,
+        "field_rows": 0
+      },
+      {
+        "table_id": "8-72",
+        "section": 8,
+        "title": "Named Feature Advertisements (Page 0Ch)",
+        "pdf_page": 218,
+        "field_rows": 3
+      },
+      {
+        "table_id": "8-73",
+        "section": 8,
+        "title": "Named Feature Details Advertisement (Page 0Ch)",
+        "pdf_page": 219,
+        "field_rows": 5
+      },
+      {
+        "table_id": "8-74",
+        "section": 8,
+        "title": "Page 0Dh Overview",
+        "pdf_page": 220,
+        "field_rows": 0
+      },
+      {
+        "table_id": "8-75",
+        "section": 8,
+        "title": "Firmware Load VersionDescriptor Data Structure",
+        "pdf_page": 220,
+        "field_rows": 0
+      },
+      {
+        "table_id": "8-76",
+        "section": 8,
+        "title": "Firmware Management Registers (Page 0Dh)",
+        "pdf_page": 220,
+        "field_rows": 8
+      },
+      {
+        "table_id": "8-187",
+        "section": 8,
+        "title": "Page 60h Overview",
+        "pdf_page": 313,
+        "field_rows": 0
+      },
+      {
+        "table_id": "8-188",
+        "section": 8,
+        "title": "Host Lane Polarity Inversion Indication (Page 60h)",
+        "pdf_page": 313,
+        "field_rows": 3
+      },
+      {
+        "table_id": "8-189",
+        "section": 8,
+        "title": "Reset Acquisition Counters (Page 60h)",
+        "pdf_page": 313,
+        "field_rows": 1
+      },
+      {
+        "table_id": "8-190",
+        "section": 8,
+        "title": "Page 61h Overview",
+        "pdf_page": 315,
+        "field_rows": 0
+      },
+      {
+        "table_id": "8-191",
+        "section": 8,
+        "title": "Acquisition Counters (Page 61h)",
+        "pdf_page": 316,
+        "field_rows": 4
+      },
+      {
+        "table_id": "8-192",
+        "section": 8,
+        "title": "Page 62h Overview",
+        "pdf_page": 317,
+        "field_rows": 0
+      },
+      {
+        "table_id": "8-193",
+        "section": 8,
+        "title": "Output Power Threshold Quad Data Structure",
+        "pdf_page": 317,
+        "field_rows": 0
+      },
+      {
+        "table_id": "8-194",
+        "section": 8,
+        "title": "Output Power Thresholds (Page 62h)",
+        "pdf_page": 317,
+        "field_rows": 0
+      },
+      {
+        "table_id": "8-195",
+        "section": 8,
+        "title": "Page 6Dh Overview",
+        "pdf_page": 318,
+        "field_rows": 0
+      },
+      {
+        "table_id": "8-196",
+        "section": 8,
+        "title": "Media Lane Switching (Page 6Dh)",
+        "pdf_page": 318,
+        "field_rows": 14
+      },
+      {
+        "table_id": "9-14",
+        "section": 9,
+        "title": "CDB Command 0044h: Query Security Features",
+        "pdf_page": 340,
+        "field_rows": 0
+      },
+      {
+        "table_id": "9-15",
+        "section": 9,
+        "title": "CDB Command 0045h: Query Supplement Support",
+        "pdf_page": 342,
+        "field_rows": 0
+      },
+      {
+        "table_id": "9-32",
+        "section": 9,
+        "title": "CDB Command 010Ch: Store Firmware Load Tag",
+        "pdf_page": 362,
+        "field_rows": 0
+      },
+      {
+        "table_id": "9-33",
+        "section": 9,
+        "title": "CDB Command 010Dh: Retrieve Firmware Load Tag",
+        "pdf_page": 363,
+        "field_rows": 0
+      },
+      {
+        "table_id": "9-34",
+        "section": 9,
+        "title": "CDB Performance Monitoring Statistics Commands Overview",
+        "pdf_page": 364,
+        "field_rows": 0
+      }
+    ],
+    "removed": [
+      {
+        "table_id": "8-55",
+        "section": 8,
+        "title": "Overview of CDB advertising combinations",
+        "pdf_page": 180,
+        "field_rows": 0
+      },
+      {
+        "table_id": "9-18",
+        "section": 9,
+        "title": "CDB Firmware Download Commands Overview",
+        "pdf_page": 307,
+        "field_rows": 0
+      },
+      {
+        "table_id": "9-45",
+        "section": 9,
+        "title": "CDB Command 0281h: Data Monitoring and Recording Advertisements",
+        "pdf_page": 339,
+        "field_rows": 0
+      },
+      {
+        "table_id": "9-49",
+        "section": 9,
+        "title": "CDB Command 0380h: Loopbacks",
+        "pdf_page": 342,
+        "field_rows": 0
+      },
+      {
+        "table_id": "9-50",
+        "section": 9,
+        "title": "CDB Diagnostics and Debug Commands Overview",
+        "pdf_page": 343,
+        "field_rows": 0
+      },
+      {
+        "table_id": "9-51",
+        "section": 9,
+        "title": "Detailed Return Status Codes for Security Commands",
+        "pdf_page": 344,
+        "field_rows": 0
+      }
+    ],
+    "renamed": [
+      {
+        "table_id_53": "8-1",
+        "table_id_54": "8-1",
+        "title_53": "List of CMIS Pages",
+        "title_54": "List of CMIS 128-Byte Pages and Banks",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-13",
+        "table_id_54": "8-13",
+        "title_53": "CdbStatus fields (paged memory modules only) (Lower Memory)",
+        "title_54": "CdbStatus Registers (paged memory modules only) (Lower Memory)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-14",
+        "table_id_54": "8-14",
+        "title_53": "Bit definitions within CdbStatus fields",
+        "title_54": "Fields of a CdbStatus register",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-20",
+        "table_id_54": "8-20",
+        "title_53": "Media Type Encodings",
+        "title_54": "Media Type Encodings (Table Selection)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-22",
+        "table_id_54": "8-22",
+        "title_53": "Format of Application Descriptor Bytes 1-4",
+        "title_54": "Format of Application Descriptor Bytes 1-4 (Paged Memory Modules)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-25",
+        "table_id_54": "8-26",
+        "title_53": "Page Mapping Register Components (Lower Memory)",
+        "title_54": "Dynamic Page Mapping Register (Lower Memory)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-37",
+        "table_id_54": "8-38",
+        "title_53": "Far End Configurations for Homogeneous Far End Breakout (Page 00h)",
+        "title_54": "Far End Configurations for Uniform Far End Breakout (Page 00h)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-46",
+        "table_id_54": "8-47",
+        "title_53": "Supported Pages Advertising (Page 01h)",
+        "title_54": "Supported Pages and Banks Advertising (Page 01h)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-60",
+        "table_id_54": "8-62",
+        "title_53": "Miscellaneous Advertisements (Page 01h)",
+        "title_54": "Miscellaneous Feature Advertisements (Page 01h)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-62",
+        "table_id_54": "8-64",
+        "title_53": "Module-Level Monitor Thresholds (Page 02h)",
+        "title_54": "Module-Level Supervision Thresholds (Page 02h)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-71",
+        "table_id_54": "8-81",
+        "title_53": "Data Path Configuration per Lane (DPConfigLane<i>)",
+        "title_54": "Staged Data Path Configuration per Lane (DPConfigLane<i>)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-92",
+        "table_id_54": "8-102",
+        "title_53": "Data Path Configuration per Lane (DPConfigLane<i> Field)",
+        "title_54": "Provisioned Data Path Configuration per Lane (DPConfigLane<i> Field)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-168",
+        "table_id_54": "8-178",
+        "title_53": "VDM Configuration (Page 20h-23h)",
+        "title_54": "VDM Instance Descriptors (Page 20h-23h)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-171",
+        "table_id_54": "8-181",
+        "title_53": "VDM Real-Time Values (Page 24h-27h)",
+        "title_54": "VDM Real-Time or Statistics Values (Page 24h-27h)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-172",
+        "table_id_54": "8-182",
+        "title_53": "VDM Alarm/Warning Thresholds (Page 28h-2Bh)",
+        "title_54": "VDM Supervision Thresholds (Page 28h-2Bh)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-174",
+        "table_id_54": "8-184",
+        "title_53": "VDM Alarm and Warning Configuration (Page 2Ch)",
+        "title_54": "VDM Alarm/Warning Flags (Page 2Ch)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-175",
+        "table_id_54": "8-185",
+        "title_53": "VDM ThresholdSet0 to 15 Alarm and Warning Configuration (Page 2Dh)",
+        "title_54": "VDM Supervision Masks (Page 2Dh)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "8-176",
+        "table_id_54": "8-186",
+        "title_53": "VDM Advertisement and Control Registers Summary (Page 2Fh)",
+        "title_54": "VDM Advertisement and Control Registers (Page 2Fh)",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-7",
+        "table_id_54": "9-7",
+        "title_53": "CDB Feature and Capabilities Commands Overview",
+        "title_54": "CDB Command 0005h: Get Module Time",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-8",
+        "table_id_54": "9-8",
+        "title_53": "CDB Command 0040h: Module Features",
+        "title_54": "CDB Command 0006h: Set Module Time",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-9",
+        "table_id_54": "9-9",
+        "title_53": "CDB Command 0041h: Firmware Management Features",
+        "title_54": "CDB Feature and Capabilities Inquiry Commands Overview",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-10",
+        "table_id_54": "9-10",
+        "title_53": "CDB Command 0042h: Performance Monitoring Features",
+        "title_54": "CDB Command 0040h: Query Module Features",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-11",
+        "table_id_54": "9-11",
+        "title_53": "CDB Command 0043h: BERT and Diagnostics Features",
+        "title_54": "CDB Command 0041h: Query Firmware Management Features",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-12",
+        "table_id_54": "9-12",
+        "title_53": "CDB Command 0044h: Security Features and Capabilities",
+        "title_54": "CDB Command 0042h: Query Monitoring Features",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-13",
+        "table_id_54": "9-13",
+        "title_53": "CDB Command 0045h: Externally Defined Features",
+        "title_54": "CDB Command 0043h: Query Diagnostics Features",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-16",
+        "table_id_54": "9-18",
+        "title_53": "CDB Bulk Read Commands Overview",
+        "title_54": "CDB Firmware Management Commands Overview",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-17",
+        "table_id_54": "9-19",
+        "title_53": "CDB Bulk Write Commands Overview",
+        "title_54": "Firmware Management CdbCommandResult Failure Codes",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-20",
+        "table_id_54": "9-21",
+        "title_53": "CDB Command 0101h: Start Firmware Download",
+        "title_54": "CDB Command 0101h: Start Firmware Transfer",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-21",
+        "table_id_54": "9-22",
+        "title_53": "CDB Command 0102h: Abort Firmware Download",
+        "title_54": "CDB Command 0102h: Abort Firmware Transfer",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-26",
+        "table_id_54": "9-27",
+        "title_53": "CDB Command 0107h: Complete Firmware Download",
+        "title_54": "CDB Command 0107h: Complete Firmware Transfer",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-27",
+        "table_id_54": "9-28",
+        "title_53": "CDB Command 0108h: Copy Firmware Image",
+        "title_54": "CDB Command 0108h: Copy Firmware Load",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-28",
+        "table_id_54": "9-29",
+        "title_53": "CDB Command 0109h: Run Firmware Image",
+        "title_54": "CDB Command 0109h: Run Firmware Load",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-29",
+        "table_id_54": "9-30",
+        "title_53": "CDB Command 010Ah: Commit Image",
+        "title_54": "CDB Command 010Ah: Commit Firmware Load",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-30",
+        "table_id_54": "9-31",
+        "title_53": "CDB Performance Monitoring Commands Overview",
+        "title_54": "CDB Command 010Bh: Check Firmware Activation Options",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-32",
+        "table_id_54": "9-36",
+        "title_53": "CDB Command 0200h: Control PM",
+        "title_54": "CDB Command 0200h: Control PM Statistics",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-36",
+        "table_id_54": "9-40",
+        "title_53": "CDB Command 0214h/0215h: Get PM Media Side LPL/EPL",
+        "title_54": "CDB Command 0214h/0215h: Get Media Lane PM Statistics LPL/EPL",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-37",
+        "table_id_54": "9-41",
+        "title_53": "CDB Command 0216/0217h: Get Data Path PM LPL/EPL",
+        "title_54": "CDB Command 0216/0217h: Get Data Path PM Statistics LPL/EPL",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-38",
+        "table_id_54": "9-42",
+        "title_53": "CDB Command 0220h: Get Data Path RMON Statistics",
+        "title_54": "CDB Command 0220h: Get Data Path RMON Counter Statistics",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-39",
+        "table_id_54": "9-43",
+        "title_53": "CDB Command 0230h: Control FEC Symbol Error Weight Histogram",
+        "title_54": "CDB Command 0230h: Control FEC Symbol Error Weight Counter Histogram",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-40",
+        "table_id_54": "9-44",
+        "title_53": "CDB Command 0231h: Get FEC Symbol Error Weight Histogram",
+        "title_54": "CDB Command 0231h: Get FEC Symbol Error Weight Counter Histogram",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-47",
+        "table_id_54": "9-50",
+        "title_53": "CDB BERT Commands Overview",
+        "title_54": "Security Commands Overview",
+        "kind": "substantive"
+      },
+      {
+        "table_id_53": "9-48",
+        "table_id_54": "9-51",
+        "title_53": "CDB Diagnostics and Debug Commands Overview",
+        "title_54": "Detailed Result Status Codes for Security Commands",
+        "kind": "substantive"
+      }
+    ],
+    "terminology_updates": [
+      {
+        "table_id_53": "8-9",
+        "table_id_54": "8-9",
+        "title_53": "Module Flags (paged memory modules only) (Lower Memory)",
+        "title_54": "Module Flags (not for static memory modules) (Lower Memory)",
+        "kind": "terminology"
+      },
+      {
+        "table_id_53": "8-10",
+        "table_id_54": "8-10",
+        "title_53": "Module-Level Monitor Values (paged memory modules only) (Lower Memory)",
+        "title_54": "Module-Level Monitor Values (not for static memory modules) (Lower Memory)",
+        "kind": "terminology"
+      },
+      {
+        "table_id_53": "8-11",
+        "table_id_54": "8-11",
+        "title_53": "Module Global Controls (paged memory modules only) (Lower Memory)",
+        "title_54": "Module Global Controls (not for static memory modules ) (Lower Memory)",
+        "kind": "terminology"
+      },
+      {
+        "table_id_53": "8-12",
+        "table_id_54": "8-12",
+        "title_53": "Module Level Masks (paged memory modules only) (Lower Memory)",
+        "title_54": "Module Level Masks (not for static memory modules) (Lower Memory)",
+        "kind": "terminology"
+      },
+      {
+        "table_id_53": "8-16",
+        "table_id_54": "8-16",
+        "title_53": "Fault Information (paged memory modules only) (Lower Memory)",
+        "title_54": "Fault Information (not for static memory modules) (Lower Memory)",
+        "kind": "terminology"
+      }
+    ],
+    "cosmetic_title_changes": [
+      {
+        "table_id_53": "8-19",
+        "table_id_54": "8-19",
+        "title_53": "Low Power Restrictions Byte",
+        "title_54": "LowPowerRestrictions Byte"
+      }
+    ],
+    "page_shift": {
+      "min_delta": 0,
+      "max_delta": 44,
+      "modal_delta": 30,
+      "tables_with_modal_delta": 44,
+      "note": "PDF physical page numbers of matched tables. Inserted chapters shift most pages; this is layout, not content."
+    },
+    "field_row_changes": [
+      {
+        "table_id_53": "8-18",
+        "table_id_54": "8-18",
+        "field_rows_53": 5,
+        "field_rows_54": 3
+      },
+      {
+        "table_id_53": "8-23",
+        "table_id_54": "8-24",
+        "field_rows_53": 20,
+        "field_rows_54": 32
+      },
+      {
+        "table_id_53": "8-45",
+        "table_id_54": "8-46",
+        "field_rows_53": 4,
+        "field_rows_54": 3
+      },
+      {
+        "table_id_53": "8-66",
+        "table_id_54": "8-68",
+        "field_rows_53": 30,
+        "field_rows_54": 32
+      },
+      {
+        "table_id_53": "8-93",
+        "table_id_54": "8-103",
+        "field_rows_53": 9,
+        "field_rows_54": 8
+      },
+      {
+        "table_id_53": "8-99",
+        "table_id_54": "8-109",
+        "field_rows_53": 18,
+        "field_rows_54": 20
+      },
+      {
+        "table_id_53": "8-129",
+        "table_id_54": "8-139",
+        "field_rows_53": 21,
+        "field_rows_54": 16
+      },
+      {
+        "table_id_53": "8-153",
+        "table_id_54": "8-163",
+        "field_rows_53": 1,
+        "field_rows_54": 0
+      },
+      {
+        "table_id_53": "8-159",
+        "table_id_54": "8-169",
+        "field_rows_53": 8,
+        "field_rows_54": 0
+      },
+      {
+        "table_id_53": "8-161",
+        "table_id_54": "8-171",
+        "field_rows_53": 8,
+        "field_rows_54": 0
+      },
+      {
+        "table_id_53": "8-181",
+        "table_id_54": "8-201",
+        "field_rows_53": 0,
+        "field_rows_54": 1
+      }
+    ]
+  },
+  "cdb_commands": {
+    "count_53": 48,
+    "count_54": 51,
+    "added": [
+      {
+        "cmd_id": "0005",
+        "title": "Get Module Time",
+        "spec_section": "9.3.5",
+        "detail_table": "9-7",
+        "pdf_page": 332
+      },
+      {
+        "cmd_id": "0006",
+        "title": "Set Module Time",
+        "spec_section": "9.3.6",
+        "detail_table": "9-8",
+        "pdf_page": 333
+      },
+      {
+        "cmd_id": "010B",
+        "title": "Check Firmware Activation Options",
+        "spec_section": "9.6.13",
+        "detail_table": "9-31",
+        "pdf_page": 361
+      },
+      {
+        "cmd_id": "010C",
+        "title": "Store Firmware Load Tag",
+        "spec_section": "9.6.14",
+        "detail_table": "9-32",
+        "pdf_page": 362
+      },
+      {
+        "cmd_id": "010D",
+        "title": "Retrieve Firmware Load Tag",
+        "spec_section": "9.6.15",
+        "detail_table": "9-33",
+        "pdf_page": 363
+      }
+    ],
+    "removed": [
+      {
+        "cmd_id": "0281",
+        "title": "Data Monitoring and Recording Advertisements",
+        "spec_section": "9.9.2",
+        "detail_table": "9-45",
+        "pdf_page": 339
+      },
+      {
+        "cmd_id": "0380",
+        "title": "Loopbacks",
+        "spec_section": "9.11.1",
+        "detail_table": "9-49",
+        "pdf_page": 342
+      }
+    ],
+    "changed": [
+      {
+        "cmd_id": "0040",
+        "changes": {
+          "title": {
+            "53": "Module Features",
+            "54": "Query Module Features"
+          },
+          "detail_table": {
+            "53": "9-8",
+            "54": "9-10"
+          }
+        }
+      },
+      {
+        "cmd_id": "0041",
+        "changes": {
+          "title": {
+            "53": "Firmware Management Features",
+            "54": "Query Firmware Management Features"
+          },
+          "detail_table": {
+            "53": "9-9",
+            "54": "9-11"
+          }
+        }
+      },
+      {
+        "cmd_id": "0042",
+        "changes": {
+          "title": {
+            "53": "Performance Monitoring Features",
+            "54": "Query Monitoring Features"
+          },
+          "detail_table": {
+            "53": "9-10",
+            "54": "9-12"
+          }
+        }
+      },
+      {
+        "cmd_id": "0043",
+        "changes": {
+          "title": {
+            "53": "BERT and Diagnostics Features",
+            "54": "Query Diagnostics Features"
+          },
+          "detail_table": {
+            "53": "9-11",
+            "54": "9-13"
+          }
+        }
+      },
+      {
+        "cmd_id": "0044",
+        "changes": {
+          "title": {
+            "53": "Security Features and Capabilities",
+            "54": "Query Security Features"
+          },
+          "detail_table": {
+            "53": "9-12",
+            "54": "9-14"
+          }
+        }
+      },
+      {
+        "cmd_id": "0045",
+        "changes": {
+          "title": {
+            "53": "Externally Defined Features",
+            "54": "Query Supplement Support"
+          },
+          "detail_table": {
+            "53": "9-13",
+            "54": "9-15"
+          }
+        }
+      },
+      {
+        "cmd_id": "0050",
+        "changes": {
+          "spec_section": {
+            "53": "9.4.7",
+            "54": "9.5.1"
+          },
+          "detail_table": {
+            "53": "9-14",
+            "54": "9-16"
+          }
+        }
+      },
+      {
+        "cmd_id": "0051",
+        "changes": {
+          "spec_section": {
+            "53": "9.4.8",
+            "54": "9.5.2"
+          },
+          "detail_table": {
+            "53": "9-15",
+            "54": "9-17"
+          }
+        }
+      },
+      {
+        "cmd_id": "0100",
+        "changes": {
+          "spec_section": {
+            "53": "9.7.1",
+            "54": "9.6.2"
+          },
+          "detail_table": {
+            "53": "9-19",
+            "54": "9-20"
+          }
+        }
+      },
+      {
+        "cmd_id": "0101",
+        "changes": {
+          "title": {
+            "53": "Start Firmware Download",
+            "54": "Start Firmware Transfer"
+          },
+          "spec_section": {
+            "53": "9.7.2",
+            "54": "9.6.3"
+          },
+          "detail_table": {
+            "53": "9-20",
+            "54": "9-21"
+          }
+        }
+      },
+      {
+        "cmd_id": "0102",
+        "changes": {
+          "title": {
+            "53": "Abort Firmware Download",
+            "54": "Abort Firmware Transfer"
+          },
+          "spec_section": {
+            "53": "9.7.3",
+            "54": "9.6.4"
+          },
+          "detail_table": {
+            "53": "9-21",
+            "54": "9-22"
+          }
+        }
+      },
+      {
+        "cmd_id": "0103",
+        "changes": {
+          "spec_section": {
+            "53": "9.7.4",
+            "54": "9.6.5"
+          },
+          "detail_table": {
+            "53": "9-22",
+            "54": "9-23"
+          }
+        }
+      },
+      {
+        "cmd_id": "0104",
+        "changes": {
+          "spec_section": {
+            "53": "9.7.5",
+            "54": "9.6.6"
+          },
+          "detail_table": {
+            "53": "9-23",
+            "54": "9-24"
+          }
+        }
+      },
+      {
+        "cmd_id": "0105",
+        "changes": {
+          "spec_section": {
+            "53": "9.7.6",
+            "54": "9.6.7"
+          },
+          "detail_table": {
+            "53": "9-24",
+            "54": "9-25"
+          }
+        }
+      },
+      {
+        "cmd_id": "0106",
+        "changes": {
+          "spec_section": {
+            "53": "9.7.7",
+            "54": "9.6.8"
+          },
+          "detail_table": {
+            "53": "9-25",
+            "54": "9-26"
+          }
+        }
+      },
+      {
+        "cmd_id": "0107",
+        "changes": {
+          "title": {
+            "53": "Complete Firmware Download",
+            "54": "Complete Firmware Transfer"
+          },
+          "spec_section": {
+            "53": "9.7.8",
+            "54": "9.6.9"
+          },
+          "detail_table": {
+            "53": "9-26",
+            "54": "9-27"
+          }
+        }
+      },
+      {
+        "cmd_id": "0108",
+        "changes": {
+          "title": {
+            "53": "Copy Firmware Image",
+            "54": "Copy Firmware Load"
+          },
+          "spec_section": {
+            "53": "9.7.9",
+            "54": "9.6.10"
+          },
+          "detail_table": {
+            "53": "9-27",
+            "54": "9-28"
+          }
+        }
+      },
+      {
+        "cmd_id": "0109",
+        "changes": {
+          "title": {
+            "53": "Run Firmware Image",
+            "54": "Run Firmware Load"
+          },
+          "spec_section": {
+            "53": "9.7.10",
+            "54": "9.6.11"
+          },
+          "detail_table": {
+            "53": "9-28",
+            "54": "9-29"
+          }
+        }
+      },
+      {
+        "cmd_id": "010A",
+        "changes": {
+          "title": {
+            "53": "Commit Image",
+            "54": "Commit Firmware Load"
+          },
+          "spec_section": {
+            "53": "9.7.11",
+            "54": "9.6.12"
+          },
+          "detail_table": {
+            "53": "9-29",
+            "54": "9-30"
+          }
+        }
+      },
+      {
+        "cmd_id": "0200",
+        "changes": {
+          "title": {
+            "53": "Control PM",
+            "54": "Control PM Statistics"
+          },
+          "spec_section": {
+            "53": "9.8.1",
+            "54": "9.7.1"
+          },
+          "detail_table": {
+            "53": "9-32",
+            "54": "9-36"
+          }
+        }
+      },
+      {
+        "cmd_id": "0201",
+        "changes": {
+          "spec_section": {
+            "53": "9.8.2",
+            "54": "9.7.2"
+          },
+          "detail_table": {
+            "53": "9-33",
+            "54": "9-37"
+          }
+        }
+      },
+      {
+        "cmd_id": "0210",
+        "changes": {
+          "spec_section": {
+            "53": "9.8.3",
+            "54": "9.7.3"
+          },
+          "detail_table": {
+            "53": "9-34",
+            "54": "9-38"
+          }
+        }
+      },
+      {
+        "cmd_id": "0211",
+        "changes": {
+          "spec_section": {
+            "53": "9.8.3",
+            "54": "9.7.3"
+          },
+          "detail_table": {
+            "53": "9-34",
+            "54": "9-38"
+          }
+        }
+      },
+      {
+        "cmd_id": "0212",
+        "changes": {
+          "spec_section": {
+            "53": "9.8.4",
+            "54": "9.7.4"
+          },
+          "detail_table": {
+            "53": "9-35",
+            "54": "9-39"
+          }
+        }
+      },
+      {
+        "cmd_id": "0213",
+        "changes": {
+          "spec_section": {
+            "53": "9.8.4",
+            "54": "9.7.4"
+          },
+          "detail_table": {
+            "53": "9-35",
+            "54": "9-39"
+          }
+        }
+      },
+      {
+        "cmd_id": "0214",
+        "changes": {
+          "title": {
+            "53": "Get PM Media Side LPL/EPL",
+            "54": "Get Media Lane PM Statistics LPL/EPL"
+          },
+          "spec_section": {
+            "53": "9.8.5",
+            "54": "9.7.5"
+          },
+          "detail_table": {
+            "53": "9-36",
+            "54": "9-40"
+          }
+        }
+      },
+      {
+        "cmd_id": "0215",
+        "changes": {
+          "title": {
+            "53": "Get PM Media Side LPL/EPL",
+            "54": "Get Media Lane PM Statistics LPL/EPL"
+          },
+          "spec_section": {
+            "53": "9.8.5",
+            "54": "9.7.5"
+          },
+          "detail_table": {
+            "53": "9-36",
+            "54": "9-40"
+          }
+        }
+      },
+      {
+        "cmd_id": "0216",
+        "changes": {
+          "title": {
+            "53": "Get Data Path PM LPL/EPL",
+            "54": "Get Data Path PM Statistics LPL/EPL"
+          },
+          "spec_section": {
+            "53": "9.8.6",
+            "54": "9.7.6"
+          },
+          "detail_table": {
+            "53": "9-37",
+            "54": "9-41"
+          }
+        }
+      },
+      {
+        "cmd_id": "0217",
+        "changes": {
+          "title": {
+            "53": "Get Data Path PM LPL/EPL",
+            "54": "Get Data Path PM Statistics LPL/EPL"
+          },
+          "spec_section": {
+            "53": "9.8.6",
+            "54": "9.7.6"
+          },
+          "detail_table": {
+            "53": "9-37",
+            "54": "9-41"
+          }
+        }
+      },
+      {
+        "cmd_id": "0220",
+        "changes": {
+          "title": {
+            "53": "Get Data Path RMON Statistics",
+            "54": "Get Data Path RMON Counter Statistics"
+          },
+          "spec_section": {
+            "53": "9.8.7",
+            "54": "9.7.7"
+          },
+          "detail_table": {
+            "53": "9-38",
+            "54": "9-42"
+          }
+        }
+      },
+      {
+        "cmd_id": "0230",
+        "changes": {
+          "title": {
+            "53": "Control FEC Symbol Error Weight Histogram",
+            "54": "Control FEC Symbol Error Weight Counter Histogram"
+          },
+          "spec_section": {
+            "53": "9.8.8",
+            "54": "9.7.8"
+          },
+          "detail_table": {
+            "53": "9-39",
+            "54": "9-43"
+          }
+        }
+      },
+      {
+        "cmd_id": "0231",
+        "changes": {
+          "title": {
+            "53": "Get FEC Symbol Error Weight Histogram",
+            "54": "Get FEC Symbol Error Weight Counter Histogram"
+          },
+          "spec_section": {
+            "53": "9.8.9",
+            "54": "9.7.9"
+          },
+          "detail_table": {
+            "53": "9-40",
+            "54": "9-44"
+          }
+        }
+      },
+      {
+        "cmd_id": "0232",
+        "changes": {
+          "spec_section": {
+            "53": "9.8.10",
+            "54": "9.7.10"
+          },
+          "detail_table": {
+            "53": "9-41",
+            "54": "9-45"
+          }
+        }
+      },
+      {
+        "cmd_id": "0233",
+        "changes": {
+          "spec_section": {
+            "53": "9.8.11",
+            "54": "9.7.11"
+          },
+          "detail_table": {
+            "53": "9-42",
+            "54": "9-46"
+          }
+        }
+      },
+      {
+        "cmd_id": "0280",
+        "changes": {
+          "spec_section": {
+            "53": "9.9.1",
+            "54": "9.8.1"
+          },
+          "detail_table": {
+            "53": "9-44",
+            "54": "9-48"
+          }
+        }
+      },
+      {
+        "cmd_id": "0290",
+        "changes": {
+          "spec_section": {
+            "53": "9.9.3",
+            "54": "9.8.2"
+          },
+          "detail_table": {
+            "53": "9-46",
+            "54": "9-49"
+          }
+        }
+      },
+      {
+        "cmd_id": "0400",
+        "changes": {
+          "spec_section": {
+            "53": "9.12.2",
+            "54": "9.9.3"
+          }
+        }
+      },
+      {
+        "cmd_id": "0401",
+        "changes": {
+          "spec_section": {
+            "53": "9.12.3",
+            "54": "9.9.4"
+          }
+        }
+      },
+      {
+        "cmd_id": "0402",
+        "changes": {
+          "spec_section": {
+            "53": "9.12.4",
+            "54": "9.9.5"
+          }
+        }
+      },
+      {
+        "cmd_id": "0403",
+        "changes": {
+          "spec_section": {
+            "53": "9.12.5",
+            "54": "9.9.6"
+          }
+        }
+      },
+      {
+        "cmd_id": "0404",
+        "changes": {
+          "spec_section": {
+            "53": "9.12.6",
+            "54": "9.9.7"
+          }
+        }
+      },
+      {
+        "cmd_id": "0405",
+        "changes": {
+          "spec_section": {
+            "53": "9.12.7",
+            "54": "9.9.8"
+          }
+        }
+      }
+    ]
+  },
+  "fields_indicative": {
+    "count_53": 719,
+    "count_54": 745,
+    "added": [
+      {
+        "table_id": "8-57",
+        "page": "01h",
+        "byte": 171,
+        "name": "DefaultInputPolarityTx8",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bool",
+        "pdf_page": 206
+      },
+      {
+        "table_id": "8-57",
+        "page": "01h",
+        "byte": 172,
+        "name": "DefaultOutputPolarityRx8",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bool",
+        "pdf_page": 206
+      },
+      {
+        "table_id": "8-58",
+        "page": "01h",
+        "byte": 173,
+        "name": "PageChSupported",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "bool",
+        "pdf_page": 207
+      },
+      {
+        "table_id": "8-58",
+        "page": "01h",
+        "byte": 174,
+        "name": "Page60hSupported",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bool",
+        "pdf_page": 207
+      },
+      {
+        "table_id": "8-59",
+        "page": "01h",
+        "byte": 175,
+        "name": "NADBanksSupported",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 208
+      },
+      {
+        "table_id": "8-68",
+        "page": "04h",
+        "byte": 166,
+        "name": "GridLowChannel300GHz",
+        "byte_length": 2,
+        "access": "RO",
+        "value_type": "s16",
+        "pdf_page": 216
+      },
+      {
+        "table_id": "8-68",
+        "page": "04h",
+        "byte": 168,
+        "name": "GridHighChannel300GHz",
+        "byte_length": 2,
+        "access": "RO",
+        "value_type": "s16",
+        "pdf_page": 216
+      },
+      {
+        "table_id": "8-68",
+        "page": "04h",
+        "byte": 170,
+        "name": "Reserved",
+        "byte_length": 20,
+        "access": "RO",
+        "value_type": null,
+        "pdf_page": 216
+      },
+      {
+        "table_id": "8-70",
+        "page": "0Ch",
+        "byte": 128,
+        "name": "MapOfSupportedPages",
+        "byte_length": 32,
+        "access": "RO",
+        "value_type": "u8",
+        "pdf_page": 218
+      },
+      {
+        "table_id": "8-72",
+        "page": "0Ch",
+        "byte": 161,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 218
+      },
+      {
+        "table_id": "8-72",
+        "page": "0Ch",
+        "byte": 163,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 218
+      },
+      {
+        "table_id": "8-72",
+        "page": "0Ch",
+        "byte": 191,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 219
+      },
+      {
+        "table_id": "8-73",
+        "page": "0Ch",
+        "byte": 192,
+        "name": "NaSupportDetails",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "u8",
+        "pdf_page": 219
+      },
+      {
+        "table_id": "8-73",
+        "page": "0Ch",
+        "byte": 193,
+        "name": "NaSupportOptions",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "u8",
+        "pdf_page": 219
+      },
+      {
+        "table_id": "8-73",
+        "page": "0Ch",
+        "byte": 194,
+        "name": "FwSupportDetails",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "u8",
+        "pdf_page": 219
+      },
+      {
+        "table_id": "8-73",
+        "page": "0Ch",
+        "byte": 195,
+        "name": "FwSupportOptions",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "u8",
+        "pdf_page": 219
+      },
+      {
+        "table_id": "8-73",
+        "page": "0Ch",
+        "byte": 223,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 219
+      },
+      {
+        "table_id": "8-76",
+        "page": "0Dh",
+        "byte": 128,
+        "name": "CapabilitiesRegister",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "u8",
+        "pdf_page": 220
+      },
+      {
+        "table_id": "8-76",
+        "page": "0Dh",
+        "byte": 129,
+        "name": "Reserved",
+        "byte_length": 3,
+        "access": "RO",
+        "value_type": null,
+        "pdf_page": 220
+      },
+      {
+        "table_id": "8-76",
+        "page": "0Dh",
+        "byte": 132,
+        "name": "Reserved",
+        "byte_length": 4,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 220
+      },
+      {
+        "table_id": "8-76",
+        "page": "0Dh",
+        "byte": 136,
+        "name": "LoadsStatusRegister",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "u8",
+        "pdf_page": 220
+      },
+      {
+        "table_id": "8-76",
+        "page": "0Dh",
+        "byte": 137,
+        "name": "Reserved",
+        "byte_length": 11,
+        "access": "RO",
+        "value_type": null,
+        "pdf_page": 220
+      },
+      {
+        "table_id": "8-76",
+        "page": "0Dh",
+        "byte": 148,
+        "name": "VersionLoadA",
+        "byte_length": 36,
+        "access": "RO",
+        "value_type": "unspecified",
+        "pdf_page": 220
+      },
+      {
+        "table_id": "8-76",
+        "page": "0Dh",
+        "byte": 184,
+        "name": "VersionLoadB",
+        "byte_length": 36,
+        "access": null,
+        "value_type": "unspecified",
+        "pdf_page": 220
+      },
+      {
+        "table_id": "8-76",
+        "page": "0Dh",
+        "byte": 220,
+        "name": "VersionFixedLoad",
+        "byte_length": 36,
+        "access": null,
+        "value_type": "unspecified",
+        "pdf_page": 220
+      },
+      {
+        "table_id": "8-109",
+        "page": "12h",
+        "byte": 216,
+        "name": "OutputPowerTxHiAlarmRelThr",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "bitfield4",
+        "pdf_page": 251
+      },
+      {
+        "table_id": "8-109",
+        "page": "12h",
+        "byte": 217,
+        "name": "OutputPowerTxLoAlarmRelThr",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "bitfield4",
+        "pdf_page": 251
+      },
+      {
+        "table_id": "8-109",
+        "page": "12h",
+        "byte": 238,
+        "name": "TargetOutputPowerOORFlagTx<n>",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "bool",
+        "pdf_page": 251
+      },
+      {
+        "table_id": "8-161",
+        "page": "16h",
+        "byte": 235,
+        "name": "eachbit<j>setindicatessupportforthemultiplexstructure",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 292
+      },
+      {
+        "table_id": "8-166",
+        "page": "18h",
+        "byte": 128,
+        "name": "NADBlockIndex1",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-166",
+        "page": "18h",
+        "byte": 129,
+        "name": "NADBlockIndex2",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-166",
+        "page": "18h",
+        "byte": 130,
+        "name": "NADBlockIndex3",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-166",
+        "page": "18h",
+        "byte": 131,
+        "name": "NADBlockIndex4",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-166",
+        "page": "18h",
+        "byte": 132,
+        "name": "NADBlockIndex5",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-166",
+        "page": "18h",
+        "byte": 133,
+        "name": "NADBlockIndex6",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-166",
+        "page": "18h",
+        "byte": 134,
+        "name": "NADBlockIndex7",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-166",
+        "page": "18h",
+        "byte": 135,
+        "name": "NADBlockIndex8",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-167",
+        "page": "18h",
+        "byte": 136,
+        "name": "NADBlockIndex1",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-167",
+        "page": "18h",
+        "byte": 137,
+        "name": "NADBlockIndex2",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-167",
+        "page": "18h",
+        "byte": 138,
+        "name": "NADBlockIndex3",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-167",
+        "page": "18h",
+        "byte": 139,
+        "name": "NADBlockIndex4",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-167",
+        "page": "18h",
+        "byte": 140,
+        "name": "NADBlockIndex5",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-167",
+        "page": "18h",
+        "byte": 141,
+        "name": "NADBlockIndex6",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-167",
+        "page": "18h",
+        "byte": 142,
+        "name": "NADBlockIndex7",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-167",
+        "page": "18h",
+        "byte": 143,
+        "name": "NADBlockIndex8",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 294
+      },
+      {
+        "table_id": "8-188",
+        "page": "60h",
+        "byte": 128,
+        "name": "InputPolarityStatusTx8",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bool",
+        "pdf_page": 313
+      },
+      {
+        "table_id": "8-188",
+        "page": "60h",
+        "byte": 129,
+        "name": "OutputPolarityStatusRx8",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bool",
+        "pdf_page": 313
+      },
+      {
+        "table_id": "8-188",
+        "page": "60h",
+        "byte": 130,
+        "name": "AcqCountersRxSupported",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bool",
+        "pdf_page": 313
+      },
+      {
+        "table_id": "8-189",
+        "page": "60h",
+        "byte": 192,
+        "name": "ResetAcquisitionCountersRx",
+        "byte_length": 1,
+        "access": "WO",
+        "value_type": "u8",
+        "pdf_page": 313
+      },
+      {
+        "table_id": "8-191",
+        "page": "61h",
+        "byte": 143,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 316
+      },
+      {
+        "table_id": "8-191",
+        "page": "61h",
+        "byte": 159,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 316
+      },
+      {
+        "table_id": "8-191",
+        "page": "61h",
+        "byte": 175,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 316
+      },
+      {
+        "table_id": "8-191",
+        "page": "61h",
+        "byte": 191,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 316
+      },
+      {
+        "table_id": "8-196",
+        "page": "6Dh",
+        "byte": 128,
+        "name": "MaxRedirectionCommitDuration",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bitfield4",
+        "pdf_page": 318
+      },
+      {
+        "table_id": "8-196",
+        "page": "6Dh",
+        "byte": 128,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 318
+      },
+      {
+        "table_id": "8-196",
+        "page": "6Dh",
+        "byte": 136,
+        "name": "RedirectionOfMediaLane1",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "u8",
+        "pdf_page": 318
+      },
+      {
+        "table_id": "8-196",
+        "page": "6Dh",
+        "byte": 137,
+        "name": "RedirectionOfMediaLane2",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 318
+      },
+      {
+        "table_id": "8-196",
+        "page": "6Dh",
+        "byte": 138,
+        "name": "RedirectionOfMediaLane3",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 318
+      },
+      {
+        "table_id": "8-196",
+        "page": "6Dh",
+        "byte": 139,
+        "name": "RedirectionOfMediaLane4",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 318
+      },
+      {
+        "table_id": "8-196",
+        "page": "6Dh",
+        "byte": 140,
+        "name": "RedirectionOfMediaLane5",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 318
+      },
+      {
+        "table_id": "8-196",
+        "page": "6Dh",
+        "byte": 141,
+        "name": "RedirectionOfMediaLane6",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 318
+      },
+      {
+        "table_id": "8-196",
+        "page": "6Dh",
+        "byte": 142,
+        "name": "RedirectionOfMediaLane7",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 318
+      },
+      {
+        "table_id": "8-196",
+        "page": "6Dh",
+        "byte": 143,
+        "name": "RedirectionOfMediaLane8",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 318
+      },
+      {
+        "table_id": "8-196",
+        "page": "6Dh",
+        "byte": 152,
+        "name": "EnableMediaLaneRedirection",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": "bool",
+        "pdf_page": 318
+      },
+      {
+        "table_id": "8-196",
+        "page": "6Dh",
+        "byte": 152,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 318
+      },
+      {
+        "table_id": "8-196",
+        "page": "6Dh",
+        "byte": 160,
+        "name": "CommitMediaLaneRedirection",
+        "byte_length": 1,
+        "access": "WO",
+        "value_type": "bool",
+        "pdf_page": 318
+      },
+      {
+        "table_id": "8-196",
+        "page": "6Dh",
+        "byte": 160,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 318
+      },
+      {
+        "table_id": "8-198",
+        "page": "9Fh",
+        "byte": 128,
+        "name": "CMDID",
+        "byte_length": 2,
+        "access": "RW",
+        "value_type": "u16",
+        "pdf_page": 320
+      },
+      {
+        "table_id": "8-198",
+        "page": "9Fh",
+        "byte": 130,
+        "name": "EPLLength",
+        "byte_length": 2,
+        "access": "RW",
+        "value_type": "u16",
+        "pdf_page": 320
+      },
+      {
+        "table_id": "8-201",
+        "page": "A0h",
+        "byte": 255,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 324
+      },
+      {
+        "table_id": "8-24",
+        "page": "Lwr",
+        "byte": 106,
+        "name": "HostInterfaceIDApp6",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "u8",
+        "pdf_page": 184
+      },
+      {
+        "table_id": "8-24",
+        "page": "Lwr",
+        "byte": 107,
+        "name": "MediaInterfaceIDApp6",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 184
+      },
+      {
+        "table_id": "8-24",
+        "page": "Lwr",
+        "byte": 108,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 184
+      },
+      {
+        "table_id": "8-24",
+        "page": "Lwr",
+        "byte": 109,
+        "name": "HostLaneAssignmentOptionsApp6",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 184
+      },
+      {
+        "table_id": "8-24",
+        "page": "Lwr",
+        "byte": 110,
+        "name": "HostInterfaceIDApp7",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "u8",
+        "pdf_page": 184
+      },
+      {
+        "table_id": "8-24",
+        "page": "Lwr",
+        "byte": 111,
+        "name": "MediaInterfaceIDApp7",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 184
+      },
+      {
+        "table_id": "8-24",
+        "page": "Lwr",
+        "byte": 112,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 184
+      },
+      {
+        "table_id": "8-24",
+        "page": "Lwr",
+        "byte": 113,
+        "name": "HostLaneAssignmentOptionsApp7",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 184
+      },
+      {
+        "table_id": "8-24",
+        "page": "Lwr",
+        "byte": 114,
+        "name": "HostInterfaceIDApp8",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "u8",
+        "pdf_page": 184
+      },
+      {
+        "table_id": "8-24",
+        "page": "Lwr",
+        "byte": 115,
+        "name": "MediaInterfaceIDApp8",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 184
+      },
+      {
+        "table_id": "8-24",
+        "page": "Lwr",
+        "byte": 116,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 184
+      },
+      {
+        "table_id": "8-24",
+        "page": "Lwr",
+        "byte": 117,
+        "name": "HostLaneAssignmentOptionsApp8",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 184
+      }
+    ],
+    "removed": [
+      {
+        "table_id": "8-28",
+        "page": "00h",
+        "byte": 2,
+        "name": "VendorRevRevisionlevelforpartnumberprovidedbyvendor(ASCII)RORqd.",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 161
+      },
+      {
+        "table_id": "8-28",
+        "page": "00h",
+        "byte": 3,
+        "name": "VendorOUIVendorIEEEcompanyIDRORqd.",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 161
+      },
+      {
+        "table_id": "8-28",
+        "page": "00h",
+        "byte": 8,
+        "name": "DateCodeManufacturingDateCode(ASCII)RORqd.",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 161
+      },
+      {
+        "table_id": "8-28",
+        "page": "00h",
+        "byte": 10,
+        "name": "CLEICodeCommonLanguageEquipmentIdentificationCode(ASCII)RORqd.",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 161
+      },
+      {
+        "table_id": "8-28",
+        "page": "00h",
+        "byte": 16,
+        "name": "VendorNameVendorname(ASCII)RORqd.",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 161
+      },
+      {
+        "table_id": "8-28",
+        "page": "00h",
+        "byte": 16,
+        "name": "VendorPNPartnumberprovidedbyvendor(ASCII)RORqd.",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 161
+      },
+      {
+        "table_id": "8-28",
+        "page": "00h",
+        "byte": 16,
+        "name": "VendorSNVendorSerialNumber(ASCII)RORqd.",
+        "byte_length": 1,
+        "access": null,
+        "value_type": "u8",
+        "pdf_page": 161
+      },
+      {
+        "table_id": "8-45",
+        "page": "01h",
+        "byte": 2,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 170
+      },
+      {
+        "table_id": "8-57",
+        "page": "01h",
+        "byte": 175,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": null,
+        "pdf_page": 182
+      },
+      {
+        "table_id": "8-66",
+        "page": "04h",
+        "byte": 166,
+        "name": "Reserved",
+        "byte_length": 24,
+        "access": "RO",
+        "value_type": null,
+        "pdf_page": 189
+      },
+      {
+        "table_id": "8-93",
+        "page": "11h",
+        "byte": 8,
+        "name": "fromcorrespondingregistersin",
+        "byte_length": 88,
+        "access": null,
+        "value_type": "unspecified",
+        "pdf_page": 217
+      },
+      {
+        "table_id": "8-99",
+        "page": "12h",
+        "byte": 238,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 222
+      },
+      {
+        "table_id": "8-129",
+        "page": "14h",
+        "byte": 192,
+        "name": "HostSideErrorCountLane1",
+        "byte_length": 1807,
+        "access": "RO",
+        "value_type": "u64",
+        "pdf_page": 246
+      },
+      {
+        "table_id": "8-129",
+        "page": "14h",
+        "byte": 200,
+        "name": "HostTotalBitsCountLane1",
+        "byte_length": 1879,
+        "access": "RO",
+        "value_type": "unspecified",
+        "pdf_page": 246
+      },
+      {
+        "table_id": "8-129",
+        "page": "14h",
+        "byte": 208,
+        "name": "HostSideErrorCountLane2",
+        "byte_length": 1951,
+        "access": "RO",
+        "value_type": "unspecified",
+        "pdf_page": 246
+      },
+      {
+        "table_id": "8-129",
+        "page": "14h",
+        "byte": 216,
+        "name": "HostTotalBitsCountLane2",
+        "byte_length": 2023,
+        "access": "RO",
+        "value_type": "unspecified",
+        "pdf_page": 246
+      },
+      {
+        "table_id": "8-129",
+        "page": "14h",
+        "byte": 222,
+        "name": "MediaSideBERLane8",
+        "byte_length": 2011,
+        "access": "RO",
+        "value_type": "unspecified",
+        "pdf_page": 246
+      },
+      {
+        "table_id": "8-151",
+        "page": "16h",
+        "byte": 235,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 261
+      },
+      {
+        "table_id": "8-153",
+        "page": "17h",
+        "byte": 128,
+        "name": "NPStateChangedFlag8",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bool",
+        "pdf_page": 262
+      },
+      {
+        "table_id": "8-156",
+        "page": "18h",
+        "byte": 128,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 263
+      },
+      {
+        "table_id": "8-156",
+        "page": "18h",
+        "byte": 129,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 263
+      },
+      {
+        "table_id": "8-156",
+        "page": "18h",
+        "byte": 130,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 263
+      },
+      {
+        "table_id": "8-156",
+        "page": "18h",
+        "byte": 131,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 263
+      },
+      {
+        "table_id": "8-156",
+        "page": "18h",
+        "byte": 132,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 263
+      },
+      {
+        "table_id": "8-156",
+        "page": "18h",
+        "byte": 133,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 263
+      },
+      {
+        "table_id": "8-156",
+        "page": "18h",
+        "byte": 134,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 263
+      },
+      {
+        "table_id": "8-156",
+        "page": "18h",
+        "byte": 135,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 263
+      },
+      {
+        "table_id": "8-157",
+        "page": "18h",
+        "byte": 136,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 263
+      },
+      {
+        "table_id": "8-157",
+        "page": "18h",
+        "byte": 137,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 263
+      },
+      {
+        "table_id": "8-157",
+        "page": "18h",
+        "byte": 138,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 263
+      },
+      {
+        "table_id": "8-157",
+        "page": "18h",
+        "byte": 139,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 263
+      },
+      {
+        "table_id": "8-157",
+        "page": "18h",
+        "byte": 140,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 263
+      },
+      {
+        "table_id": "8-157",
+        "page": "18h",
+        "byte": 141,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 263
+      },
+      {
+        "table_id": "8-157",
+        "page": "18h",
+        "byte": 142,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 264
+      },
+      {
+        "table_id": "8-157",
+        "page": "18h",
+        "byte": 143,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RW",
+        "value_type": null,
+        "pdf_page": 264
+      },
+      {
+        "table_id": "8-159",
+        "page": "19h",
+        "byte": 128,
+        "name": "AppSelCodeTx1",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bitfield4",
+        "pdf_page": 265
+      },
+      {
+        "table_id": "8-159",
+        "page": "19h",
+        "byte": 129,
+        "name": "AppSelCodeTx2",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bitfield4",
+        "pdf_page": 265
+      },
+      {
+        "table_id": "8-159",
+        "page": "19h",
+        "byte": 130,
+        "name": "AppSelCodeTx3",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bitfield4",
+        "pdf_page": 265
+      },
+      {
+        "table_id": "8-159",
+        "page": "19h",
+        "byte": 131,
+        "name": "AppSelCodeTx4",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bitfield4",
+        "pdf_page": 265
+      },
+      {
+        "table_id": "8-159",
+        "page": "19h",
+        "byte": 132,
+        "name": "AppSelCodeTx5",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bitfield4",
+        "pdf_page": 265
+      },
+      {
+        "table_id": "8-159",
+        "page": "19h",
+        "byte": 133,
+        "name": "AppSelCodeTx6",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bitfield4",
+        "pdf_page": 265
+      },
+      {
+        "table_id": "8-159",
+        "page": "19h",
+        "byte": 134,
+        "name": "AppSelCodeTx7",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bitfield4",
+        "pdf_page": 265
+      },
+      {
+        "table_id": "8-159",
+        "page": "19h",
+        "byte": 135,
+        "name": "AppSelCodeTx8",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bitfield4",
+        "pdf_page": 265
+      },
+      {
+        "table_id": "8-161",
+        "page": "19h",
+        "byte": 144,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": null,
+        "pdf_page": 266
+      },
+      {
+        "table_id": "8-161",
+        "page": "19h",
+        "byte": 145,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": null,
+        "pdf_page": 266
+      },
+      {
+        "table_id": "8-161",
+        "page": "19h",
+        "byte": 146,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": null,
+        "pdf_page": 266
+      },
+      {
+        "table_id": "8-161",
+        "page": "19h",
+        "byte": 147,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": null,
+        "pdf_page": 266
+      },
+      {
+        "table_id": "8-161",
+        "page": "19h",
+        "byte": 148,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": null,
+        "pdf_page": 266
+      },
+      {
+        "table_id": "8-161",
+        "page": "19h",
+        "byte": 149,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": null,
+        "pdf_page": 266
+      },
+      {
+        "table_id": "8-161",
+        "page": "19h",
+        "byte": 150,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": null,
+        "pdf_page": 266
+      },
+      {
+        "table_id": "8-161",
+        "page": "19h",
+        "byte": 151,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": null,
+        "pdf_page": 266
+      },
+      {
+        "table_id": "8-176",
+        "page": "2Fh",
+        "byte": 145,
+        "name": "FreezeDone",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": "bool",
+        "pdf_page": 280
+      },
+      {
+        "table_id": "8-178",
+        "page": "9Fh",
+        "byte": 129,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 282
+      },
+      {
+        "table_id": "8-178",
+        "page": "9Fh",
+        "byte": 131,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": null,
+        "value_type": null,
+        "pdf_page": 282
+      },
+      {
+        "table_id": "8-18",
+        "page": "Lwr",
+        "byte": 60,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": null,
+        "pdf_page": 154
+      },
+      {
+        "table_id": "8-18",
+        "page": "Lwr",
+        "byte": 61,
+        "name": "Reserved",
+        "byte_length": 1,
+        "access": "RO",
+        "value_type": null,
+        "pdf_page": 154
+      }
+    ],
+    "changed": [
+      {
+        "page": "00h",
+        "byte": 129,
+        "name": "VendorName",
+        "changes": {
+          "access": {
+            "53": null,
+            "54": "RO"
+          }
+        }
+      },
+      {
+        "page": "00h",
+        "byte": 145,
+        "name": "VendorOUI",
+        "changes": {
+          "access": {
+            "53": null,
+            "54": "RO"
+          }
+        }
+      },
+      {
+        "page": "00h",
+        "byte": 148,
+        "name": "VendorPN",
+        "changes": {
+          "access": {
+            "53": null,
+            "54": "RO"
+          }
+        }
+      },
+      {
+        "page": "00h",
+        "byte": 164,
+        "name": "VendorRev",
+        "changes": {
+          "access": {
+            "53": null,
+            "54": "RO"
+          }
+        }
+      },
+      {
+        "page": "00h",
+        "byte": 166,
+        "name": "VendorSN",
+        "changes": {
+          "access": {
+            "53": null,
+            "54": "RO"
+          }
+        }
+      },
+      {
+        "page": "00h",
+        "byte": 182,
+        "name": "DateCode",
+        "changes": {
+          "access": {
+            "53": null,
+            "54": "RO"
+          }
+        }
+      },
+      {
+        "page": "10h",
+        "byte": 8,
+        "name": "Reserved",
+        "changes": {
+          "byte_length": {
+            "53": 65,
+            "54": 75
+          }
+        }
+      },
+      {
+        "page": "11h",
+        "byte": 190,
+        "name": "OpticalPowerRx3",
+        "changes": {
+          "unit": {
+            "53": "uW",
+            "54": null
+          },
+          "scale": {
+            "53": 0.1,
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "11h",
+        "byte": 192,
+        "name": "OpticalPowerRx4",
+        "changes": {
+          "unit": {
+            "53": null,
+            "54": "uW"
+          },
+          "scale": {
+            "53": null,
+            "54": 0.1
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 138,
+        "name": "PatternCheckerLOLFlagHostLane8",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 192,
+        "name": "HostSideBERLane1",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 192,
+        "name": "Reserved",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 194,
+        "name": "HostSideBERLane2",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 196,
+        "name": "HostSideBERLane3",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 198,
+        "name": "HostSideBERLane4",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 200,
+        "name": "HostSideBERLane5",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 202,
+        "name": "HostSideBERLane6",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 204,
+        "name": "HostSideBERLane7",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 206,
+        "name": "HostSideBERLane8",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 208,
+        "name": "MediaSideBERLane1",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 210,
+        "name": "MediaSideBERLane2",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 212,
+        "name": "MediaSideBERLane3",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 214,
+        "name": "MediaSideBERLane4",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 216,
+        "name": "MediaSideBERLane5",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 218,
+        "name": "MediaSideBERLane6",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      },
+      {
+        "page": "14h",
+        "byte": 220,
+        "name": "MediaSideBERLane7",
+        "changes": {
+          "access": {
+            "53": "RO",
+            "54": null
+          }
+        }
+      }
+    ],
+    "caveat": "Field rows come from best-effort coordinate reconstruction and are incomplete by design; treat these entries as review candidates, not as statements about the specification. The published CSV and the OIF PDF are authoritative."
+  }
+}

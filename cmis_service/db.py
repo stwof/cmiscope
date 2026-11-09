@@ -157,6 +157,55 @@ CREATE TABLE IF NOT EXISTS kg_pending (
     impact     TEXT, status TEXT NOT NULL DEFAULT 'open'
 );
 
+-- Read-only CMIS 5.3 reference data. Rebuilt from cmis53_reference.json on
+-- every start. Deliberately isolated from fields/config_items: these rows are
+-- never instantiated as writable configuration items and have no foreign keys.
+CREATE TABLE IF NOT EXISTS cmis53_fields (
+    key_id            TEXT PRIMARY KEY,
+    name              TEXT NOT NULL,
+    page              TEXT, page_raw TEXT,
+    byte              INTEGER, byte_length INTEGER,
+    mask_bytes        TEXT, mask_values TEXT NOT NULL DEFAULT '[]',
+    bank_scope        TEXT, value_type TEXT, data_type TEXT,
+    unit              TEXT, scale REAL, byte_order TEXT, conversion_note TEXT,
+    access            TEXT, behavior TEXT, requirement TEXT, condition TEXT,
+    description       TEXT,
+    ref_section       TEXT, ref_table TEXT,
+    sonic_cross_check TEXT, sonic_field TEXT,
+    section           TEXT NOT NULL DEFAULT 'LOW_PAGE',
+    is_reserved       INTEGER NOT NULL DEFAULT 0,
+    is_lower_memory   INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS cmis53_cdb_commands (
+    cmd_id         TEXT PRIMARY KEY,
+    title          TEXT NOT NULL,
+    cmd_group      TEXT,
+    requirement    TEXT, spec_section TEXT,
+    detail_table   TEXT, overview_table TEXT,
+    description    TEXT, note TEXT
+);
+
+CREATE TABLE IF NOT EXISTS cmis53_meta (
+    meta_key   TEXT PRIMARY KEY,
+    meta_value TEXT NOT NULL
+);
+
+-- Specification PDF table index: provenance only (table numbers, short
+-- captions, page numbers). Built by tools/parse_spec_pdf.py and merged into
+-- the reference JSON by tools/import_cmis53.py. No OIF prose is stored here.
+CREATE TABLE IF NOT EXISTS cmis53_spec_tables (
+    table_id      TEXT PRIMARY KEY,
+    section       INTEGER,
+    title         TEXT,
+    pdf_page      INTEGER,
+    printed_page  INTEGER,
+    body_page     INTEGER,
+    page          TEXT,
+    field_rows    INTEGER NOT NULL DEFAULT 0,
+    source        TEXT
+);
+
 CREATE INDEX IF NOT EXISTS idx_devices_name      ON devices(name);
 CREATE INDEX IF NOT EXISTS idx_modules_device    ON modules(device_id);
 CREATE INDEX IF NOT EXISTS idx_fields_page       ON fields(page);
@@ -169,6 +218,11 @@ CREATE INDEX IF NOT EXISTS idx_kg_relations_src  ON kg_relations(src);
 CREATE INDEX IF NOT EXISTS idx_kg_relations_dst  ON kg_relations(dst);
 CREATE INDEX IF NOT EXISTS idx_kg_relations_type ON kg_relations(type);
 CREATE INDEX IF NOT EXISTS idx_kg_links_ref      ON kg_links(cmis_ref);
+CREATE INDEX IF NOT EXISTS idx_ref53_page        ON cmis53_fields(page, byte);
+CREATE INDEX IF NOT EXISTS idx_ref53_partition   ON cmis53_fields(section);
+CREATE INDEX IF NOT EXISTS idx_ref53_name        ON cmis53_fields(name);
+CREATE INDEX IF NOT EXISTS idx_ref53_cdb_group   ON cmis53_cdb_commands(cmd_group);
+CREATE INDEX IF NOT EXISTS idx_ref53_spec_page   ON cmis53_spec_tables(pdf_page);
 """
 
 # Indexes on columns introduced by _migrate(). They must be created only after
@@ -206,10 +260,21 @@ _TABLE_COLUMNS: dict[str, tuple[str, ...]] = {
                      "status", "attrs"),
     "kg_links": ("cmis_ref", "entity_id", "relation", "note"),
     "kg_pending": ("pending_id", "topic", "question", "source_ids", "impact", "status"),
+    "cmis53_fields": ("key_id", "name", "page", "page_raw", "byte", "byte_length",
+                      "mask_bytes", "mask_values", "bank_scope", "value_type", "data_type",
+                      "unit", "scale", "byte_order", "conversion_note", "access", "behavior",
+                      "requirement", "condition", "description", "ref_section", "ref_table",
+                      "sonic_cross_check", "sonic_field", "section", "is_reserved",
+                      "is_lower_memory"),
+    "cmis53_cdb_commands": ("cmd_id", "title", "cmd_group", "requirement", "spec_section",
+                            "detail_table", "overview_table", "description", "note"),
+    "cmis53_meta": ("meta_key", "meta_value"),
+    "cmis53_spec_tables": ("table_id", "section", "title", "pdf_page", "printed_page",
+                           "body_page", "page", "field_rows", "source"),
 }
 
 _JSON_COLUMNS = {"source_ids", "allowed_values", "advertised_apps", "attrs", "validation_report",
-                 "detail"}
+                 "detail", "mask_values"}
 _BOOL_COLUMNS = {"writable", "flat_memory", "applied_to_hardware"}
 
 
@@ -340,8 +405,41 @@ def _import_kg(conn: sqlite3.Connection, kg_path: Path) -> None:
              len(data.get("pending_confirmations", [])))
 
 
+def _import_reference(conn: sqlite3.Connection, reference_path: Path) -> None:
+    """Rebuild the read-only CMIS 5.3 reference tables from generated JSON.
+
+    Like the knowledge graph this is pure reference data, so a full rebuild on
+    every start is safe. The file is optional: a missing asset leaves the
+    reference endpoints empty instead of preventing the service from starting.
+    """
+    if not reference_path.is_file():
+        log.warning("CMIS 5.3 reference file is missing; reference endpoints stay empty: %s",
+                    reference_path)
+        return
+    data = _load_json(reference_path)
+    with conn:
+        for table in ("cmis53_fields", "cmis53_cdb_commands", "cmis53_meta",
+                      "cmis53_spec_tables"):
+            conn.execute(f"DELETE FROM {table}")  # noqa: S608 - fixed table tuple
+        for row in data.get("fields", []):
+            insert_row(conn, "cmis53_fields", row)
+        for row in data.get("cdb_commands", []):
+            insert_row(conn, "cmis53_cdb_commands", row)
+        for row in data.get("spec_tables", []):
+            insert_row(conn, "cmis53_spec_tables", row, ignore=True)
+        for key in ("meta", "field_columns", "cdb_columns", "section_rules", "stats",
+                    "spec_pdf_meta", "spec_verification"):
+            conn.execute(
+                "INSERT OR REPLACE INTO cmis53_meta (meta_key, meta_value) VALUES (?, ?)",
+                (key, json.dumps(data.get(key, {}), ensure_ascii=False)),
+            )
+    log.info("CMIS 5.3 reference loaded | fields=%d cdb_commands=%d spec_tables=%d",
+             len(data.get("fields", [])), len(data.get("cdb_commands", [])),
+             len(data.get("spec_tables", [])))
+
+
 def initialize(settings: Settings) -> sqlite3.Connection:
-    """Create the schema, migrate, sync seed data and load the KG."""
+    """Create the schema, migrate, sync seed data and load reference data."""
     settings.data_dir.mkdir(parents=True, exist_ok=True)
     conn = connect(settings.db_file)
     conn.executescript(SCHEMA)
@@ -349,6 +447,7 @@ def initialize(settings: Settings) -> sqlite3.Connection:
     conn.executescript(POST_MIGRATE_INDEXES)
     _sync_seed(conn, settings.seed_file)
     _import_kg(conn, settings.kg_file)
+    _import_reference(conn, settings.reference_file)
     return conn
 
 

@@ -1,0 +1,3797 @@
+{
+  "meta": {
+    "generator": "tools/verify_seed_fields.py",
+    "schema_version": "1.0",
+    "generated_at": "2026-11-09T15:36:07+00:00",
+    "seed_fields": 64,
+    "reference_fields": 2442,
+    "reference_source": "data/cmis53_reference.json (jimfred/CMIS CSV, OIF-derived)",
+    "knowledge_graph_item": "P-01 (register byte offsets)",
+    "matching": "exact_name -> exact_address -> fuzzy_name",
+    "policy": "Advisory only: seed.json is never modified and no value enters the hardware write path. OIF specification is authoritative.",
+    "license_note": "Field names/addresses are OIF-copyright factual identifiers; see NOTICE sections 5-8."
+  },
+  "summary": {
+    "total": 64,
+    "by_status": {
+      "address_resolved": 3,
+      "candidate": 47,
+      "unresolved": 10,
+      "verified": 4
+    },
+    "by_match_kind": {
+      "exact_address": 19,
+      "exact_name": 7,
+      "fuzzy_name": 28,
+      "none": 10
+    },
+    "by_section": {
+      "CDB": {
+        "candidate": 7,
+        "unresolved": 3
+      },
+      "CONTROL": {
+        "candidate": 17,
+        "unresolved": 4
+      },
+      "LOW_PAGE": {
+        "candidate": 12,
+        "verified": 4,
+        "address_resolved": 3,
+        "unresolved": 2
+      },
+      "VDM": {
+        "candidate": 11,
+        "unresolved": 1
+      }
+    },
+    "addressable_demo_fields": 27,
+    "pending_offsets": 37,
+    "resolvable_offsets": 3,
+    "mismatches": 0,
+    "candidate_confidence": {
+      "high": 13,
+      "low": 12,
+      "medium": 22
+    },
+    "high_confidence_pending_candidates": 10
+  },
+  "fields": [
+    {
+      "field_key": "ModuleIdentifier",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "00h",
+      "byte_offset_parsed": 0,
+      "section": "LOW_PAGE",
+      "demo_access": "RO",
+      "demo_data_type": "hex",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "SFF8024Identifier.Lwr",
+        "name": "SFF8024Identifier",
+        "page": "Lwr",
+        "byte": 0,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "u8",
+        "ref_table": "8-5",
+        "ref_section": "",
+        "spec_pdf_page": 142
+      },
+      "candidates": [
+        {
+          "key_id": "SFF8024Identifier.Lwr",
+          "name": "SFF8024Identifier",
+          "page": "Lwr",
+          "byte": 0,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-5",
+          "ref_section": "",
+          "spec_pdf_page": 142
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.606,
+        "confidence": "medium"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "CmisRevision",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "01h",
+      "byte_offset_parsed": 1,
+      "section": "LOW_PAGE",
+      "demo_access": "RO",
+      "demo_data_type": "hex",
+      "match_kind": "exact_name",
+      "reference": {
+        "key_id": "CmisRevision",
+        "name": "CmisRevision",
+        "page": "Lwr",
+        "byte": 1,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "u8",
+        "ref_table": "8-5",
+        "ref_section": "",
+        "spec_pdf_page": 142
+      },
+      "candidates": [
+        {
+          "key_id": "CmisRevision",
+          "name": "CmisRevision",
+          "page": "Lwr",
+          "byte": 1,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-5",
+          "ref_section": "",
+          "spec_pdf_page": 142
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 1.0,
+        "confidence": "exact"
+      },
+      "notes": [],
+      "status": "verified"
+    },
+    {
+      "field_key": "ModuleState",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "03h",
+      "byte_offset_parsed": 3,
+      "section": "LOW_PAGE",
+      "demo_access": "RO",
+      "demo_data_type": "enum",
+      "match_kind": "exact_name",
+      "reference": {
+        "key_id": "ModuleState",
+        "name": "ModuleState",
+        "page": "Lwr",
+        "byte": 3,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "enum",
+        "value_type": "enum3",
+        "ref_table": "8-6",
+        "ref_section": "",
+        "spec_pdf_page": 144
+      },
+      "candidates": [
+        {
+          "key_id": "ModuleState",
+          "name": "ModuleState",
+          "page": "Lwr",
+          "byte": 3,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "enum",
+          "value_type": "enum3",
+          "ref_table": "8-6",
+          "ref_section": "",
+          "spec_pdf_page": 144
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 1.0,
+        "confidence": "exact"
+      },
+      "notes": [],
+      "status": "verified"
+    },
+    {
+      "field_key": "ModuleFlags",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "08-13",
+      "byte_offset_parsed": 8,
+      "section": "LOW_PAGE",
+      "demo_access": "RO/CoR",
+      "demo_data_type": "hex",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "ModuleStateChangedFlag",
+        "name": "ModuleStateChangedFlag",
+        "page": "Lwr",
+        "byte": 8,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "bool",
+        "value_type": "bool",
+        "ref_table": "8-9",
+        "ref_section": "",
+        "spec_pdf_page": 146
+      },
+      "candidates": [
+        {
+          "key_id": "CdbCmdCompleteFlag2",
+          "name": "CdbCmdCompleteFlag2",
+          "page": "Lwr",
+          "byte": 8,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-9",
+          "ref_section": "",
+          "spec_pdf_page": 146
+        },
+        {
+          "key_id": "CdbCmdCompleteFlag1",
+          "name": "CdbCmdCompleteFlag1",
+          "page": "Lwr",
+          "byte": 8,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-9",
+          "ref_section": "",
+          "spec_pdf_page": 146
+        },
+        {
+          "key_id": "Reserved.Lwr.8",
+          "name": "Reserved",
+          "page": "Lwr",
+          "byte": 8,
+          "byte_length": 1,
+          "access": "",
+          "data_type": "text",
+          "value_type": "",
+          "ref_table": "8-9",
+          "ref_section": "",
+          "spec_pdf_page": 146
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.606,
+        "confidence": "medium"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "LaneFlagSummary",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "04-07",
+      "byte_offset_parsed": 4,
+      "section": "LOW_PAGE",
+      "demo_access": "RO/CoR",
+      "demo_data_type": "hex",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "FlagsSummaryBank0Page2Ch",
+        "name": "FlagsSummaryBank0Page2Ch",
+        "page": "Lwr",
+        "byte": 4,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "bool",
+        "value_type": "bool",
+        "ref_table": "8-8",
+        "ref_section": "",
+        "spec_pdf_page": 145
+      },
+      "candidates": [
+        {
+          "key_id": "Reserved.Lwr.4.0x80",
+          "name": "Reserved",
+          "page": "Lwr",
+          "byte": 4,
+          "byte_length": 1,
+          "access": "",
+          "data_type": "text",
+          "value_type": "",
+          "ref_table": "8-8",
+          "ref_section": "",
+          "spec_pdf_page": 145
+        },
+        {
+          "key_id": "Reserved.Lwr.4.0x40",
+          "name": "Reserved",
+          "page": "Lwr",
+          "byte": 4,
+          "byte_length": 1,
+          "access": "",
+          "data_type": "text",
+          "value_type": "",
+          "ref_table": "8-8",
+          "ref_section": "",
+          "spec_pdf_page": 145
+        },
+        {
+          "key_id": "Reserved.Lwr.4.0x20",
+          "name": "Reserved",
+          "page": "Lwr",
+          "byte": 4,
+          "byte_length": 1,
+          "access": "",
+          "data_type": "text",
+          "value_type": "",
+          "ref_table": "8-8",
+          "ref_section": "",
+          "spec_pdf_page": 145
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.564,
+        "confidence": "low"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse.",
+        "Low confidence candidate; treat as unresolved for P-01."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "VendorName",
+      "page_raw": "00h",
+      "pages_normalized": [
+        "00h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "LOW_PAGE",
+      "demo_access": "RO",
+      "demo_data_type": "ascii",
+      "match_kind": "exact_name",
+      "reference": {
+        "key_id": "VendorName",
+        "name": "VendorName",
+        "page": "00h",
+        "byte": 129,
+        "byte_length": 16,
+        "access": "RO",
+        "data_type": "ascii",
+        "value_type": "ascii[16]",
+        "ref_table": "8-28",
+        "ref_section": "",
+        "spec_pdf_page": 161
+      },
+      "candidates": [
+        {
+          "key_id": "VendorName",
+          "name": "VendorName",
+          "page": "00h",
+          "byte": 129,
+          "byte_length": 16,
+          "access": "RO",
+          "data_type": "ascii",
+          "value_type": "ascii[16]",
+          "ref_table": "8-28",
+          "ref_section": "",
+          "spec_pdf_page": 161
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 1.0,
+        "confidence": "exact"
+      },
+      "notes": [
+        "Demo offset is pending; reference byte can be used for review."
+      ],
+      "status": "address_resolved"
+    },
+    {
+      "field_key": "VendorOUI",
+      "page_raw": "00h",
+      "pages_normalized": [
+        "00h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "LOW_PAGE",
+      "demo_access": "RO",
+      "demo_data_type": "hex",
+      "match_kind": "exact_name",
+      "reference": {
+        "key_id": "VendorOUI",
+        "name": "VendorOUI",
+        "page": "00h",
+        "byte": 145,
+        "byte_length": 3,
+        "access": "RO",
+        "data_type": "hex",
+        "value_type": "bytes[3]",
+        "ref_table": "8-28",
+        "ref_section": "",
+        "spec_pdf_page": 161
+      },
+      "candidates": [
+        {
+          "key_id": "VendorOUI",
+          "name": "VendorOUI",
+          "page": "00h",
+          "byte": 145,
+          "byte_length": 3,
+          "access": "RO",
+          "data_type": "hex",
+          "value_type": "bytes[3]",
+          "ref_table": "8-28",
+          "ref_section": "",
+          "spec_pdf_page": 161
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 1.0,
+        "confidence": "exact"
+      },
+      "notes": [
+        "Demo offset is pending; reference byte can be used for review."
+      ],
+      "status": "address_resolved"
+    },
+    {
+      "field_key": "VendorPartNumber",
+      "page_raw": "00h",
+      "pages_normalized": [
+        "00h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "LOW_PAGE",
+      "demo_access": "RO",
+      "demo_data_type": "ascii",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "VendorName",
+        "name": "VendorName",
+        "page": "00h",
+        "byte": 129,
+        "byte_length": 16,
+        "access": "RO",
+        "data_type": "ascii",
+        "value_type": "ascii[16]",
+        "ref_table": "8-28",
+        "ref_section": "",
+        "spec_pdf_page": 161
+      },
+      "candidates": [
+        {
+          "key_id": "VendorName",
+          "name": "VendorName",
+          "page": "00h",
+          "byte": 129,
+          "byte_length": 16,
+          "access": "RO",
+          "data_type": "ascii",
+          "value_type": "ascii[16]",
+          "ref_table": "8-28",
+          "ref_section": "",
+          "spec_pdf_page": 161
+        },
+        {
+          "key_id": "VendorPN",
+          "name": "VendorPN",
+          "page": "00h",
+          "byte": 148,
+          "byte_length": 16,
+          "access": "RO",
+          "data_type": "ascii",
+          "value_type": "ascii[16]",
+          "ref_table": "8-28",
+          "ref_section": "",
+          "spec_pdf_page": 161
+        },
+        {
+          "key_id": "VendorRev",
+          "name": "VendorRev",
+          "page": "00h",
+          "byte": 164,
+          "byte_length": 2,
+          "access": "RO",
+          "data_type": "ascii",
+          "value_type": "ascii[2]",
+          "ref_table": "8-28",
+          "ref_section": "",
+          "spec_pdf_page": 161
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.692,
+        "confidence": "medium"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "VendorSerialNumber",
+      "page_raw": "00h",
+      "pages_normalized": [
+        "00h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "LOW_PAGE",
+      "demo_access": "RO",
+      "demo_data_type": "ascii",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "VendorName",
+        "name": "VendorName",
+        "page": "00h",
+        "byte": 129,
+        "byte_length": 16,
+        "access": "RO",
+        "data_type": "ascii",
+        "value_type": "ascii[16]",
+        "ref_table": "8-28",
+        "ref_section": "",
+        "spec_pdf_page": 161
+      },
+      "candidates": [
+        {
+          "key_id": "VendorName",
+          "name": "VendorName",
+          "page": "00h",
+          "byte": 129,
+          "byte_length": 16,
+          "access": "RO",
+          "data_type": "ascii",
+          "value_type": "ascii[16]",
+          "ref_table": "8-28",
+          "ref_section": "",
+          "spec_pdf_page": 161
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.5,
+        "confidence": "low"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse.",
+        "Low confidence candidate; treat as unresolved for P-01."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "DateCode",
+      "page_raw": "00h",
+      "pages_normalized": [
+        "00h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "LOW_PAGE",
+      "demo_access": "RO",
+      "demo_data_type": "ascii",
+      "match_kind": "exact_name",
+      "reference": {
+        "key_id": "DateCode",
+        "name": "DateCode",
+        "page": "00h",
+        "byte": 182,
+        "byte_length": 8,
+        "access": "RO",
+        "data_type": "ascii",
+        "value_type": "ascii[8]",
+        "ref_table": "8-28",
+        "ref_section": "",
+        "spec_pdf_page": 161
+      },
+      "candidates": [
+        {
+          "key_id": "DateCode",
+          "name": "DateCode",
+          "page": "00h",
+          "byte": 182,
+          "byte_length": 8,
+          "access": "RO",
+          "data_type": "ascii",
+          "value_type": "ascii[8]",
+          "ref_table": "8-28",
+          "ref_section": "",
+          "spec_pdf_page": 161
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 1.0,
+        "confidence": "exact"
+      },
+      "notes": [
+        "Demo offset is pending; reference byte can be used for review."
+      ],
+      "status": "address_resolved"
+    },
+    {
+      "field_key": "CcBase",
+      "page_raw": "00h",
+      "pages_normalized": [
+        "00h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "LOW_PAGE",
+      "demo_access": "RO",
+      "demo_data_type": "hex",
+      "match_kind": "none",
+      "reference": null,
+      "candidates": [],
+      "checks": {},
+      "notes": [
+        "No reference row matched by name or address; demo-only field."
+      ],
+      "status": "unresolved"
+    },
+    {
+      "field_key": "CcExt",
+      "page_raw": "00h",
+      "pages_normalized": [
+        "00h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "LOW_PAGE",
+      "demo_access": "RO",
+      "demo_data_type": "hex",
+      "match_kind": "none",
+      "reference": null,
+      "candidates": [],
+      "checks": {},
+      "notes": [
+        "No reference row matched by name or address; demo-only field."
+      ],
+      "status": "unresolved"
+    },
+    {
+      "field_key": "ModuleTypeEncoding",
+      "page_raw": "00h",
+      "pages_normalized": [
+        "00h"
+      ],
+      "byte_offset_raw": "85 (0x55)",
+      "byte_offset_parsed": 85,
+      "section": "LOW_PAGE",
+      "demo_access": "RO",
+      "demo_data_type": "hex",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "ModuleTempMin",
+        "name": "ModuleTempMin",
+        "page": "01h",
+        "byte": 147,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "s8",
+        "ref_table": "8-49",
+        "ref_section": "",
+        "spec_pdf_page": 173
+      },
+      "candidates": [
+        {
+          "key_id": "ModuleTempMin",
+          "name": "ModuleTempMin",
+          "page": "01h",
+          "byte": 147,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "s8",
+          "ref_table": "8-49",
+          "ref_section": "",
+          "spec_pdf_page": 173
+        }
+      ],
+      "checks": {
+        "page_match": false,
+        "byte_match": false,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.645,
+        "confidence": "medium"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse.",
+        "candidate byte differs: demo=85 reference=147"
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "HostInterfaceId",
+      "page_raw": "01h",
+      "pages_normalized": [
+        "01h"
+      ],
+      "byte_offset_raw": "128 (0x80)",
+      "byte_offset_parsed": 128,
+      "section": "CONTROL",
+      "demo_access": "RO",
+      "demo_data_type": "hex",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "ModuleInactiveFirmwareMajorRevision",
+        "name": "ModuleInactiveFirmwareMajorRevision",
+        "page": "01h",
+        "byte": 128,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "u8",
+        "ref_table": "8-43",
+        "ref_section": "",
+        "spec_pdf_page": 169
+      },
+      "candidates": [
+        {
+          "key_id": "ModuleInactiveFirmwareMajorRevision",
+          "name": "ModuleInactiveFirmwareMajorRevision",
+          "page": "01h",
+          "byte": 128,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-43",
+          "ref_section": "",
+          "spec_pdf_page": 169
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.16,
+        "confidence": "low"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse.",
+        "Names are unrelated: this is an address coincidence, not an alias. Do not reuse without OIF confirmation.",
+        "Low confidence candidate; treat as unresolved for P-01."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "MediaInterfaceId",
+      "page_raw": "01h",
+      "pages_normalized": [
+        "01h"
+      ],
+      "byte_offset_raw": "129 (0x81)",
+      "byte_offset_parsed": 129,
+      "section": "CONTROL",
+      "demo_access": "RO",
+      "demo_data_type": "hex",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "ModuleInactiveFirmwareMinorRevision",
+        "name": "ModuleInactiveFirmwareMinorRevision",
+        "page": "01h",
+        "byte": 129,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "u8",
+        "ref_table": "8-43",
+        "ref_section": "",
+        "spec_pdf_page": 169
+      },
+      "candidates": [
+        {
+          "key_id": "ModuleInactiveFirmwareMinorRevision",
+          "name": "ModuleInactiveFirmwareMinorRevision",
+          "page": "01h",
+          "byte": 129,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-43",
+          "ref_section": "",
+          "spec_pdf_page": 169
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.314,
+        "confidence": "low"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse.",
+        "Names are unrelated: this is an address coincidence, not an alias. Do not reuse without OIF confirmation.",
+        "Low confidence candidate; treat as unresolved for P-01."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "HostMediaLaneCount",
+      "page_raw": "01h",
+      "pages_normalized": [
+        "01h"
+      ],
+      "byte_offset_raw": "130 (0x82)",
+      "byte_offset_parsed": 130,
+      "section": "CONTROL",
+      "demo_access": "RO",
+      "demo_data_type": "hex",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "ModuleHardwareMajorRevision",
+        "name": "ModuleHardwareMajorRevision",
+        "page": "01h",
+        "byte": 130,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "u8",
+        "ref_table": "8-43",
+        "ref_section": "",
+        "spec_pdf_page": 169
+      },
+      "candidates": [
+        {
+          "key_id": "ModuleHardwareMajorRevision",
+          "name": "ModuleHardwareMajorRevision",
+          "page": "01h",
+          "byte": 130,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-43",
+          "ref_section": "",
+          "spec_pdf_page": 169
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.222,
+        "confidence": "low"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse.",
+        "Names are unrelated: this is an address coincidence, not an alias. Do not reuse without OIF confirmation.",
+        "Low confidence candidate; treat as unresolved for P-01."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "HostLaneAssignmentOptions",
+      "page_raw": "01h",
+      "pages_normalized": [
+        "01h"
+      ],
+      "byte_offset_raw": "131 (0x83)",
+      "byte_offset_parsed": 131,
+      "section": "CONTROL",
+      "demo_access": "RO",
+      "demo_data_type": "hex",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "ModuleHardwareMinorRevision",
+        "name": "ModuleHardwareMinorRevision",
+        "page": "01h",
+        "byte": 131,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "u8",
+        "ref_table": "8-43",
+        "ref_section": "",
+        "spec_pdf_page": 169
+      },
+      "candidates": [
+        {
+          "key_id": "ModuleHardwareMinorRevision",
+          "name": "ModuleHardwareMinorRevision",
+          "page": "01h",
+          "byte": 131,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-43",
+          "ref_section": "",
+          "spec_pdf_page": 169
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.231,
+        "confidence": "low"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse.",
+        "Names are unrelated: this is an address coincidence, not an alias. Do not reuse without OIF confirmation.",
+        "Low confidence candidate; treat as unresolved for P-01."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "ModuleGlobalControls",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "26-30",
+      "byte_offset_parsed": 26,
+      "section": "LOW_PAGE",
+      "demo_access": "RW",
+      "demo_data_type": "hex",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "SquelchMethodSelect",
+        "name": "SquelchMethodSelect",
+        "page": "Lwr",
+        "byte": 26,
+        "byte_length": 1,
+        "access": "RW",
+        "data_type": "bool",
+        "value_type": "bool",
+        "ref_table": "8-11",
+        "ref_section": "",
+        "spec_pdf_page": 148
+      },
+      "candidates": [
+        {
+          "key_id": "BankBroadcastEnable",
+          "name": "BankBroadcastEnable",
+          "page": "Lwr",
+          "byte": 26,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-11",
+          "ref_section": "",
+          "spec_pdf_page": 148
+        },
+        {
+          "key_id": "LowPwrAllowRequestHW",
+          "name": "LowPwrAllowRequestHW",
+          "page": "Lwr",
+          "byte": 26,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-11",
+          "ref_section": "",
+          "spec_pdf_page": 148
+        },
+        {
+          "key_id": "SquelchMethodSelect",
+          "name": "SquelchMethodSelect",
+          "page": "Lwr",
+          "byte": 26,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-11",
+          "ref_section": "",
+          "spec_pdf_page": 148
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.359,
+        "confidence": "low"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse.",
+        "Names are unrelated: this is an address coincidence, not an alias. Do not reuse without OIF confirmation.",
+        "Low confidence candidate; treat as unresolved for P-01."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "ModuleLevelFlagMasks",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "31-36",
+      "byte_offset_parsed": 31,
+      "section": "LOW_PAGE",
+      "demo_access": "RW",
+      "demo_data_type": "hex",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "ModuleStateChangedMask",
+        "name": "ModuleStateChangedMask",
+        "page": "Lwr",
+        "byte": 31,
+        "byte_length": 1,
+        "access": "RW",
+        "data_type": "bool",
+        "value_type": "bool",
+        "ref_table": "8-12",
+        "ref_section": "",
+        "spec_pdf_page": 150
+      },
+      "candidates": [
+        {
+          "key_id": "CdbCmdCompleteMask2",
+          "name": "CdbCmdCompleteMask2",
+          "page": "Lwr",
+          "byte": 31,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-12",
+          "ref_section": "",
+          "spec_pdf_page": 150
+        },
+        {
+          "key_id": "CdbCmdCompleteMask1",
+          "name": "CdbCmdCompleteMask1",
+          "page": "Lwr",
+          "byte": 31,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-12",
+          "ref_section": "",
+          "spec_pdf_page": 150
+        },
+        {
+          "key_id": "Reserved.Lwr.31",
+          "name": "Reserved",
+          "page": "Lwr",
+          "byte": 31,
+          "byte_length": 1,
+          "access": "",
+          "data_type": "text",
+          "value_type": "",
+          "ref_table": "8-12",
+          "ref_section": "",
+          "spec_pdf_page": 150
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.571,
+        "confidence": "low"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse.",
+        "Low confidence candidate; treat as unresolved for P-01."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "ModuleFirmwareVersion",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "39-40",
+      "byte_offset_parsed": 39,
+      "section": "LOW_PAGE",
+      "demo_access": "RO",
+      "demo_data_type": "ascii",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "ModuleActiveFirmwareMajorRevision",
+        "name": "ModuleActiveFirmwareMajorRevision",
+        "page": "Lwr",
+        "byte": 39,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "u8",
+        "ref_table": "8-15",
+        "ref_section": "",
+        "spec_pdf_page": 153
+      },
+      "candidates": [
+        {
+          "key_id": "ModuleActiveFirmwareMajorRevision",
+          "name": "ModuleActiveFirmwareMajorRevision",
+          "page": "Lwr",
+          "byte": 39,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-15",
+          "ref_section": "",
+          "spec_pdf_page": 153
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": false,
+        "name_similarity": 0.704,
+        "confidence": "medium"
+      },
+      "notes": [
+        "data type differs: demo=ascii reference=int",
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "InactiveFirmwareVersion",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "83-84",
+      "byte_offset_parsed": 83,
+      "section": "LOW_PAGE",
+      "demo_access": "RO",
+      "demo_data_type": "ascii",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "ModuleActiveFirmwareMinorRevision",
+        "name": "ModuleActiveFirmwareMinorRevision",
+        "page": "Lwr",
+        "byte": 40,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "u8",
+        "ref_table": "8-15",
+        "ref_section": "",
+        "spec_pdf_page": 153
+      },
+      "candidates": [
+        {
+          "key_id": "ModuleInactiveFirmwareMinorRevision",
+          "name": "ModuleInactiveFirmwareMinorRevision",
+          "page": "01h",
+          "byte": 129,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-43",
+          "ref_section": "",
+          "spec_pdf_page": 169
+        },
+        {
+          "key_id": "ModuleInactiveFirmwareMajorRevision",
+          "name": "ModuleInactiveFirmwareMajorRevision",
+          "page": "01h",
+          "byte": 128,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-43",
+          "ref_section": "",
+          "spec_pdf_page": 169
+        },
+        {
+          "key_id": "ModuleActiveFirmwareMinorRevision",
+          "name": "ModuleActiveFirmwareMinorRevision",
+          "page": "Lwr",
+          "byte": 40,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-15",
+          "ref_section": "",
+          "spec_pdf_page": 153
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": false,
+        "access_match": true,
+        "type_compatible": false,
+        "name_similarity": 0.679,
+        "confidence": "medium"
+      },
+      "notes": [
+        "data type differs: demo=ascii reference=int",
+        "Alias/address-based match only; confirm against OIF text before reuse.",
+        "candidate byte differs: demo=83 reference=40"
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "CdbStatusLower",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "37-38 (0x25-0x26)",
+      "byte_offset_parsed": 37,
+      "section": "CDB",
+      "demo_access": "RO",
+      "demo_data_type": "hex",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "CdbStatus1",
+        "name": "CdbStatus1",
+        "page": "Lwr",
+        "byte": 37,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "hex",
+        "value_type": "bitfield8",
+        "ref_table": "8-13",
+        "ref_section": "",
+        "spec_pdf_page": 151
+      },
+      "candidates": [
+        {
+          "key_id": "CdbStatus1",
+          "name": "CdbStatus1",
+          "page": "Lwr",
+          "byte": 37,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "hex",
+          "value_type": "bitfield8",
+          "ref_table": "8-13",
+          "ref_section": "",
+          "spec_pdf_page": 151
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.75,
+        "confidence": "medium"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "ApplicationAdvertisingLegacy",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "85-117",
+      "byte_offset_parsed": 85,
+      "section": "LOW_PAGE",
+      "demo_access": "RO",
+      "demo_data_type": "hex",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "MediaType",
+        "name": "MediaType",
+        "page": "Lwr",
+        "byte": 85,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "enum",
+        "value_type": "enum8",
+        "ref_table": "8-21",
+        "ref_section": "",
+        "spec_pdf_page": 157
+      },
+      "candidates": [
+        {
+          "key_id": "MediaType",
+          "name": "MediaType",
+          "page": "Lwr",
+          "byte": 85,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "enum",
+          "value_type": "enum8",
+          "ref_table": "8-21",
+          "ref_section": "",
+          "spec_pdf_page": 157
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.216,
+        "confidence": "low"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse.",
+        "Names are unrelated: this is an address coincidence, not an alias. Do not reuse without OIF confirmation.",
+        "Low confidence candidate; treat as unresolved for P-01."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "BankSelect",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "126 (0x7E)",
+      "byte_offset_parsed": 126,
+      "section": "LOW_PAGE",
+      "demo_access": "RW",
+      "demo_data_type": "hex",
+      "match_kind": "exact_name",
+      "reference": {
+        "key_id": "BankSelect",
+        "name": "BankSelect",
+        "page": "Lwr",
+        "byte": 126,
+        "byte_length": 1,
+        "access": "RW",
+        "data_type": "int",
+        "value_type": "u8",
+        "ref_table": "8-25",
+        "ref_section": "",
+        "spec_pdf_page": 159
+      },
+      "candidates": [
+        {
+          "key_id": "BankSelect",
+          "name": "BankSelect",
+          "page": "Lwr",
+          "byte": 126,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-25",
+          "ref_section": "",
+          "spec_pdf_page": 159
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 1.0,
+        "confidence": "exact"
+      },
+      "notes": [],
+      "status": "verified"
+    },
+    {
+      "field_key": "PageSelect",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "127 (0x7F)",
+      "byte_offset_parsed": 127,
+      "section": "LOW_PAGE",
+      "demo_access": "RW",
+      "demo_data_type": "hex",
+      "match_kind": "exact_name",
+      "reference": {
+        "key_id": "PageSelect",
+        "name": "PageSelect",
+        "page": "Lwr",
+        "byte": 127,
+        "byte_length": 1,
+        "access": "RWW",
+        "data_type": "int",
+        "value_type": "u8",
+        "ref_table": "8-25",
+        "ref_section": "",
+        "spec_pdf_page": 159
+      },
+      "candidates": [
+        {
+          "key_id": "PageSelect",
+          "name": "PageSelect",
+          "page": "Lwr",
+          "byte": 127,
+          "byte_length": 1,
+          "access": "RWW",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-25",
+          "ref_section": "",
+          "spec_pdf_page": 159
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": false,
+        "type_compatible": true,
+        "name_similarity": 1.0,
+        "confidence": "exact"
+      },
+      "notes": [
+        "access differs: demo=RW reference=RWW"
+      ],
+      "status": "verified"
+    },
+    {
+      "field_key": "ModuleLevelMonitors",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "14-25",
+      "byte_offset_parsed": 14,
+      "section": "VDM",
+      "demo_access": "RO",
+      "demo_data_type": "hex",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "TempMonValue",
+        "name": "TempMonValue",
+        "page": "Lwr",
+        "byte": 14,
+        "byte_length": 2,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "s16",
+        "ref_table": "8-10",
+        "ref_section": "",
+        "spec_pdf_page": 147
+      },
+      "candidates": [
+        {
+          "key_id": "TempMonValue",
+          "name": "TempMonValue",
+          "page": "Lwr",
+          "byte": 14,
+          "byte_length": 2,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "s16",
+          "ref_table": "8-10",
+          "ref_section": "",
+          "spec_pdf_page": 147
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.258,
+        "confidence": "low"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse.",
+        "Names are unrelated: this is an address coincidence, not an alias. Do not reuse without OIF confirmation.",
+        "Low confidence candidate; treat as unresolved for P-01."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "ModuleTemperature",
+      "page_raw": "Lower/11h",
+      "pages_normalized": [
+        "Lwr",
+        "11h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "VDM",
+      "demo_access": "RO",
+      "demo_data_type": "float",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "ModuleState",
+        "name": "ModuleState",
+        "page": "Lwr",
+        "byte": 3,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "enum",
+        "value_type": "enum3",
+        "ref_table": "8-6",
+        "ref_section": "",
+        "spec_pdf_page": 144
+      },
+      "candidates": [
+        {
+          "key_id": "ModuleTempMax",
+          "name": "ModuleTempMax",
+          "page": "01h",
+          "byte": 146,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "s8",
+          "ref_table": "8-49",
+          "ref_section": "",
+          "spec_pdf_page": 173
+        },
+        {
+          "key_id": "ModuleState",
+          "name": "ModuleState",
+          "page": "Lwr",
+          "byte": 3,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "enum",
+          "value_type": "enum3",
+          "ref_table": "8-6",
+          "ref_section": "",
+          "spec_pdf_page": 144
+        },
+        {
+          "key_id": "ModuleTempMin",
+          "name": "ModuleTempMin",
+          "page": "01h",
+          "byte": 147,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "s8",
+          "ref_table": "8-49",
+          "ref_section": "",
+          "spec_pdf_page": 173
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": false,
+        "name_similarity": 0.571,
+        "confidence": "low"
+      },
+      "notes": [
+        "data type differs: demo=float reference=enum",
+        "Alias/address-based match only; confirm against OIF text before reuse.",
+        "Low confidence candidate; treat as unresolved for P-01."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "ModuleVoltage",
+      "page_raw": "Lower/11h",
+      "pages_normalized": [
+        "Lwr",
+        "11h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "VDM",
+      "demo_access": "RO",
+      "demo_data_type": "float",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "ModuleState",
+        "name": "ModuleState",
+        "page": "Lwr",
+        "byte": 3,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "enum",
+        "value_type": "enum3",
+        "ref_table": "8-6",
+        "ref_section": "",
+        "spec_pdf_page": 144
+      },
+      "candidates": [
+        {
+          "key_id": "ModuleState",
+          "name": "ModuleState",
+          "page": "Lwr",
+          "byte": 3,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "enum",
+          "value_type": "enum3",
+          "ref_table": "8-6",
+          "ref_section": "",
+          "spec_pdf_page": 144
+        },
+        {
+          "key_id": "VccMonVoltage",
+          "name": "VccMonVoltage",
+          "page": "Lwr",
+          "byte": 16,
+          "byte_length": 2,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u16",
+          "ref_table": "8-10",
+          "ref_section": "",
+          "spec_pdf_page": 147
+        },
+        {
+          "key_id": "ModuleFaultCause",
+          "name": "ModuleFaultCause",
+          "page": "Lwr",
+          "byte": 41,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "enum",
+          "value_type": "enum8",
+          "ref_table": "8-16",
+          "ref_section": "",
+          "spec_pdf_page": 153
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": false,
+        "name_similarity": 0.75,
+        "confidence": "medium"
+      },
+      "notes": [
+        "data type differs: demo=float reference=enum",
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "TxPowerDbm",
+      "page_raw": "11h",
+      "pages_normalized": [
+        "11h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "VDM",
+      "demo_access": "RO",
+      "demo_data_type": "float",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "MaxPower",
+        "name": "MaxPower",
+        "page": "00h",
+        "byte": 201,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "u8",
+        "ref_table": "8-31",
+        "ref_section": "",
+        "spec_pdf_page": 163
+      },
+      "candidates": [
+        {
+          "key_id": "MaxPower",
+          "name": "MaxPower",
+          "page": "00h",
+          "byte": 201,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-31",
+          "ref_section": "",
+          "spec_pdf_page": 163
+        }
+      ],
+      "checks": {
+        "page_match": false,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.667,
+        "confidence": "medium"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "RxPowerDbm",
+      "page_raw": "11h",
+      "pages_normalized": [
+        "11h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "VDM",
+      "demo_access": "RO",
+      "demo_data_type": "float",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "MaxPower",
+        "name": "MaxPower",
+        "page": "00h",
+        "byte": 201,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "u8",
+        "ref_table": "8-31",
+        "ref_section": "",
+        "spec_pdf_page": 163
+      },
+      "candidates": [
+        {
+          "key_id": "MaxPower",
+          "name": "MaxPower",
+          "page": "00h",
+          "byte": 201,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-31",
+          "ref_section": "",
+          "spec_pdf_page": 163
+        }
+      ],
+      "checks": {
+        "page_match": false,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.667,
+        "confidence": "medium"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "TxBiasLane1",
+      "page_raw": "11h",
+      "pages_normalized": [
+        "11h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "VDM",
+      "demo_access": "RO",
+      "demo_data_type": "float",
+      "match_kind": "none",
+      "reference": null,
+      "candidates": [],
+      "checks": {},
+      "notes": [
+        "No reference row matched by name or address; demo-only field."
+      ],
+      "status": "unresolved"
+    },
+    {
+      "field_key": "RxLosLane1",
+      "page_raw": "11h",
+      "pages_normalized": [
+        "11h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "VDM",
+      "demo_access": "RO",
+      "demo_data_type": "bool",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "RxLOSType",
+        "name": "RxLOSType",
+        "page": "01h",
+        "byte": 151,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "bool",
+        "value_type": "bool",
+        "ref_table": "8-49",
+        "ref_section": "",
+        "spec_pdf_page": 173
+      },
+      "candidates": [
+        {
+          "key_id": "RxLOSType",
+          "name": "RxLOSType",
+          "page": "01h",
+          "byte": 151,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-49",
+          "ref_section": "",
+          "spec_pdf_page": 173
+        }
+      ],
+      "checks": {
+        "page_match": false,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.632,
+        "confidence": "medium"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "TempHighAlarmThreshold",
+      "page_raw": "02h",
+      "pages_normalized": [
+        "02h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "VDM",
+      "demo_access": "RW",
+      "demo_data_type": "float",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "TempMonHighAlarmThreshold",
+        "name": "TempMonHighAlarmThreshold",
+        "page": "02h",
+        "byte": 128,
+        "byte_length": 2,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "s16",
+        "ref_table": "8-62",
+        "ref_section": "",
+        "spec_pdf_page": 185
+      },
+      "candidates": [
+        {
+          "key_id": "TempMonHighAlarmThreshold",
+          "name": "TempMonHighAlarmThreshold",
+          "page": "02h",
+          "byte": 128,
+          "byte_length": 2,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "s16",
+          "ref_table": "8-62",
+          "ref_section": "",
+          "spec_pdf_page": 185
+        },
+        {
+          "key_id": "VccMonHighAlarmThreshold",
+          "name": "VccMonHighAlarmThreshold",
+          "page": "02h",
+          "byte": 136,
+          "byte_length": 2,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u16",
+          "ref_table": "8-62",
+          "ref_section": "",
+          "spec_pdf_page": 185
+        },
+        {
+          "key_id": "CustomMonHighAlarmThreshold",
+          "name": "CustomMonHighAlarmThreshold",
+          "page": "02h",
+          "byte": 168,
+          "byte_length": 2,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "s16",
+          "ref_table": "8-62",
+          "ref_section": "",
+          "spec_pdf_page": 185
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": false,
+        "type_compatible": true,
+        "name_similarity": 0.936,
+        "confidence": "high"
+      },
+      "notes": [
+        "access differs: demo=RW reference=RO",
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "TempHighWarningThreshold",
+      "page_raw": "02h",
+      "pages_normalized": [
+        "02h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "VDM",
+      "demo_access": "RW",
+      "demo_data_type": "float",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "TempMonHighWarningThreshold",
+        "name": "TempMonHighWarningThreshold",
+        "page": "02h",
+        "byte": 132,
+        "byte_length": 2,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "s16",
+        "ref_table": "8-62",
+        "ref_section": "",
+        "spec_pdf_page": 185
+      },
+      "candidates": [
+        {
+          "key_id": "TempMonHighWarningThreshold",
+          "name": "TempMonHighWarningThreshold",
+          "page": "02h",
+          "byte": 132,
+          "byte_length": 2,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "s16",
+          "ref_table": "8-62",
+          "ref_section": "",
+          "spec_pdf_page": 185
+        },
+        {
+          "key_id": "VccMonHighWarningThreshold",
+          "name": "VccMonHighWarningThreshold",
+          "page": "02h",
+          "byte": 140,
+          "byte_length": 2,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u16",
+          "ref_table": "8-62",
+          "ref_section": "",
+          "spec_pdf_page": 185
+        },
+        {
+          "key_id": "CustomMonHighWarningThreshold",
+          "name": "CustomMonHighWarningThreshold",
+          "page": "02h",
+          "byte": 172,
+          "byte_length": 2,
+          "access": "RO",
+          "data_type": "hex",
+          "value_type": "s16|u16",
+          "ref_table": "8-62",
+          "ref_section": "",
+          "spec_pdf_page": 185
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": false,
+        "type_compatible": true,
+        "name_similarity": 0.941,
+        "confidence": "high"
+      },
+      "notes": [
+        "access differs: demo=RW reference=RO",
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "TempLowWarningThreshold",
+      "page_raw": "02h",
+      "pages_normalized": [
+        "02h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "VDM",
+      "demo_access": "RW",
+      "demo_data_type": "float",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "TempMonLowWarningThreshold",
+        "name": "TempMonLowWarningThreshold",
+        "page": "02h",
+        "byte": 134,
+        "byte_length": 2,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "s16",
+        "ref_table": "8-62",
+        "ref_section": "",
+        "spec_pdf_page": 185
+      },
+      "candidates": [
+        {
+          "key_id": "TempMonLowWarningThreshold",
+          "name": "TempMonLowWarningThreshold",
+          "page": "02h",
+          "byte": 134,
+          "byte_length": 2,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "s16",
+          "ref_table": "8-62",
+          "ref_section": "",
+          "spec_pdf_page": 185
+        },
+        {
+          "key_id": "TempMonHighWarningThreshold",
+          "name": "TempMonHighWarningThreshold",
+          "page": "02h",
+          "byte": 132,
+          "byte_length": 2,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "s16",
+          "ref_table": "8-62",
+          "ref_section": "",
+          "spec_pdf_page": 185
+        },
+        {
+          "key_id": "VccMonLowWarningThreshold",
+          "name": "VccMonLowWarningThreshold",
+          "page": "02h",
+          "byte": 142,
+          "byte_length": 2,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u16",
+          "ref_table": "8-62",
+          "ref_section": "",
+          "spec_pdf_page": 185
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": false,
+        "type_compatible": true,
+        "name_similarity": 0.939,
+        "confidence": "high"
+      },
+      "notes": [
+        "access differs: demo=RW reference=RO",
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "VccHighAlarmThreshold",
+      "page_raw": "02h",
+      "pages_normalized": [
+        "02h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "VDM",
+      "demo_access": "RW",
+      "demo_data_type": "float",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "VccMonHighAlarmThreshold",
+        "name": "VccMonHighAlarmThreshold",
+        "page": "02h",
+        "byte": 136,
+        "byte_length": 2,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "u16",
+        "ref_table": "8-62",
+        "ref_section": "",
+        "spec_pdf_page": 185
+      },
+      "candidates": [
+        {
+          "key_id": "VccMonHighAlarmThreshold",
+          "name": "VccMonHighAlarmThreshold",
+          "page": "02h",
+          "byte": 136,
+          "byte_length": 2,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u16",
+          "ref_table": "8-62",
+          "ref_section": "",
+          "spec_pdf_page": 185
+        },
+        {
+          "key_id": "CustomMonHighAlarmThreshold",
+          "name": "CustomMonHighAlarmThreshold",
+          "page": "02h",
+          "byte": 168,
+          "byte_length": 2,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "s16",
+          "ref_table": "8-62",
+          "ref_section": "",
+          "spec_pdf_page": 185
+        },
+        {
+          "key_id": "TempMonHighAlarmThreshold",
+          "name": "TempMonHighAlarmThreshold",
+          "page": "02h",
+          "byte": 128,
+          "byte_length": 2,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "s16",
+          "ref_table": "8-62",
+          "ref_section": "",
+          "spec_pdf_page": 185
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": false,
+        "type_compatible": true,
+        "name_similarity": 0.933,
+        "confidence": "high"
+      },
+      "notes": [
+        "access differs: demo=RW reference=RO",
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "VdmFreeze",
+      "page_raw": "2Fh",
+      "pages_normalized": [
+        "2Fh"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "VDM",
+      "demo_access": "RW",
+      "demo_data_type": "bool",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "FreezeDone",
+        "name": "FreezeDone",
+        "page": "2Fh",
+        "byte": 145,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "bool",
+        "value_type": "bool",
+        "ref_table": "8-176",
+        "ref_section": "",
+        "spec_pdf_page": 280
+      },
+      "candidates": [
+        {
+          "key_id": "FreezeDone",
+          "name": "FreezeDone",
+          "page": "2Fh",
+          "byte": 145,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-176",
+          "ref_section": "",
+          "spec_pdf_page": 280
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": false,
+        "type_compatible": true,
+        "name_similarity": 0.632,
+        "confidence": "medium"
+      },
+      "notes": [
+        "access differs: demo=RW reference=RO",
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "CdbCmdId",
+      "page_raw": "9Fh",
+      "pages_normalized": [
+        "9Fh"
+      ],
+      "byte_offset_raw": "128 (0x80)",
+      "byte_offset_parsed": 128,
+      "section": "CDB",
+      "demo_access": "WO",
+      "demo_data_type": "hex",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "CMDID",
+        "name": "CMDID",
+        "page": "9Fh",
+        "byte": 128,
+        "byte_length": 2,
+        "access": "RW",
+        "data_type": "int",
+        "value_type": "u16",
+        "ref_table": "8-178",
+        "ref_section": "",
+        "spec_pdf_page": 282
+      },
+      "candidates": [
+        {
+          "key_id": "CMDID",
+          "name": "CMDID",
+          "page": "9Fh",
+          "byte": 128,
+          "byte_length": 2,
+          "access": "RW",
+          "data_type": "int",
+          "value_type": "u16",
+          "ref_table": "8-178",
+          "ref_section": "",
+          "spec_pdf_page": 282
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": false,
+        "type_compatible": true,
+        "name_similarity": 0.769,
+        "confidence": "medium"
+      },
+      "notes": [
+        "access differs: demo=WO reference=RW",
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "CdbEplLength",
+      "page_raw": "9Fh",
+      "pages_normalized": [
+        "9Fh"
+      ],
+      "byte_offset_raw": "130 (0x82)",
+      "byte_offset_parsed": 130,
+      "section": "CDB",
+      "demo_access": "WO",
+      "demo_data_type": "int",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "EPLLength",
+        "name": "EPLLength",
+        "page": "9Fh",
+        "byte": 130,
+        "byte_length": 2,
+        "access": "RW",
+        "data_type": "int",
+        "value_type": "u16",
+        "ref_table": "8-178",
+        "ref_section": "",
+        "spec_pdf_page": 282
+      },
+      "candidates": [
+        {
+          "key_id": "EPLLength",
+          "name": "EPLLength",
+          "page": "9Fh",
+          "byte": 130,
+          "byte_length": 2,
+          "access": "RW",
+          "data_type": "int",
+          "value_type": "u16",
+          "ref_table": "8-178",
+          "ref_section": "",
+          "spec_pdf_page": 282
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": false,
+        "type_compatible": true,
+        "name_similarity": 0.857,
+        "confidence": "high"
+      },
+      "notes": [
+        "access differs: demo=WO reference=RW",
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "CdbLplLength",
+      "page_raw": "9Fh",
+      "pages_normalized": [
+        "9Fh"
+      ],
+      "byte_offset_raw": "132 (0x84)",
+      "byte_offset_parsed": 132,
+      "section": "CDB",
+      "demo_access": "WO",
+      "demo_data_type": "int",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "LPLLength",
+        "name": "LPLLength",
+        "page": "9Fh",
+        "byte": 132,
+        "byte_length": 1,
+        "access": "RW",
+        "data_type": "int",
+        "value_type": "u8",
+        "ref_table": "8-178",
+        "ref_section": "",
+        "spec_pdf_page": 282
+      },
+      "candidates": [
+        {
+          "key_id": "LPLLength",
+          "name": "LPLLength",
+          "page": "9Fh",
+          "byte": 132,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-178",
+          "ref_section": "",
+          "spec_pdf_page": 282
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": false,
+        "type_compatible": true,
+        "name_similarity": 0.857,
+        "confidence": "high"
+      },
+      "notes": [
+        "access differs: demo=WO reference=RW",
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "CdbCheckCode",
+      "page_raw": "9Fh",
+      "pages_normalized": [
+        "9Fh"
+      ],
+      "byte_offset_raw": "133 (0x85)",
+      "byte_offset_parsed": 133,
+      "section": "CDB",
+      "demo_access": "WO",
+      "demo_data_type": "hex",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "CdbChkCode",
+        "name": "CdbChkCode",
+        "page": "9Fh",
+        "byte": 133,
+        "byte_length": 1,
+        "access": "RW",
+        "data_type": "int",
+        "value_type": "u8",
+        "ref_table": "8-178",
+        "ref_section": "",
+        "spec_pdf_page": 282
+      },
+      "candidates": [
+        {
+          "key_id": "CdbChkCode",
+          "name": "CdbChkCode",
+          "page": "9Fh",
+          "byte": 133,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-178",
+          "ref_section": "",
+          "spec_pdf_page": 282
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": false,
+        "type_compatible": true,
+        "name_similarity": 0.909,
+        "confidence": "high"
+      },
+      "notes": [
+        "access differs: demo=WO reference=RW",
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "CdbLocalPayload",
+      "page_raw": "9Fh",
+      "pages_normalized": [
+        "9Fh"
+      ],
+      "byte_offset_raw": "136-255 (0x88-0xFF)",
+      "byte_offset_parsed": 136,
+      "section": "CDB",
+      "demo_access": "RW",
+      "demo_data_type": "text",
+      "match_kind": "none",
+      "reference": null,
+      "candidates": [],
+      "checks": {},
+      "notes": [
+        "No reference row matched by name or address; demo-only field."
+      ],
+      "status": "unresolved"
+    },
+    {
+      "field_key": "CdbExtendedPayload",
+      "page_raw": "A0h-AFh",
+      "pages_normalized": [
+        "A0h",
+        "A1h",
+        "A2h",
+        "A3h",
+        "A4h",
+        "A5h",
+        "A6h",
+        "A7h",
+        "A8h",
+        "A9h",
+        "AAh",
+        "ABh",
+        "ACh",
+        "ADh",
+        "AEh",
+        "AFh"
+      ],
+      "byte_offset_raw": "128-255",
+      "byte_offset_parsed": 128,
+      "section": "CDB",
+      "demo_access": "RW",
+      "demo_data_type": "text",
+      "match_kind": "none",
+      "reference": null,
+      "candidates": [],
+      "checks": {},
+      "notes": [
+        "No reference row matched by name or address; demo-only field."
+      ],
+      "status": "unresolved"
+    },
+    {
+      "field_key": "CdbPasswordEntry",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "122 (0x7A)",
+      "byte_offset_parsed": 122,
+      "section": "CDB",
+      "demo_access": "WO",
+      "demo_data_type": "hex",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "PasswordEntryArea",
+        "name": "PasswordEntryArea",
+        "page": "Lwr",
+        "byte": 122,
+        "byte_length": 4,
+        "access": "WO",
+        "data_type": "int",
+        "value_type": "u32",
+        "ref_table": "8-24",
+        "ref_section": "",
+        "spec_pdf_page": 159
+      },
+      "candidates": [
+        {
+          "key_id": "PasswordEntryArea",
+          "name": "PasswordEntryArea",
+          "page": "Lwr",
+          "byte": 122,
+          "byte_length": 4,
+          "access": "WO",
+          "data_type": "int",
+          "value_type": "u32",
+          "ref_table": "8-24",
+          "ref_section": "",
+          "spec_pdf_page": 159
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.788,
+        "confidence": "medium"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "CdbMaxCompletionTime",
+      "page_raw": "9Fh",
+      "pages_normalized": [
+        "9Fh"
+      ],
+      "byte_offset_raw": "CMD 0040h reply",
+      "byte_offset_parsed": null,
+      "section": "CDB",
+      "demo_access": "RO",
+      "demo_data_type": "int",
+      "match_kind": "none",
+      "reference": null,
+      "candidates": [],
+      "checks": {},
+      "notes": [
+        "No reference row matched by name or address; demo-only field."
+      ],
+      "status": "unresolved"
+    },
+    {
+      "field_key": "CdbInstance",
+      "page_raw": "9Fh",
+      "pages_normalized": [
+        "9Fh"
+      ],
+      "byte_offset_raw": "banked",
+      "byte_offset_parsed": null,
+      "section": "CDB",
+      "demo_access": "RO",
+      "demo_data_type": "int",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "CdbInstancesSupported",
+        "name": "CdbInstancesSupported",
+        "page": "01h",
+        "byte": 163,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "hex",
+        "value_type": "bitmask2",
+        "ref_table": "8-54",
+        "ref_section": "",
+        "spec_pdf_page": 178
+      },
+      "candidates": [
+        {
+          "key_id": "CdbInstancesSupported",
+          "name": "CdbInstancesSupported",
+          "page": "01h",
+          "byte": 163,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "hex",
+          "value_type": "bitmask2",
+          "ref_table": "8-54",
+          "ref_section": "",
+          "spec_pdf_page": 178
+        }
+      ],
+      "checks": {
+        "page_match": false,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.688,
+        "confidence": "medium"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "DpState",
+      "page_raw": "11h",
+      "pages_normalized": [
+        "11h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RO",
+      "demo_data_type": "enum",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "ModuleState",
+        "name": "ModuleState",
+        "page": "Lwr",
+        "byte": 3,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "enum",
+        "value_type": "enum3",
+        "ref_table": "8-6",
+        "ref_section": "",
+        "spec_pdf_page": 144
+      },
+      "candidates": [
+        {
+          "key_id": "ModuleState",
+          "name": "ModuleState",
+          "page": "Lwr",
+          "byte": 3,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "enum",
+          "value_type": "enum3",
+          "ref_table": "8-6",
+          "ref_section": "",
+          "spec_pdf_page": 144
+        }
+      ],
+      "checks": {
+        "page_match": false,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.667,
+        "confidence": "medium"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "ConfigErrorCode",
+      "page_raw": "11h",
+      "pages_normalized": [
+        "11h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RO",
+      "demo_data_type": "enum",
+      "match_kind": "none",
+      "reference": null,
+      "candidates": [],
+      "checks": {},
+      "notes": [
+        "No reference row matched by name or address; demo-only field."
+      ],
+      "status": "unresolved"
+    },
+    {
+      "field_key": "AppSelLane1",
+      "page_raw": "10h",
+      "pages_normalized": [
+        "10h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RW",
+      "demo_data_type": "hex",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "AppSelCodeLane1.10h.145",
+        "name": "AppSelCodeLane1",
+        "page": "10h",
+        "byte": 145,
+        "byte_length": 1,
+        "access": "RW",
+        "data_type": "hex",
+        "value_type": "bitfield4",
+        "ref_table": "8-72",
+        "ref_section": "",
+        "spec_pdf_page": 198
+      },
+      "candidates": [
+        {
+          "key_id": "AppSelCodeLane1.10h.145",
+          "name": "AppSelCodeLane1",
+          "page": "10h",
+          "byte": 145,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-72",
+          "ref_section": "",
+          "spec_pdf_page": 198
+        },
+        {
+          "key_id": "AppSelCodeLane1.10h.180",
+          "name": "AppSelCodeLane1",
+          "page": "10h",
+          "byte": 180,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-77",
+          "ref_section": "",
+          "spec_pdf_page": 202
+        },
+        {
+          "key_id": "AppSelCodeLane1.11h",
+          "name": "AppSelCodeLane1",
+          "page": "11h",
+          "byte": 206,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-93",
+          "ref_section": "",
+          "spec_pdf_page": 216
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.846,
+        "confidence": "high"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "AppSelLane2",
+      "page_raw": "10h",
+      "pages_normalized": [
+        "10h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RW",
+      "demo_data_type": "hex",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "AppSelCodeLane2.10h.146",
+        "name": "AppSelCodeLane2",
+        "page": "10h",
+        "byte": 146,
+        "byte_length": 1,
+        "access": "RW",
+        "data_type": "hex",
+        "value_type": "bitfield4",
+        "ref_table": "8-72",
+        "ref_section": "",
+        "spec_pdf_page": 198
+      },
+      "candidates": [
+        {
+          "key_id": "AppSelCodeLane2.10h.146",
+          "name": "AppSelCodeLane2",
+          "page": "10h",
+          "byte": 146,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-72",
+          "ref_section": "",
+          "spec_pdf_page": 198
+        },
+        {
+          "key_id": "AppSelCodeLane2.10h.181",
+          "name": "AppSelCodeLane2",
+          "page": "10h",
+          "byte": 181,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-77",
+          "ref_section": "",
+          "spec_pdf_page": 202
+        },
+        {
+          "key_id": "AppSelCodeLane2.11h",
+          "name": "AppSelCodeLane2",
+          "page": "11h",
+          "byte": 207,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-93",
+          "ref_section": "",
+          "spec_pdf_page": 216
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.846,
+        "confidence": "high"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "AppSelLane3",
+      "page_raw": "10h",
+      "pages_normalized": [
+        "10h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RW",
+      "demo_data_type": "hex",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "AppSelCodeLane3.10h.147",
+        "name": "AppSelCodeLane3",
+        "page": "10h",
+        "byte": 147,
+        "byte_length": 1,
+        "access": "RW",
+        "data_type": "hex",
+        "value_type": "bitfield4",
+        "ref_table": "8-72",
+        "ref_section": "",
+        "spec_pdf_page": 198
+      },
+      "candidates": [
+        {
+          "key_id": "AppSelCodeLane3.10h.147",
+          "name": "AppSelCodeLane3",
+          "page": "10h",
+          "byte": 147,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-72",
+          "ref_section": "",
+          "spec_pdf_page": 198
+        },
+        {
+          "key_id": "AppSelCodeLane3.10h.182",
+          "name": "AppSelCodeLane3",
+          "page": "10h",
+          "byte": 182,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-77",
+          "ref_section": "",
+          "spec_pdf_page": 202
+        },
+        {
+          "key_id": "AppSelCodeLane3.11h",
+          "name": "AppSelCodeLane3",
+          "page": "11h",
+          "byte": 208,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-93",
+          "ref_section": "",
+          "spec_pdf_page": 216
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.846,
+        "confidence": "high"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "AppSelLane4",
+      "page_raw": "10h",
+      "pages_normalized": [
+        "10h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RW",
+      "demo_data_type": "hex",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "AppSelCodeLane4.10h.148",
+        "name": "AppSelCodeLane4",
+        "page": "10h",
+        "byte": 148,
+        "byte_length": 1,
+        "access": "RW",
+        "data_type": "hex",
+        "value_type": "bitfield4",
+        "ref_table": "8-72",
+        "ref_section": "",
+        "spec_pdf_page": 198
+      },
+      "candidates": [
+        {
+          "key_id": "AppSelCodeLane4.10h.148",
+          "name": "AppSelCodeLane4",
+          "page": "10h",
+          "byte": 148,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-72",
+          "ref_section": "",
+          "spec_pdf_page": 198
+        },
+        {
+          "key_id": "AppSelCodeLane4.10h.183",
+          "name": "AppSelCodeLane4",
+          "page": "10h",
+          "byte": 183,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-77",
+          "ref_section": "",
+          "spec_pdf_page": 202
+        },
+        {
+          "key_id": "AppSelCodeLane4.11h",
+          "name": "AppSelCodeLane4",
+          "page": "11h",
+          "byte": 209,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-93",
+          "ref_section": "",
+          "spec_pdf_page": 216
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.846,
+        "confidence": "high"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "LPMode",
+      "page_raw": "Lower",
+      "pages_normalized": [
+        "Lwr"
+      ],
+      "byte_offset_raw": "26 bit4",
+      "byte_offset_parsed": 26,
+      "section": "LOW_PAGE",
+      "demo_access": "RW",
+      "demo_data_type": "bool",
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "SquelchMethodSelect",
+        "name": "SquelchMethodSelect",
+        "page": "Lwr",
+        "byte": 26,
+        "byte_length": 1,
+        "access": "RW",
+        "data_type": "bool",
+        "value_type": "bool",
+        "ref_table": "8-11",
+        "ref_section": "",
+        "spec_pdf_page": 148
+      },
+      "candidates": [
+        {
+          "key_id": "BankBroadcastEnable",
+          "name": "BankBroadcastEnable",
+          "page": "Lwr",
+          "byte": 26,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-11",
+          "ref_section": "",
+          "spec_pdf_page": 148
+        },
+        {
+          "key_id": "LowPwrAllowRequestHW",
+          "name": "LowPwrAllowRequestHW",
+          "page": "Lwr",
+          "byte": 26,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-11",
+          "ref_section": "",
+          "spec_pdf_page": 148
+        },
+        {
+          "key_id": "SquelchMethodSelect",
+          "name": "SquelchMethodSelect",
+          "page": "Lwr",
+          "byte": 26,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-11",
+          "ref_section": "",
+          "spec_pdf_page": 148
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.4,
+        "confidence": "low"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse.",
+        "Names are unrelated: this is an address coincidence, not an alias. Do not reuse without OIF confirmation.",
+        "Low confidence candidate; treat as unresolved for P-01."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "TxDisable",
+      "page_raw": "10h",
+      "pages_normalized": [
+        "10h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RW",
+      "demo_data_type": "bool",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "OutputDisableTx8",
+        "name": "OutputDisableTx8",
+        "page": "10h",
+        "byte": 130,
+        "byte_length": 1,
+        "access": "RW",
+        "data_type": "bool",
+        "value_type": "bool",
+        "ref_table": "8-69",
+        "ref_section": "",
+        "spec_pdf_page": 194
+      },
+      "candidates": [
+        {
+          "key_id": "TxDisableIsFast",
+          "name": "TxDisableIsFast",
+          "page": "01h",
+          "byte": 151,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-49",
+          "ref_section": "",
+          "spec_pdf_page": 173
+        },
+        {
+          "key_id": "OutputDisableTx8",
+          "name": "OutputDisableTx8",
+          "page": "10h",
+          "byte": 130,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-69",
+          "ref_section": "",
+          "spec_pdf_page": 194
+        },
+        {
+          "key_id": "OutputDisableTx7",
+          "name": "OutputDisableTx7",
+          "page": "10h",
+          "byte": 130,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-69",
+          "ref_section": "",
+          "spec_pdf_page": 194
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.64,
+        "confidence": "medium"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "DataPathInit",
+      "page_raw": "10h",
+      "pages_normalized": [
+        "10h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RW",
+      "demo_data_type": "bool",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "DataPathIDTx8",
+        "name": "DataPathIDTx8",
+        "page": "19h",
+        "byte": 135,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "hex",
+        "value_type": "bitfield3",
+        "ref_table": "8-159",
+        "ref_section": "",
+        "spec_pdf_page": 265
+      },
+      "candidates": [
+        {
+          "key_id": "DataPathIDTx8",
+          "name": "DataPathIDTx8",
+          "page": "19h",
+          "byte": 135,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "hex",
+          "value_type": "bitfield3",
+          "ref_table": "8-159",
+          "ref_section": "",
+          "spec_pdf_page": 265
+        },
+        {
+          "key_id": "DataPathIDTx7",
+          "name": "DataPathIDTx7",
+          "page": "19h",
+          "byte": 134,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "hex",
+          "value_type": "bitfield3",
+          "ref_table": "8-159",
+          "ref_section": "",
+          "spec_pdf_page": 265
+        },
+        {
+          "key_id": "DataPathIDTx6",
+          "name": "DataPathIDTx6",
+          "page": "19h",
+          "byte": 133,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "hex",
+          "value_type": "bitfield3",
+          "ref_table": "8-159",
+          "ref_section": "",
+          "spec_pdf_page": 265
+        }
+      ],
+      "checks": {
+        "page_match": false,
+        "byte_match": true,
+        "access_match": false,
+        "type_compatible": true,
+        "name_similarity": 0.8,
+        "confidence": "medium"
+      },
+      "notes": [
+        "access differs: demo=RW reference=RO",
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "TxEqPreCursor",
+      "page_raw": "10h",
+      "pages_normalized": [
+        "10h"
+      ],
+      "byte_offset_raw": "Staged Control Set",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RW",
+      "demo_data_type": "int",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "RxOutputEqPreCursorMax",
+        "name": "RxOutputEqPreCursorMax",
+        "page": "01h",
+        "byte": 154,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "hex",
+        "value_type": "bitfield4",
+        "ref_table": "8-49",
+        "ref_section": "",
+        "spec_pdf_page": 173
+      },
+      "candidates": [
+        {
+          "key_id": "RxOutputEqPreCursorMax",
+          "name": "RxOutputEqPreCursorMax",
+          "page": "01h",
+          "byte": 154,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-49",
+          "ref_section": "",
+          "spec_pdf_page": 173
+        }
+      ],
+      "checks": {
+        "page_match": false,
+        "byte_match": true,
+        "access_match": false,
+        "type_compatible": true,
+        "name_similarity": 0.686,
+        "confidence": "medium"
+      },
+      "notes": [
+        "access differs: demo=RW reference=RO",
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "TxEqPostCursor",
+      "page_raw": "10h",
+      "pages_normalized": [
+        "10h"
+      ],
+      "byte_offset_raw": "Staged Control Set",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RW",
+      "demo_data_type": "int",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "OutputEqPostCursorTargetRx8.10h.169",
+        "name": "OutputEqPostCursorTargetRx8",
+        "page": "10h",
+        "byte": 169,
+        "byte_length": 1,
+        "access": "RW",
+        "data_type": "hex",
+        "value_type": "bitfield4",
+        "ref_table": "8-74",
+        "ref_section": "",
+        "spec_pdf_page": 200
+      },
+      "candidates": [
+        {
+          "key_id": "RxOutputEqPostCursorMax",
+          "name": "RxOutputEqPostCursorMax",
+          "page": "01h",
+          "byte": 154,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-49",
+          "ref_section": "",
+          "spec_pdf_page": 173
+        },
+        {
+          "key_id": "OutputEqPostCursorTargetRx8.10h.169",
+          "name": "OutputEqPostCursorTargetRx8",
+          "page": "10h",
+          "byte": 169,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-74",
+          "ref_section": "",
+          "spec_pdf_page": 200
+        },
+        {
+          "key_id": "OutputEqPostCursorTargetRx8.10h.204",
+          "name": "OutputEqPostCursorTargetRx8",
+          "page": "10h",
+          "byte": 204,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "hex",
+          "value_type": "bitfield4",
+          "ref_table": "8-79",
+          "ref_section": "",
+          "spec_pdf_page": 203
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.634,
+        "confidence": "medium"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "TxAmplitude",
+      "page_raw": "10h",
+      "pages_normalized": [
+        "10h"
+      ],
+      "byte_offset_raw": "Staged Control Set",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RW",
+      "demo_data_type": "int",
+      "match_kind": "none",
+      "reference": null,
+      "candidates": [],
+      "checks": {},
+      "notes": [
+        "No reference row matched by name or address; demo-only field."
+      ],
+      "status": "unresolved"
+    },
+    {
+      "field_key": "CdrEnableTx",
+      "page_raw": "10h",
+      "pages_normalized": [
+        "10h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RW",
+      "demo_data_type": "bool",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "CDREnableTx8.10h.160",
+        "name": "CDREnableTx8",
+        "page": "10h",
+        "byte": 160,
+        "byte_length": 1,
+        "access": "RW",
+        "data_type": "bool",
+        "value_type": "bool",
+        "ref_table": "8-73",
+        "ref_section": "",
+        "spec_pdf_page": 199
+      },
+      "candidates": [
+        {
+          "key_id": "CDREnableTx8.10h.160",
+          "name": "CDREnableTx8",
+          "page": "10h",
+          "byte": 160,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-73",
+          "ref_section": "",
+          "spec_pdf_page": 199
+        },
+        {
+          "key_id": "CDREnableTx8.10h.195",
+          "name": "CDREnableTx8",
+          "page": "10h",
+          "byte": 195,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-78",
+          "ref_section": "",
+          "spec_pdf_page": 203
+        },
+        {
+          "key_id": "CDREnableTx8.11h",
+          "name": "CDREnableTx8",
+          "page": "11h",
+          "byte": 221,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-94",
+          "ref_section": "",
+          "spec_pdf_page": 217
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.957,
+        "confidence": "high"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "CdrEnableRx",
+      "page_raw": "10h",
+      "pages_normalized": [
+        "10h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RW",
+      "demo_data_type": "bool",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "CDREnableRx8.161",
+        "name": "CDREnableRx8",
+        "page": "10h",
+        "byte": 161,
+        "byte_length": 1,
+        "access": "RW",
+        "data_type": "bool",
+        "value_type": "bool",
+        "ref_table": "8-74",
+        "ref_section": "",
+        "spec_pdf_page": 200
+      },
+      "candidates": [
+        {
+          "key_id": "CDREnableRx8.161",
+          "name": "CDREnableRx8",
+          "page": "10h",
+          "byte": 161,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-74",
+          "ref_section": "",
+          "spec_pdf_page": 200
+        },
+        {
+          "key_id": "CDREnableRx8.196",
+          "name": "CDREnableRx8",
+          "page": "10h",
+          "byte": 196,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-79",
+          "ref_section": "",
+          "spec_pdf_page": 203
+        },
+        {
+          "key_id": "CDREnableRx7.161",
+          "name": "CDREnableRx7",
+          "page": "10h",
+          "byte": 161,
+          "byte_length": 1,
+          "access": "RW",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-74",
+          "ref_section": "",
+          "spec_pdf_page": 200
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.957,
+        "confidence": "high"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "Loopback",
+      "page_raw": "13h",
+      "pages_normalized": [
+        "13h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RW",
+      "demo_data_type": "enum",
+      "match_kind": "none",
+      "reference": null,
+      "candidates": [],
+      "checks": {},
+      "notes": [
+        "No reference row matched by name or address; demo-only field."
+      ],
+      "status": "unresolved"
+    },
+    {
+      "field_key": "PrbsGenerator",
+      "page_raw": "13h",
+      "pages_normalized": [
+        "13h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RW",
+      "demo_data_type": "enum",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "PRBSGeneratorHostSidePreFEC",
+        "name": "PRBSGeneratorHostSidePreFEC",
+        "page": "13h",
+        "byte": 131,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "bool",
+        "value_type": "bool",
+        "ref_table": "8-104",
+        "ref_section": "",
+        "spec_pdf_page": 227
+      },
+      "candidates": [
+        {
+          "key_id": "PRBSGeneratorHostSidePreFEC",
+          "name": "PRBSGeneratorHostSidePreFEC",
+          "page": "13h",
+          "byte": 131,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-104",
+          "ref_section": "",
+          "spec_pdf_page": 227
+        },
+        {
+          "key_id": "PRBSGeneratorMediaSidePreFEC",
+          "name": "PRBSGeneratorMediaSidePreFEC",
+          "page": "13h",
+          "byte": 131,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-104",
+          "ref_section": "",
+          "spec_pdf_page": 227
+        },
+        {
+          "key_id": "PRBSGeneratorHostSidePostFEC",
+          "name": "PRBSGeneratorHostSidePostFEC",
+          "page": "13h",
+          "byte": 131,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "bool",
+          "value_type": "bool",
+          "ref_table": "8-104",
+          "ref_section": "",
+          "spec_pdf_page": 227
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": false,
+        "type_compatible": true,
+        "name_similarity": 0.65,
+        "confidence": "medium"
+      },
+      "notes": [
+        "access differs: demo=RW reference=RO",
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    },
+    {
+      "field_key": "PrbsChecker",
+      "page_raw": "14h",
+      "pages_normalized": [
+        "14h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RW",
+      "demo_data_type": "enum",
+      "match_kind": "none",
+      "reference": null,
+      "candidates": [],
+      "checks": {},
+      "notes": [
+        "No reference row matched by name or address; demo-only field."
+      ],
+      "status": "unresolved"
+    },
+    {
+      "field_key": "LaserFrequency",
+      "page_raw": "12h",
+      "pages_normalized": [
+        "12h"
+      ],
+      "byte_offset_raw": "pending",
+      "byte_offset_parsed": null,
+      "section": "CONTROL",
+      "demo_access": "RW",
+      "demo_data_type": "float",
+      "match_kind": "fuzzy_name",
+      "reference": {
+        "key_id": "CurrentLaserFrequencyTx8",
+        "name": "CurrentLaserFrequencyTx8",
+        "page": "12h",
+        "byte": 196,
+        "byte_length": 4,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "u32",
+        "ref_table": "8-99",
+        "ref_section": "",
+        "spec_pdf_page": 221
+      },
+      "candidates": [
+        {
+          "key_id": "CurrentLaserFrequencyTx8",
+          "name": "CurrentLaserFrequencyTx8",
+          "page": "12h",
+          "byte": 196,
+          "byte_length": 4,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u32",
+          "ref_table": "8-99",
+          "ref_section": "",
+          "spec_pdf_page": 221
+        },
+        {
+          "key_id": "CurrentLaserFrequencyTx7",
+          "name": "CurrentLaserFrequencyTx7",
+          "page": "12h",
+          "byte": 192,
+          "byte_length": 4,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u32",
+          "ref_table": "8-99",
+          "ref_section": "",
+          "spec_pdf_page": 221
+        },
+        {
+          "key_id": "CurrentLaserFrequencyTx6",
+          "name": "CurrentLaserFrequencyTx6",
+          "page": "12h",
+          "byte": 188,
+          "byte_length": 4,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u32",
+          "ref_table": "8-99",
+          "ref_section": "",
+          "spec_pdf_page": 221
+        }
+      ],
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": false,
+        "type_compatible": true,
+        "name_similarity": 0.737,
+        "confidence": "medium"
+      },
+      "notes": [
+        "access differs: demo=RW reference=RO",
+        "Alias/address-based match only; confirm against OIF text before reuse."
+      ],
+      "status": "candidate"
+    }
+  ]
+}

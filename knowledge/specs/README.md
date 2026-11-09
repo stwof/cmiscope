@@ -44,13 +44,34 @@ The script uses only the Python standard library, supports resumable HTTP
 Range requests, and verifies the `%PDF-` header and `%%EOF` trailer so an HTML
 error page can never be mistaken for a specification.
 
+## Programmatic parsing
+
+The local copies are also the input to a standard-library-only parser, so the
+specification can be cross-referenced offline:
+
+```bash
+python tools/parse_spec_pdf.py          # 5.3 -> data/spec_pdf_index.json
+python tools/import_cmis53.py           # merge provenance into the reference layer
+python tools/test_spec_pdf.py           # 33 regression checks
+```
+
+`tools/spec_pdf.py` reads the classic xref table, FlateDecode streams and
+positioned text runs; `tools/parse_spec_pdf.py` discovers the Table 8-N / 9-N
+captions and page numbers and reconstructs field rows from the table column
+coordinates. No `pdfplumber` or other third-party package is required, and the
+PDFs are opened read-only. The generated index keeps only table numbers, short
+captions, page numbers, field names and addresses - see `NOTICE` section 8.
+CMIS 5.4 can be parsed with `--pdf knowledge/specs/OIF-CMIS-05.4.pdf`.
+
 ## Copyright and licensing
 
 The CMIS Implementation Agreements are published by the **Optical
 Internetworking Forum (OIF)** and remain the property of OIF and its
 contributors. They are publicly downloadable from the OIF website; the copies
 in this repository are provided **for offline reference only**. No ownership
-is claimed, and no OIF text is reproduced inside the project source code.
+is claimed. Verbatim OIF prose is not reproduced in project source code or in
+the generated index; `NOTICE` section 8 documents the factual-identifier
+exception (short table captions, field names and addresses).
 If OIF updates or withdraws a document, use the canonical link and remove or
 replace the local copy. Redistribution terms are governed by OIF's own notices
 contained in each PDF.

@@ -30,6 +30,7 @@ _INI_MAP = {
     ("paths", "db_file"): "db_file",
     ("paths", "seed_file"): "seed_file",
     ("paths", "kg_file"): "kg_file",
+    ("paths", "reference_file"): "reference_file",
     ("paths", "targets_file"): "targets_file",
     ("app", "read_only"): "read_only",
     ("app", "write_adapter"): "write_adapter",
@@ -71,6 +72,7 @@ _ENV_MAP = {
     "CMIS_DB_FILE": "db_file",
     "CMIS_SEED_FILE": "seed_file",
     "CMIS_KG_FILE": "kg_file",
+    "CMIS_REFERENCE_FILE": "reference_file",
     "CMIS_TARGETS_FILE": "targets_file",
     "CMIS_READ_ONLY": "read_only",
     "CMIS_WRITE_ADAPTER": "write_adapter",
@@ -103,7 +105,7 @@ _ENV_MAP = {
 }
 
 _PATH_FIELDS = {"base_dir", "data_dir", "static_dir", "db_file", "seed_file", "kg_file",
-                "targets_file"}
+                "reference_file", "targets_file"}
 _INT_FIELDS = {"port", "max_body_bytes", "ssh_port", "ssh_timeout", "rest_timeout"}
 _BOOL_FIELDS = {"read_only", "allow_hardware_write", "cdb_allow_firmware", "cdb_rest_allowed"}
 
@@ -118,6 +120,7 @@ class Settings:
     db_file: Path = BASE_DIR / "data" / "cmis.db"
     seed_file: Path = BASE_DIR / "data" / "seed.json"
     kg_file: Path = BASE_DIR / "data" / "knowledge_graph.json"
+    reference_file: Path = BASE_DIR / "data" / "cmis53_reference.json"
     targets_file: Path = BASE_DIR / "config" / "targets.json"
     read_only: bool = False
     # write_adapter is kept for backward compatibility and mirrors access_mode
@@ -241,6 +244,7 @@ def public_settings(settings: Settings) -> dict:
         "db_file": str(settings.db_file),
         "seed_file": str(settings.seed_file),
         "kg_file": str(settings.kg_file),
+        "reference_file": str(settings.reference_file),
         "targets_file": str(settings.targets_file),
         "read_only": settings.read_only,
         "access_mode": settings.access_mode,

@@ -739,6 +739,197 @@ def register_write(conn: sqlite3.Connection, settings: Settings, body: Any) -> t
     return ok({"write": result})
 
 
+# --------------------------------------------------------------------------- CMIS 5.3 reference
+
+_REF_FIELD_COLUMNS = (
+    "key_id, name, page, page_raw, byte, byte_length, mask_bytes, mask_values, "
+    "bank_scope, value_type, data_type, unit, scale, byte_order, conversion_note, "
+    "access, behavior, requirement, condition, description, ref_section, ref_table, "
+    "sonic_cross_check, sonic_field, section, is_reserved, is_lower_memory"
+)
+_REF_CDB_COLUMNS = (
+    "cmd_id, title, cmd_group, requirement, spec_section, detail_table, "
+    "overview_table, description, note"
+)
+
+
+def reference_fields(conn: sqlite3.Connection, query: dict) -> tuple[int, dict]:
+    """Paginated read-only lookup over the CMIS 5.3 field map.
+
+    The upstream table has 2442 rows, so this endpoint deliberately does not
+    reuse the fixed 300-row cap of /api/fields; callers page explicitly.
+    """
+    where: list[str] = []
+    params: list[Any] = []
+    term = _q(query, "q")
+    if term:
+        where.append("(name LIKE ? ESCAPE '\\' OR key_id LIKE ? ESCAPE '\\' "
+                     "OR description LIKE ? ESCAPE '\\' OR ref_table LIKE ? ESCAPE '\\')")
+        params.extend([_like(term)] * 4)
+    filters = (("page", "page"), ("section", "section"), ("access", "access"),
+               ("value_type", "value_type"), ("data_type", "data_type"),
+               ("requirement", "requirement"), ("sonic", "sonic_cross_check"),
+               ("ref_table", "ref_table"), ("name", "name"))
+    for key, column in filters:
+        value = _q(query, key)
+        if value:
+            where.append(f"{column} = ?")
+            params.append(value.upper() if key == "section" else value)
+    if _q(query, "lower").lower() in ("1", "true", "yes"):
+        where.append("is_lower_memory = 1")
+    if _q(query, "reserved").lower() in ("0", "false", "no"):
+        where.append("is_reserved = 0")
+    clause = "WHERE " + " AND ".join(where) if where else ""
+
+    total = conn.execute(f"SELECT COUNT(*) FROM cmis53_fields {clause}", params).fetchone()[0]
+    limit = _int(query, "limit", 50, 1, 500)
+    offset = _int(query, "offset", 0, 0, 100000)
+    rows = conn.execute(
+        f"SELECT {_REF_FIELD_COLUMNS} FROM cmis53_fields {clause} "
+        "ORDER BY page, byte, key_id LIMIT ? OFFSET ?",  # noqa: S608 - fixed column list
+        (*params, limit, offset),
+    ).fetchall()
+    items = [_decode_json_fields(dict(r), ("mask_values",)) for r in rows]
+    return ok({"total": total, "limit": limit, "offset": offset, "items": items})
+
+
+def reference_field_detail(conn: sqlite3.Connection, key_id: str) -> tuple[int, dict]:
+    """Return one reference row together with its CMIScope section definition."""
+    row = conn.execute(
+        f"SELECT {_REF_FIELD_COLUMNS} FROM cmis53_fields WHERE key_id = ?",  # noqa: S608
+        (key_id,),
+    ).fetchone()
+    if row is None:
+        raise ApiError(404, "REFERENCE_FIELD_NOT_FOUND",
+                       f"CMIS 5.3 reference field not found: {key_id}")
+    field = _decode_json_fields(dict(row), ("mask_values",))
+    tokens = [t.strip() for t in re.split(r"[;,\s]+", field["ref_table"] or "") if t.strip()]
+    spec_sources: list[dict] = []
+    if tokens:
+        placeholders = ",".join("?" for _ in tokens)
+        spec_sources = rows_as_dicts(conn.execute(
+            "SELECT table_id, title, pdf_page, page, field_rows FROM cmis53_spec_tables "
+            f"WHERE table_id IN ({placeholders}) ORDER BY table_id",  # noqa: S608 - fixed placeholders
+            tuple(tokens)).fetchall())
+    return ok({"field": field,
+               "section": cmis_spec.SECTION_BY_KEY.get(field["section"]),
+               "spec_sources": spec_sources,
+               "note": "Reference only; never used for hardware writes."})
+
+
+def reference_cdb_commands(conn: sqlite3.Connection, query: dict) -> tuple[int, dict]:
+    """Full Section 9 command directory with a runtime-catalog comparison."""
+    where: list[str] = []
+    params: list[Any] = []
+    term = _q(query, "q")
+    if term:
+        where.append("(title LIKE ? ESCAPE '\\' OR cmd_id LIKE ? ESCAPE '\\' "
+                     "OR description LIKE ? ESCAPE '\\')")
+        params.extend([_like(term)] * 3)
+    group = _q(query, "group")
+    if group:
+        where.append("cmd_group = ?")
+        params.append(group)
+    clause = "WHERE " + " AND ".join(where) if where else ""
+    rows = conn.execute(
+        f"SELECT {_REF_CDB_COLUMNS} FROM cmis53_cdb_commands {clause} ORDER BY cmd_id",  # noqa: S608
+        params,
+    ).fetchall()
+    items = rows_as_dicts(rows)
+    spec_pages = {r["table_id"]: r["pdf_page"] for r in conn.execute(
+        "SELECT table_id, pdf_page FROM cmis53_spec_tables").fetchall()}
+    for item in items:
+        item["spec_pdf_page"] = spec_pages.get(item["detail_table"])
+        item["in_runtime_catalog"] = item["cmd_id"] in cmis_spec.CDB_COMMAND_BY_ID
+    return ok({"total": len(items), "items": items,
+               "runtime_catalog_size": len(cmis_spec.CDB_COMMANDS),
+               "note": "Reference only; /api/cdb/commands remains the executable catalog."})
+
+
+def reference_spec_tables(conn: sqlite3.Connection, query: dict) -> tuple[int, dict]:
+    """Paginated directory of specification tables with their PDF page numbers."""
+    where: list[str] = []
+    params: list[Any] = []
+    section = _q(query, "section")
+    if section in ("8", "9"):
+        where.append("section = ?")
+        params.append(int(section))
+    page = _q(query, "page")
+    if page:
+        where.append("page = ?")
+        params.append(page)
+    term = _q(query, "q")
+    if term:
+        where.append("(table_id LIKE ? ESCAPE '\\' OR title LIKE ? ESCAPE '\\')")
+        params.extend([_like(term)] * 2)
+    clause = "WHERE " + " AND ".join(where) if where else ""
+    total = conn.execute(f"SELECT COUNT(*) FROM cmis53_spec_tables {clause}", params).fetchone()[0]
+    limit = _int(query, "limit", 50, 1, 500)
+    offset = _int(query, "offset", 0, 0, 100000)
+    rows = conn.execute(
+        f"SELECT * FROM cmis53_spec_tables {clause} "
+        "ORDER BY section, pdf_page, table_id LIMIT ? OFFSET ?",  # noqa: S608
+        (*params, limit, offset),
+    ).fetchall()
+    return ok({"total": total, "limit": limit, "offset": offset,
+               "items": rows_as_dicts(rows),
+               "note": "Provenance only; captions are short OIF table identifiers."})
+
+
+def reference_spec_table_detail(conn: sqlite3.Connection, table_id: str,
+                                query: dict) -> tuple[int, dict]:
+    """One specification table plus the reference fields that cite it."""
+    row = conn.execute(
+        "SELECT * FROM cmis53_spec_tables WHERE table_id = ?", (table_id,)
+    ).fetchone()
+    if row is None:
+        raise ApiError(404, "SPEC_TABLE_NOT_FOUND",
+                       f"Specification table not found: {table_id}")
+    candidates = conn.execute(
+        "SELECT key_id, name, page, byte, byte_length, ref_table FROM cmis53_fields "
+        "WHERE ref_table LIKE ? ESCAPE '\\' ORDER BY page, byte, key_id",
+        (_like(table_id),),
+    ).fetchall()
+    # A ref_table cell may list several tables ("8-28; 8-30"); match exactly.
+    items = [dict(r) for r in candidates
+             if table_id in re.split(r"[;,\s]+", r["ref_table"] or "")]
+    limit = _int(query, "limit", 50, 1, 500)
+    offset = _int(query, "offset", 0, 0, 100000)
+    return ok({"table": dict(row), "total": len(items),
+               "limit": limit, "offset": offset,
+               "items": items[offset:offset + limit],
+               "note": "Fields come from the CSV reference; the PDF index supplies the page."})
+
+
+def reference_verification(conn: sqlite3.Connection) -> tuple[int, dict]:
+    """Report the PDF-vs-CSV cross-check produced by tools/parse_spec_pdf.py."""
+    rows = conn.execute(
+        "SELECT meta_key, meta_value FROM cmis53_meta "
+        "WHERE meta_key IN ('spec_verification', 'spec_pdf_meta', 'stats')"
+    ).fetchall()
+    data = {r["meta_key"]: json.loads(r["meta_value"]) for r in rows}
+    verification = data.get("spec_verification", {})
+    if not verification.get("available"):
+        return ok({"available": False,
+                   "hint": "Run tools/parse_spec_pdf.py then tools/import_cmis53.py"})
+    return ok({"available": True, "verification": verification,
+               "pdf": data.get("spec_pdf_meta", {}),
+               "reference_stats": data.get("stats", {}),
+               "note": "Best-effort coordinate extraction; the CSV remains authoritative."})
+
+
+def reference_meta(conn: sqlite3.Connection) -> tuple[int, dict]:
+    """Expose provenance, column meanings and statistics of the reference data."""
+    rows = conn.execute("SELECT meta_key, meta_value FROM cmis53_meta").fetchall()
+    data = {r["meta_key"]: json.loads(r["meta_value"]) for r in rows}
+    if not data:
+        return ok({"available": False,
+                   "hint": "Generate data/cmis53_reference.json with tools/import_cmis53.py"})
+    return ok({"available": True, **data,
+               "runtime_catalog_size": len(cmis_spec.CDB_COMMANDS),
+               "endpoints": [e for e in ENDPOINTS if e.startswith("GET /api/reference")]})
+
+
 # --------------------------------------------------------------------------- routing
 
 ENDPOINTS = [
@@ -756,6 +947,10 @@ ENDPOINTS = [
     "GET /api/kg/stats", "GET /api/kg/entities", "GET /api/kg/entity/{id}",
     "GET /api/kg/relations", "GET /api/kg/sources", "GET /api/kg/sources/coverage",
     "GET /api/kg/pending", "GET /api/kg/link?cmis=", "GET /api/kg/graph",
+    "GET /api/reference/meta", "GET /api/reference/fields?q=&page=&section=&limit=&offset=",
+    "GET /api/reference/fields/{key_id}", "GET /api/reference/cdb-commands",
+    "GET /api/reference/spec-tables?section=&page=&q=&limit=&offset=",
+    "GET /api/reference/spec-tables/{table_id}", "GET /api/reference/verify",
 ]
 
 
@@ -871,11 +1066,28 @@ def _route(conn: sqlite3.Connection, settings: Settings, method: str, path: str,
     if path == "/api/kg/graph" and method == "GET":
         return ok(kg.graph(conn, entity_type=_q(query, "type"), limit=_int(query, "limit", 300, 10, 1000)))
 
+    if path == "/api/reference/meta" and method == "GET":
+        return reference_meta(conn)
+    if path == "/api/reference/fields" and method == "GET":
+        return reference_fields(conn, query)
+    m = re.fullmatch(r"/api/reference/fields/([^/]+)", path)
+    if m and method == "GET":
+        return reference_field_detail(conn, m.group(1))
+    if path == "/api/reference/cdb-commands" and method == "GET":
+        return reference_cdb_commands(conn, query)
+    if path == "/api/reference/spec-tables" and method == "GET":
+        return reference_spec_tables(conn, query)
+    m = re.fullmatch(r"/api/reference/spec-tables/([^/]+)", path)
+    if m and method == "GET":
+        return reference_spec_table_detail(conn, m.group(1), query)
+    if path == "/api/reference/verify" and method == "GET":
+        return reference_verification(conn)
+
     if path.startswith("/api/"):
         known = path.split("?")[0]
         for probe in ("/api/devices", "/api/fields", "/api/config-items", "/api/changes",
                       "/api/kg", "/api/cdb", "/api/access", "/api/registers", "/api/sections",
-                      "/api/targets"):
+                      "/api/targets", "/api/reference"):
             if known.startswith(probe):
                 raise ApiError(405, "METHOD_NOT_ALLOWED", f"{method} {known} is not supported")
         raise ApiError(404, "ENDPOINT_NOT_FOUND", f"Unknown endpoint: {known}")

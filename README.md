@@ -38,7 +38,15 @@
 python run.py                       # 默认 http://127.0.0.1:8787/
 python run.py --port 9000
 python run.py --config config.ini   # 自定义配置
+python tools/parse_spec_pdf.py      # 解析随附 OIF PDF，生成规范表索引与一致性校验（纯标准库）
+python tools/import_cmis53.py       # 合并 CSV + PDF 索引，重建 CMIS 5.3 只读参考数据
+python tools/diff_spec_versions.py  # 生成 5.3 → 5.4 规范差异报告（P-02）
+python tools/verify_seed_fields.py  # 对照权威表校验 64 个演示字段（P-01）
 python tools/smoke_test.py          # 端到端回归（临时库 + 临时端口，不污染交付数据）
+python tools/test_reference.py      # 参考层回归（20 项）
+python tools/test_spec_pdf.py       # PDF 解析与规范溯源层回归（33 项）
+python tools/test_spec_diff.py      # 版本差异报告回归（22 项）
+python tools/test_seed_verification.py  # 演示字段校验回归（28 项）
 python tools/fetch_specs.py --check  # 校验随附的 OIF 5.3/5.4 PDF 副本
 ```
 
@@ -125,12 +133,77 @@ NOTICE LICENSE                 第三方资产声明与 MIT 许可
 - 部分 byte offset、CDB 校验码/回复区偏移、CMDID 第三方冲突、VDM 页归属与阈值可写性、IETF 草案状态等列入 19 条待确认项，需按 OIF 原文与法务复核后再用于硬件。
 - Tabler 资源为 vendored 第三方文件，保留其 `LICENSE`；本项目代码为 MIT（见仓库 `LICENSE`）。
 
-## 10. 文档索引
+## 10. CMIS 5.3 字段参考层（只读）
+
+整合自 [`jimfred/CMIS`](https://github.com/jimfred/CMIS)：**2442 行** CMIS 5.3 Section 8 字段级内存映射（Page / Byte / Mask / Value Type / Access / Requirement / 规范表号 / 逐字描述 / SONiC 位级比对）与 **48 条** Section 9 CDB 命令目录。
+
+它作为**独立的只读参考层**接入，而不是并入 `fields` / `config_items`：
+
+| | 演示字段层（原有） | 规范参考层（新增） |
+| --- | --- | --- |
+| 数据 | `data/seed.json` → `fields`(64) / `config_items`(512) | `data/cmis53_reference.json` → `cmis53_fields`(2442) / `cmis53_cdb_commands`(48) |
+| 语义 | 合成设备读数，可编辑、可校验、可 staged 写入 | 规范原文派生，**只读**，绝不参与硬件写入 |
+| 端点 | `/api/fields`、`/api/config-items`（固定 300 条上限） | `/api/reference/*`（强制分页 `limit` ≤ 500 + `offset`） |
+
+这样 2442 行不会冲垮原有 64 字段的模型、外键与 `UNIQUE(device_id, field_key)`，也不会破坏 `smoke_test.py` 的既有断言。
+
+```bash
+python tools/parse_spec_pdf.py         # 先解析随附 OIF PDF（生成 spec_pdf_index.json）
+python tools/import_cmis53.py          # 再合并 CSV + PDF 索引，重建参考数据（纯标准库）
+python tools/smoke_test.py             # 原有回归
+```
+
+数据文件默认 `data/cmis53_reference.json`，可用 `config.ini` 的 `reference_file` 或 `CMIS_REFERENCE_FILE` 覆盖；文件缺失时参考端点为空，服务其余部分照常运行。48 条 CDB 命令中有 26 条与运行时目录 `cmis_spec.CDB_COMMANDS` 重合，`GET /api/reference/cdb-commands` 会用 `in_runtime_catalog` 标出差异。
+
+> ⚠️ **许可为混合型**：字段名 / 地址 / 逐字描述属 OIF 版权、不受 MIT 覆盖；SONiC 比对列源自 Apache-2.0；脚本与规范化 / Key ID / 列结构属 MIT（Copyright (c) 2026 Jim Frederick，全文见 `data/upstream/LICENSE`）。详见 `NOTICE` 第 5–8 节与 [`docs/CMIS53_REFERENCE.md`](docs/CMIS53_REFERENCE.md)。规范以 OIF 原文为准。
+
+### 10.1 从规范 PDF 直接解析（同源溯源）
+
+上面的 CSV 本身是从 OIF 规范 PDF 提取的。本项目把第二个仓库的 PDF 解析链**重构为零依赖实现**，让随附的 `knowledge/specs/OIF-CMIS-05.3.pdf` 也能被程序直接读取：
+
+| 组件 | 作用 |
+| --- | --- |
+| `tools/spec_pdf.py` | 纯标准库 PDF 文本层读取器：xref / 页树 / FlateDecode / `Tm` 坐标，替代 `pdfplumber` |
+| `tools/parse_spec_pdf.py` | 从目录动态发现 Section 8/9 表号与页码，按表头坐标还原字段行，生成 `data/spec_pdf_index.json` |
+| `tools/cmis53_rules.py` | 共享的 page / mask / access / 单位推导规则，CSV 与 PDF 走同一套逻辑 |
+
+解析结果并入参考层：**2442/2442 字段**与 **48/48 条 CDB 命令**都能定位到 PDF 页码，238 张表可通过 `/api/reference/spec-tables` 检索；`/api/reference/verify` 返回 PDF 与 CSV 的一致性摘要（本版 685 条明细行中 627 条精确匹配，91.5%）。
+
+```bash
+python tools/parse_spec_pdf.py          # 解析 PDF（约 3 秒，无需联网/第三方库）
+python tools/import_cmis53.py           # 合并进参考数据，重启服务后生效
+```
+
+> 解析是**尽力而为的坐标重建**：表格列布局多样，未匹配行不代表 CSV 有误；字段值仍以 CSV / OIF 原文为准。索引只落盘表号、短标题、页码、字段名与地址等事实标识，**不保存 OIF 描述正文**（合规见 `NOTICE` 第 8 节）。
+
+### 10.2 两份衍生报告（推进图谱待确认项 P-01 / P-02）
+
+同一套零依赖解析能力再向下产出两份**只读报告**，都不改运行时架构、不写硬件：
+
+| 工具 | 产物 | 作用 |
+| --- | --- | --- |
+| `tools/diff_spec_versions.py` | `data/spec_version_diff.json`、`docs/CMIS_53_54_DIFF.md` | 5.3 → 5.4 表/字段/CDB 命令差异。**用标题序列对齐而非表号**：5.4 在 Section 8 中段插入表格后，102 张表的表号整体 +10、页码整体后移，直接按表号比较会产生上百条伪差异 |
+| `tools/verify_seed_fields.py` | `data/seed_field_verification.json`、`docs/SEED_FIELD_VERIFICATION.md` | 把 `seed.json` 的 64 个演示字段按「精确名 → 地址 → 模糊名」对齐到 2442 行权威表，给出可回填的 byte offset 与置信度分级，作为 P-01 复核清单 |
+
+实测：5.4 相对 5.3 真正**新增 26 张表、移除 6 张、实质改名 42 张**（另有 5 张全局术语替换），CDB 命令 **+5/−2**；演示字段 **4 条已验证、3 条可直接回填地址、10 条高置信度候选、0 条地址冲突**。
+
+```bash
+python tools/diff_spec_versions.py              # 约 3 秒，自动复用 5.3 索引并在内存解析 5.4
+python tools/verify_seed_fields.py              # 只读，绝不修改 seed.json
+python tools/verify_seed_fields.py --strict     # CI：出现地址/页不一致时返回 1
+```
+
+> 两份报告均为**复核线索**，不是规范结论；字段级差异来自尽力而为的坐标重建，最终以 OIF 原文与上游 CSV 为准。仅持久化事实标识，许可边界见 `NOTICE` 第 8 节。
+
+## 11. 文档索引
 
 | 文档 | 内容 |
 | --- | --- |
 | [`docs/USAGE_BACKGROUND.md`](docs/USAGE_BACKGROUND.md) | 使用背景、两种接入方式的拓扑与职责边界、安全策略、上线检查清单 |
 | [`docs/CMIS_SECTIONS.md`](docs/CMIS_SECTIONS.md) | CMIS 5.3/5.4 分区依据、Lower Memory 布局、Upper Page 00h、CDB 帧与命令目录 |
+| [`docs/CMIS53_REFERENCE.md`](docs/CMIS53_REFERENCE.md) | CMIS 5.3 字段参考层：来源与混合许可、schema、分区映射、PDF 解析与溯源、衍生报告、重建流程、`/api/reference/*` 端点 |
+| [`docs/CMIS_53_54_DIFF.md`](docs/CMIS_53_54_DIFF.md) | OIF CMIS 5.3 → 5.4 规范差异报告（P-02），按标题序列对齐，含新增/移除表与 CDB 命令清单 |
+| [`docs/SEED_FIELD_VERIFICATION.md`](docs/SEED_FIELD_VERIFICATION.md) | 64 个演示字段与权威表对照报告（P-01），含可回填地址与置信度分级 |
 | [`docs/API.md`](docs/API.md) | 全部 REST 端点、错误码、校验规则、curl 示例 |
 | [`knowledge/CMIS_KNOWLEDGE_GRAPH.md`](knowledge/CMIS_KNOWLEDGE_GRAPH.md) | 图谱规模、置信度规则、38 条来源、19 条待确认项、关联查询方式 |
 | [`docs/DASHBOARD_SELECTION.md`](docs/DASHBOARD_SELECTION.md) | Tabler 1.7.3 选型依据、候选对比、集成方式与双语 UI 说明 |
