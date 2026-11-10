@@ -44,14 +44,18 @@ python tools/diff_spec_versions.py  # 生成 5.3 → 5.4 规范差异报告（P-
 python tools/verify_seed_fields.py  # 对照权威表校验 64 个演示字段（P-01）
 python tools/smoke_test.py          # 端到端回归（临时库 + 临时端口，不污染交付数据，87 项）
 python tools/test_reference.py      # 参考层回归（20 项）
-python tools/test_spec_pdf.py       # PDF 解析与规范溯源层回归（33 项）
+python tools/test_spec_pdf.py       # PDF 解析与规范溯源层回归（38 项）
 python tools/test_spec_diff.py      # 版本差异报告回归（22 项）
 python tools/test_seed_verification.py  # 演示字段校验回归（28 项）
 python tools/test_dataset_build.py  # 规范化数据集构建：功能 / 异常 / 边界 / DB 回归（37 项）
 python tools/test_access_modes.py   # 源码清理 + 两种接入模式严格互斥（99 项）
 python tools/test_legacy_specs.py   # CMIS 5.1/5.2 手册跨版本校验（手册需自行下载，见 docs/TEST_REPORT.md）
+python tools/test_i18n.py           # 中英文界面文案 / 数据记录本地化回归（19 项，含真实 API 响应扫描）
+python tools/build_i18n_data.py     # 校验译文覆盖率并重建 static/js/data_en.js
 python tools/fetch_specs.py --check  # 校验随附的 OIF 5.3/5.4 PDF 副本
 ```
+
+> **多语言**：界面文案统一由 `static/js/i18n.js`（中/英字典）驱动；知识图谱、来源清单等数据记录以中文存储，英文模式通过 `data/i18n_data_en.json` 的 curated 映射在渲染时转换（`static/js/data_en.js` 由 `build_i18n_data.py` 生成）。新增数据文案后需同步补充映射并重建；`test_i18n.py` 会校验覆盖率、字典对称性、英文模式零中文残留，并在临时库 / 临时端口上启动服务扫描 25 个只读端点的真实响应。
 
 > 全部离线测试不触硬件、不写交付数据；`test_legacy_specs.py` 在找不到 5.1/5.2 手册时会明确 SKIP 并给出官方下载地址，不会因此失败。测试汇总、发现的问题与未覆盖项见 [`docs/TEST_REPORT.md`](docs/TEST_REPORT.md)。
 
@@ -83,9 +87,9 @@ CMIS_DATA_DIR=/path/to/data python run.py
 
 | 分区 | 规范依据 | 主要页/地址 |
 |---|---|---|
-| 低页 0x00 | OIF-CMIS-05.3 §8.2 / §8.4 | Lower 00h–7Fh + Upper Page 00h（ID、状态、模块级标志、全局控制、CDB 状态、固件版本、口令区、Bank/Page 选择、厂商/OUI/料号/序列号/校验和） |
+| 低页 0x00 | OIF-CMIS-05.3 §8.2 / §8.4 | Lower 00h–7Fh + Upper Page 00h（ID、状态、模块级标志、全局控制、CDB 状态、固件版本、密码区、Bank/Page 选择、厂商/OUI/料号/序列号/校验和） |
 | VDM | §8.8 / §8.22；IETF YANG 草案 Table 2 | Lower 14–25 模块级监测量、Page 02h 阈值、10h/11h 通道状态与光功率、20h–2Fh VDM |
-| CDB | §8.23 / §8.24 / §9 | Page 9Fh 命令帧、A0h–AFh EPL、Lower 37–38 状态、Lower 122 口令入口 |
+| CDB | §8.23 / §8.24 / §9 | Page 9Fh 命令帧、A0h–AFh EPL、Lower 37–38 状态、Lower 122 密码入口 |
 | 控制与诊断 | §6.3 / §8.9 / §8.10 / C-CMIS | Page 01h 应用描述符、10h AppSel/DPSM/Staged Control Set、13h/14h PRBS、12h 可调激光器、30h–4Fh 相干设置 |
 
 详见 [`docs/CMIS_SECTIONS.md`](docs/CMIS_SECTIONS.md)。

@@ -193,7 +193,7 @@ CLAUSES = [
     ("CL-VDM", "Pages 20h-2Fh VDM 可观测量", "VDM 监视、阈值与 Freeze 原子读取", ["S-OIF-052", "S-GH-LIBSFFCMIS"], "partial"),
     ("CL-DIAG", "Pages 13h/14h 诊断（PRBS / Loopback / BER）", "链路诊断能力", ["S-OIF-052", "S-GH-LIBSFFCMIS"], "partial"),
     ("CL-TUNABLE", "Pages 04h/12h 可调激光器能力", "DCO 频率/波长配置能力", ["S-OIF-052", "S-GH-LIBSFFCMIS", "S-OIF-CCMIS-013"], "partial"),
-    ("CL-CCMIS-PM", "C-CMIS 性能监测（Pages 34h/35h、Flag 33h/3Bh）", "相干模块 PM / FEC / Flag 解码", ["S-OIF-CCMIS-013", "S-GH-LIBSFFCMIS"], "partial"),
+    ("CL-CCMIS-PM", "C-CMIS 性能监控（Pages 34h/35h、Flag 33h/3Bh）", "相干模块 PM / FEC / Flag 解码", ["S-OIF-CCMIS-013", "S-GH-LIBSFFCMIS"], "partial"),
     ("CL-PROTECTED", "受保护区与密码机制", "写保护控制字段需密码解锁（社区资料，条款待核）", ["S-ART-CSDN-53"], "pending"),
 ]
 for cid, name, summary, sources, conf in CLAUSES:
@@ -320,7 +320,7 @@ ENTITIES.append(E("SVC-CMIS-DASH", "Service", "CMIScope - Lightweight CMIS Dashb
 # --- CMIS specification partitions (OIF-CMIS-05.3 / 05.4) ---
 ENTITIES += [
     E("SEC-LOW-PAGE", "SpecificationPartition", "Low Page 0x00 (Lower + Upper 00h)",
-      "常驻低 128 字节与 Upper Page 00h：ID/状态、模块级标志、全局控制、CDB 状态、固件版本、应用广告、口令区、Bank/Page 选择",
+      "常驻低 128 字节与 Upper Page 00h：ID/状态、模块级标志、全局控制、CDB 状态、固件版本、应用通告、密码区、Bank/Page 选择",
       ["S-OIF-053", "S-OIF-054", "S-ART-MAPYOURTECH", "S-ART-VITEX"], "partial",
       pages="Lower 00h-7Fh, Upper 00h 80h-FFh", spec_ref="OIF-CMIS-05.3 8.2 / 8.4"),
     E("SEC-VDM", "SpecificationPartition", "VDM / CMIS Monitors",
@@ -328,7 +328,7 @@ ENTITIES += [
       ["S-OIF-053", "S-IETF-CMIS-YANG", "S-ART-VITEX"], "partial",
       pages="Lower 14-25, 02h, 10h, 11h, 20h-2Fh", spec_ref="OIF-CMIS-05.3 8.8 / 8.22"),
     E("SEC-CDB", "SpecificationPartition", "CDB (Command Data Block)",
-      "Page 9Fh 命令帧与 120 字节 LPL、Pages A0h-AFh 最多 2048 字节 EPL、Lower 37-38 状态、Lower 122 口令入口；命令参考见 05.3 第 9 章",
+      "Page 9Fh 命令帧与 120 字节 LPL、Pages A0h-AFh 最多 2048 字节 EPL、Lower 37-38 状态、Lower 122 密码入口；命令参考见 05.3 第 9 章",
       ["S-OIF-053", "S-OIF-054", "S-GH-LINUX-CDB"], "confirmed",
       pages="9Fh, A0h-AFh, Lower 37-38, Lower 118-125", spec_ref="OIF-CMIS-05.3 8.23 / 8.24 / 9"),
     E("SEC-CONTROL", "SpecificationPartition", "Datapath / Diagnostics / Coherent Control",
@@ -358,7 +358,7 @@ ENTITIES += [
       "IETF YANG 草案：remote-read-allowed-pages / remote-write-allowed-pages / default-policy；Lower Memory 与 CDB 页不可委派远程写",
       ["S-IETF-CMIS-YANG"], "confirmed"),
     E("CFG-CDB", "ConfigItem", "CDB registers and command parameters",
-      "Page 9Fh/A0h-AFh 与 Lower 37-38/122 的 CDB 相关寄存器：CMDID、EPL/LPL 长度、校验码、载荷、状态、口令、实例",
+      "Page 9Fh/A0h-AFh 与 Lower 37-38/122 的 CDB 相关寄存器：CMDID、EPL/LPL 长度、校验码、载荷、状态、密码、实例",
       ["S-OIF-053", "S-GH-LINUX-CDB"], "confirmed", spec_ref="OIF-CMIS-05.3 8.23 / 8.24 / 9"),
     E("CFG-VDM", "ConfigItem", "VDM threshold and monitor registers",
       "Page 02h 阈值、Lower 14-25 与 Page 10h/11h 监测量、Pages 20h-2Fh VDM 控制",
@@ -559,7 +559,7 @@ RELATIONS += [
     R("SEC-LOW-PAGE", "IF-UPPER", "CONTAINS", "低页包含 Upper Page 00h 静态识别区", ["S-OIF-053", "S-ART-VITEX"]),
     R("SEC-LOW-PAGE", "IF-BANKPAGE", "CONTAINS", "Bank/Page 选择字节位于 Lower 126/127", ["S-ART-MAPYOURTECH"]),
     R("SEC-VDM", "CON-DDM", "CONTAINS", "VDM 分区承载监测量与阈值", ["S-OIF-053", "S-IETF-CMIS-YANG"]),
-    R("SEC-VDM", "IF-VDM", "CONTAINS", "VDM 页 20h-2Fh 属于监测分区", ["S-OIF-053"]),
+    R("SEC-VDM", "IF-VDM", "CONTAINS", "VDM 页 20h-2Fh 属于监控分区", ["S-OIF-053"]),
     R("SEC-CDB", "IF-CDB-FRAME", "CONTAINS", "Page 9Fh 命令帧", ["S-OIF-053", "S-GH-LINUX-CDB"]),
     R("SEC-CDB", "IF-CDB-EPL", "CONTAINS", "Pages A0h-AFh 扩展载荷", ["S-OIF-053", "S-GH-LINUX-CDB"]),
     R("SEC-CDB", "IF-CDB", "CONTAINS", "CDB 消息接口", ["S-OIF-053"]),
@@ -685,7 +685,7 @@ PENDING = [
     {"pending_id": "P-15", "topic": "CDB 命令 ID 第三方冲突",
      "question": "部分中文技术文章把 0100h 写作 Start Firmware Download、0103h 写作 Complete Firmware Download；OIF-CMIS-05.3 第 9 章目录与 Linux 内核枚举一致为 0101h Start / 0107h Complete，本图谱以官方目录+内核为准，仍需原文复核",
      "source_ids": ["S-OIF-053", "S-GH-LINUX-CDB"], "impact": "命令目录若与实际模块固件不一致会导致命令被拒绝", "status": "open"},
-    {"pending_id": "P-16", "topic": "Low Page 应用广告位置版本差异",
+    {"pending_id": "P-16", "topic": "Low Page 应用通告位置版本差异",
      "question": "公开模块 datasheet 将 Application Advertising 列在 Lower 85-117，而 CMIS 5.3/5.4 主要使用 Upper Page 01h 的 Application Descriptors；该偏移随版本变化",
      "source_ids": ["S-ART-MAPYOURTECH", "S-ART-VITEX", "S-OIF-053"], "impact": "旧布局字段在 5.3/5.4 模块上可能不适用", "status": "open"},
     {"pending_id": "P-17", "topic": "VDM 页归属与阈值可写性",

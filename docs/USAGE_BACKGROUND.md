@@ -7,7 +7,7 @@
 光模块（QSFP-DD / OSFP / QSFP112 / 相干 DCO 等）通过 **CMIS（Common Management Interface Specification，OIF-CMIS-05.3 / 05.4）** 暴露一个 256 字节的分页 EEPROM：低 128 字节常驻，高 128 字节由 Lower Byte 127 的 Page Select 切换。现场遇到的典型问题是：
 
 - 信息分散：设备资产在 CMDB，寄存器读数在交换机 CLI，能力/条款在 OIF PDF，差异在开源驱动里；
-- 缺乏统一视图：想看「低页 0x00 的识别信息 + VDM 监测量 + CDB 状态」，要在多个工具间切换；
+- 缺乏统一视图：想看「低页 0x00 的识别信息 + VDM 监控量 + CDB 状态」，要在多个工具间切换；
 - 改配置风险高：AppSel、阈值、Tx 均衡、PRBS、固件命令写错会直接打断链路；
 - 来源难追溯：某个字段的 byte offset 来自规范原文、第三方解读还是开源实现，往往说不清。
 
@@ -30,7 +30,7 @@ flowchart LR
 - **代码位置**：CMIScope 进程跑在**测试 Server**（实验室的一台 Linux/Windows 主机）上。
 - **链路**：服务用系统 `ssh` 二进制登录**测试 Switch**，在交换机上执行 `i2cdump` / `i2cset` 或厂商 CLI；真正的两线（I2C）事务由交换机发起，目标是模块 EEPROM 地址 `0x50`（CDB 页同样在 `0x50`）。
 - **分页**：读 Upper Page 前必须先写 Lower Byte 127 的 Page Select（Bank 由 Byte 126 选择），并遵守切换后的访问保持时间；多页读完后应恢复原页，避免干扰 Host NOS。
-- **凭据**：复用运维人员已有的 ssh-agent 密钥与 `~/.ssh/config`，配置里不保存口令；命令通过 argv 模板渲染（`shlex.split`，不经 shell），占位符做白名单校验。
+- **凭据**：复用运维人员已有的 ssh-agent 密钥与 `~/.ssh/config`，配置里不保存密码；命令通过 argv 模板渲染（`shlex.split`，不经 shell），占位符做白名单校验。
 - **适用场景**：台架调测、模块表征、CMIS 兼容性验证、CDB/固件实验。
 - **配置**：`access_mode = ssh-i2c`，并填写 `[ssh]` 段的 `host/user/port/i2c_bus/i2c_addr/*_cmd`。
 
@@ -58,7 +58,7 @@ flowchart LR
 | 中间跳板 | 测试 Switch | 目标设备 / NOS |
 | I2C 执行者 | 测试 Switch | 目标设备自身 |
 | 服务看到的粒度 | 原始 page/byte | 规范化 CMIS 资源 |
-| 认证 | ssh-agent 密钥（无口令入库） | 环境变量中的 Bearer token |
+| 认证 | ssh-agent 密钥（无密码入库） | 环境变量中的 Bearer token |
 | 典型环境 | 实验室 / 台架 | 运维 / 生产 |
 | 主要风险 | 直接写寄存器、页选择干扰 Host NOS | 越权页写入、令牌泄露 |
 | 安全默认值 | Lower Memory 写禁止；硬件写总开关默认关 | CDB 页默认只读；页级 allowlist 未开启时拒绝写 |
@@ -68,14 +68,14 @@ flowchart LR
 
 `access_mode = mirror`（默认）用于开发、培训、离线评审和 CI。读数来自本地 SQLite，所有配置写入标记为 `staged` 并写入审计日志，`applied_to_hardware` 恒为 `false`。它让整个服务在没有实验室硬件的笔记本上也能完整运行，同时避免误操作真实设备。
 
-### 测试方式与目标设备的可编辑配置
+### 接入模式与目标设备的可编辑配置
 
 上文的 `config.ini` 描述的是**全局默认接入方式**；实际测试时往往需要按设备切换，或临时新增一台检测设备。为此 CMIScope 额外提供一份可编辑的目标设备清单：
 
 - **配置文件**：`config/targets.json`（首次使用时由 `config/targets.example.json` 提供示例回退；该文件被 `.gitignore` 排除，不随仓库分发）。通用字段为 `device_id`、`access_mode`（`mirror` / `ssh-i2c` / `rest-api`）、`host`、`port`、`module_ids`、`notes`；**模式专属字段严格互斥**：`ssh-i2c` 只能有 `ssh_user/i2c_bus/i2c_addr`，`rest-api` 只能有 `rest_scheme/rest_base_path/token_env`，`mirror` 两者都不允许。同一条目标同时出现两种模式的字段会被拒绝；`active_target` 指定当前测试目标。
 - **Dashboard 视图**：左侧「接入配置 / Access targets」可直接切换当前目标、编辑 IP 等必要参数、新增或删除设备、保存并逐个探测。保存后立即生效，无需重启服务。
 - **REST 接口**：`GET /api/targets` 读取配置，`PUT /api/targets` 校验并原子写入，`POST /api/targets/probe` 按指定设备探测连通性；`GET /api/access`、`POST /api/access/probe`、`/api/registers/*`、`/api/config-items/*`、`/api/cdb/execute` 都会按 `device_id` 解析该设备自己的传输参数。
-- **凭据边界**：目标配置中禁止出现 `token`、`password`、`secret`、`api_key`、`private_key`、`credentials`、`auth` 等字段，写入时会被拒绝并返回 `TARGETS_VALIDATION_FAILED`；REST Token 只能通过 `token_env` 引用环境变量名，SSH 复用 ssh-agent。这样新增设备只需填写 IP/模式等参数，不涉及任何口令入库。
+- **凭据边界**：目标配置中禁止出现 `token`、`password`、`secret`、`api_key`、`private_key`、`credentials`、`auth` 等字段，写入时会被拒绝并返回 `TARGETS_VALIDATION_FAILED`；REST Token 只能通过 `token_env` 引用环境变量名，SSH 复用 ssh-agent。这样新增设备只需填写 IP/模式等参数，不涉及任何密码入库。
 - **逐步操作**见 [`DEPLOYMENT.md`](DEPLOYMENT.md) 与 [`OPERATIONS.md`](OPERATIONS.md)。
 
 ## 3. 共同的上层能力

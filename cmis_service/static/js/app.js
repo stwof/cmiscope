@@ -23,6 +23,35 @@
   function pick(zh, en) {
     return (I18N.getLang() === 'en' && en) ? en : (zh || en || '');
   }
+  // Data records (knowledge graph, source catalogue, generated seed data) are
+  // stored in Chinese. In English mode their display strings are looked up in
+  // the curated dictionary shipped as js/data_en.js. Technical identifiers and
+  // user-entered values are never rewritten.
+  function L(value) {
+    if (I18N.getLang() !== 'en' || value === null || value === undefined) return value;
+    var text = String(value);
+    if (!/[\u3400-\u9fff]/.test(text)) return text;
+    var map = window.CMIS_DATA_EN || {};
+    var hit = map[text];
+    if (typeof hit === 'string' && hit && !/[\u3400-\u9fff]/.test(hit)) return hit;
+    // Safety net for records added later: never render Chinese in English mode.
+    return text.replace(/[\u3400-\u9fff]/g, '').replace(/\s{2,}/g, ' ').trim() || '-';
+  }
+  function LJson(value) {
+    if (I18N.getLang() !== 'en') return value;
+    if (Array.isArray(value)) return value.map(LJson);
+    if (value && typeof value === 'object') {
+      var out = {};
+      Object.keys(value).forEach(function (k) { out[k] = LJson(value[k]); });
+      return out;
+    }
+    return typeof value === 'string' ? L(value) : value;
+  }
+  function groupLabel(key) {
+    var k = 'search.group.' + key;
+    var label = t(k);
+    return label === k ? key : label;
+  }
   function badge(text, color) {
     return '<span class="badge bg-' + (color || 'secondary') + '-lt">' + esc(text) + '</span>';
   }
@@ -127,9 +156,9 @@
       var cards = [
         ['ov.devices', d.devices, 'ti ti-server-2', t('common.online') + ': ' + (d.status_counts.online || 0)],
         ['ov.modules', d.modules, 'ti ti-cpu', 'QSFP-DD / OSFP'],
-        ['ov.fields', d.fields, 'ti ti-list-details', Object.keys(d.section_counts || {}).length + ' sections'],
+        ['ov.fields', d.fields, 'ti ti-list-details', t('ov.sectionCount', { n: Object.keys(d.section_counts || {}).length })],
         ['ov.configItems', d.config_items, 'ti ti-settings', t('cfg.writable') + ': ' + d.writable_items],
-        ['ov.changes', d.changes, 'ti ti-history', t('common.staged') + ' / applied'],
+        ['ov.changes', d.changes, 'ti ti-history', t('common.staged') + ' / ' + t('common.applied')],
         ['ov.cdbOps', d.cdb_operations, 'ti ti-terminal-2', 'Page 9Fh / A0h-AFh']
       ];
       el('statGrid').innerHTML = cards.map(function (c) {
@@ -147,7 +176,7 @@
       var changes = d.recent_changes || [];
       el('recentTable').innerHTML = '<thead><tr><th>' + esc(t('dev.col.id')) + '</th><th>' +
         esc(t('cfg.col.field')) + '</th><th>' + esc(t('cfg.col.value')) + '</th><th>' +
-        esc(t('mod.result')) + '</th><th>Time</th></tr></thead><tbody>' +
+        esc(t('mod.result')) + '</th><th>' + esc(t('common.time')) + '</th></tr></thead><tbody>' +
         (changes.length ? changes.map(function (c) {
           return '<tr><td>' + mono(c.device_id) + '</td><td>' + mono(c.field_key) + '</td><td>' +
             esc(c.old_value) + ' → ' + esc(c.new_value) + '</td><td>' + badge(esc(c.result), c.result === 'applied' ? 'green' : 'blue') +
@@ -262,9 +291,9 @@
       el('moduleSummary').innerHTML = '<div class="kv-grid">' +
         kv(t('dev.col.id'), mono(dev.device_id)) +
         kv(t('dev.col.name'), esc(pick(dev.name, dev.name_en))) +
-        kv('Port / Form factor', esc((m.port || '-') + ' / ' + (m.form_factor || '-'))) +
-        kv('Vendor PN', mono(m.part_number || '-')) +
-        kv('Serial', mono(m.serial || '-')) +
+        kv(t('mod.portFormFactor'), esc((m.port || '-') + ' / ' + (m.form_factor || '-'))) +
+        kv(t('mod.vendorPn'), mono(m.part_number || '-')) +
+        kv(t('mod.serial'), mono(m.serial || '-')) +
         kv('CMIS', badge('rev ' + esc(dev.cmis_revision || '-'), 'blue')) +
         kv(t('dev.col.status'), esc(m.module_state || '-')) +
         kv(t('side.access'), badge(esc(dev.access_mode || 'mirror'), 'purple')) + '</div>' +
@@ -383,7 +412,7 @@
       '<div class="col-md-6"><label class="form-label small">' + esc(t('mod.lpl')) +
       '</label><textarea class="form-control form-control-sm cdb-lpl" rows="2" placeholder="00 01 02"></textarea></div>' +
       '<div class="col-md-6"><label class="form-label small">' + esc(t('mod.epl')) +
-      '</label><textarea class="form-control form-control-sm cdb-epl" rows="2" placeholder="optional"></textarea></div>' +
+      '</label><textarea class="form-control form-control-sm cdb-epl" rows="2" placeholder="' + esc(t('common.optional')) + '"></textarea></div>' +
       '</div><div class="small muted mt-2">' + esc(t('mod.note')) + '</div>' +
       '<div class="cdb-report mt-3"></div><div class="cdb-status mt-2"></div>' +
       '<h4 class="mt-3">' + esc(t('mod.history')) + '</h4><div class="cdb-history"></div>';
@@ -403,8 +432,8 @@
       card.querySelector('.cdb-report').innerHTML =
         '<div class="report-box pass"><div class="mb-2">' + badge('CMD ' + esc(frame.cmd_id + 'h'), 'blue') + ' ' +
         esc(frame.command) + ' ' + badge(esc(frame.risk), frame.risk === 'firmware' ? 'red' : 'green') + '</div>' +
-        '<div class="kv-grid mb-2">' + kv('Page', mono(frame.page)) + kv('EPL', mono(frame.epl_pages)) +
-        kv('LPL len', esc(frame.lpl_len)) + kv('EPL len', esc(frame.epl_len)) +
+        '<div class="kv-grid mb-2">' + kv(t('mod.page'), mono(frame.page)) + kv(t('mod.epl'), mono(frame.epl_pages)) +
+        kv(t('mod.lplLen'), esc(frame.lpl_len)) + kv(t('mod.eplLen'), esc(frame.epl_len)) +
         kv(t('mod.checkCode'), mono(frame.check_code)) + kv(t('mod.spec'), esc(frame.spec_ref)) + '</div>' +
         '<div class="small mb-1">' + esc(t('mod.framePreview')) + ' (128 bytes)</div>' +
         '<pre class="mono cdb-frame mb-0">' + esc(hexDump(frame.frame_hex)) + '</pre>' +
@@ -413,7 +442,7 @@
     card.querySelector('.cdb-compose').addEventListener('click', function () {
       api('POST', '/api/cdb/compose', payload()).then(function (d) {
         showFrame(d.frame, t('mod.staged'));
-        toast('CDB frame validated (' + d.frame.cmd_id + 'h)', 'ok');
+        toast(t('mod.frameValidated', { id: d.frame.cmd_id }), 'ok');
       }).catch(fail);
     });
     card.querySelector('.cdb-execute').addEventListener('click', function () {
@@ -436,11 +465,11 @@
       card.querySelector('.cdb-history').innerHTML = d.items.length
         ? '<div class="table-responsive"><table class="table table-sm table-vcenter"><thead><tr>' +
           '<th>CMDID</th><th>' + esc(t('mod.cmdName')) + '</th><th>' + esc(t('mod.result')) +
-          '</th><th>' + esc(t('mod.applied')) + '</th><th>Time</th></tr></thead><tbody>' +
+          '</th><th>' + esc(t('mod.applied')) + '</th><th>' + esc(t('common.time')) + '</th></tr></thead><tbody>' +
           d.items.map(function (r) {
             return '<tr><td>' + mono(r.cmd_id + 'h') + '</td><td>' + esc(r.command_name) + '</td><td>' +
               badge(esc(r.result), r.result === 'staged' ? 'blue' : 'green') + '</td><td>' +
-              (r.applied_to_hardware ? badge('yes', 'green') : badge('no', 'secondary')) + '</td><td class="muted">' +
+              (r.applied_to_hardware ? badge(t('common.yes'), 'green') : badge(t('common.no'), 'secondary')) + '</td><td class="muted">' +
               timeShort(r.created_at) + '</td></tr>';
           }).join('') + '</tbody></table></div>'
         : '<div class="empty-hint">' + esc(t('common.noData')) + '</div>';
@@ -482,7 +511,7 @@
         kv(t('dev.col.id'), mono(item.device_id)) + kv(t('mod.field'), esc(pick(item.label, item.label_en))) +
         kv(t('cfg.col.page'), mono((item.page || '') + ':' + (item.byte_offset || ''))) +
         kv(t('mod.section'), esc(sectionLabel(item.section))) +
-        kv(t('mod.spec'), esc(item.spec_ref || '')) + kv('Version', esc(item.version)) + '</div>';
+        kv(t('mod.spec'), esc(item.spec_ref || '')) + kv(t('common.version'), esc(item.version)) + '</div>';
       el('editTypeHint').textContent = '[' + esc(item.data_type) + (item.unit ? ' · ' + esc(item.unit) : '') + ']';
       el('editValue').value = item.value === null ? '' : item.value;
       el('editNote').value = '';
@@ -518,7 +547,7 @@
       return '<div class="check-row"><span class="no">!</span><span>' + esc(w.code) + ': ' + esc(w.message) + '</span></div>';
     }).join('');
     return '<div class="report-box ' + (report.valid ? 'pass' : 'fail') + '">' +
-      '<strong>' + (report.valid ? '✓ PASS' : '✗ FAIL') + '</strong>' + rows + warns + '</div>';
+      '<strong>' + esc(report.valid ? t('common.pass') : t('common.fail')) + '</strong>' + rows + warns + '</div>';
   }
   function editPayload() {
     var item = state.editorItem.item;
@@ -546,11 +575,11 @@
   function renderKgList(items, filter, type) {
     var f = (filter || '').toLowerCase();
     var shown = items.filter(function (x) {
-      return (!type || x.type === type) && (!f || (x.name + ' ' + xsummarySafe(x)).toLowerCase().indexOf(f) >= 0);
+      return (!type || x.type === type) && (!f || (L(x.name) + ' ' + L(xsummarySafe(x))).toLowerCase().indexOf(f) >= 0);
     });
     el('kgEntityList').innerHTML = shown.length ? shown.map(function (x) {
       return '<div class="kg-item' + (x.entity_id === state.selectedKg ? ' active' : '') +
-        '" data-kg="' + esc(x.entity_id) + '"><div class="kg-name">' + esc(x.name) +
+        '" data-kg="' + esc(x.entity_id) + '"><div class="kg-name">' + esc(L(x.name)) +
         '</div><div class="kg-meta">' + esc(x.type) + ' · ' + confBadge(x.confidence) + '</div></div>';
     }).join('') : '<div class="empty-hint">' + esc(t('common.noData')) + '</div>';
     el('kgEntityList').querySelectorAll('[data-kg]').forEach(function (n) {
@@ -562,23 +591,24 @@
     state.selectedKg = id;
     api('GET', '/api/kg/entity/' + encodeURIComponent(id)).then(function (d) {
       var e = d.entity || d;
-      el('kgDetailTitle').textContent = e.name || id;
+      el('kgDetailTitle').textContent = L(e.name || id);
       el('kgDetailType').textContent = e.type || '';
       var src = (e.source_ids || []).map(function (s) { return badge(s, 'blue'); }).join(' ');
       var rels = (d.outgoing || []).map(function (r) {
         return '<div class="rel-item">' + badge(r.type, 'purple') + ' → <a data-kg="' +
-          esc(r.dst || '') + '">' + esc(r.neighbor_name || r.dst || '') + '</a> ' +
-          esc(r.label || '') + '</div>';
+          esc(r.dst || '') + '">' + esc(L(r.neighbor_name || r.dst || '')) + '</a> ' +
+          esc(L(r.label || '')) + '</div>';
       }).join('');
       var ins = (d.incoming || []).map(function (r) {
         return '<div class="rel-item">' + badge(r.type, 'secondary') + ' ← ' +
-          esc(r.neighbor_name || r.src || '') + '</div>';
+          esc(L(r.neighbor_name || r.src || '')) + '</div>';
       }).join('');
-      el('kgDetailBody').innerHTML = '<div class="mb-2 muted">' + esc(xsummarySafe(e)) + '</div>' +
+      el('kgDetailBody').innerHTML = '<div class="mb-2 muted">' + esc(L(xsummarySafe(e))) + '</div>' +
         '<div class="mb-2">' + confBadge(e.confidence) + ' ' + src + '</div>' +
-        '<h4>Outgoing</h4><div class="rel-list">' + (rels || t('common.noData')) + '</div>' +
-        '<h4 class="mt-3">Incoming</h4><div class="rel-list">' + (ins || t('common.noData')) + '</div>' +
-        '<h4 class="mt-3">Attributes</h4><pre class="mono">' + esc(JSON.stringify(e.attrs || {}, null, 2)) + '</pre>';
+        '<h4>' + esc(t('kg.outgoing')) + '</h4><div class="rel-list">' + (rels || t('common.noData')) + '</div>' +
+        '<h4 class="mt-3">' + esc(t('kg.incoming')) + '</h4><div class="rel-list">' + (ins || t('common.noData')) + '</div>' +
+        '<h4 class="mt-3">' + esc(t('kg.attributes')) + '</h4><pre class="mono">' +
+        esc(JSON.stringify(LJson(e.attrs || {}), null, 2)) + '</pre>';
       el('kgDetailBody').querySelectorAll('[data-kg]').forEach(function (a) {
         a.addEventListener('click', function () { if (a.getAttribute('data-kg')) showKgEntity(a.getAttribute('data-kg')); });
       });
@@ -610,7 +640,7 @@
       var p = pos[n.entity_id];
       return '<circle class="node-circle" data-kg="' + esc(n.entity_id) + '" cx="' + p.x + '" cy="' + p.y +
         '" r="7" fill="' + colorOf(n.type) + '"/><text class="node-label" x="' + (p.x + 9) + '" y="' +
-        (p.y + 3) + '">' + esc(String(n.name || n.entity_id).slice(0, 16)) + '</text>';
+        (p.y + 3) + '">' + esc(L(String(n.name || n.entity_id)).slice(0, 16)) + '</text>';
     }).join('');
     el('kgGraph').innerHTML = '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" height="360">' +
       lines + circles + '</svg>';
@@ -628,18 +658,18 @@
         coverage.forEach(function (c) { cov[c.source_id] = c; });
         el('sourceTable').querySelector('tbody').innerHTML = sources.map(function (s) {
           var c = cov[s.source_id] || {};
-          return '<tr><td>' + mono(s.source_id) + '</td><td>' + esc(s.title) + '</td><td>' +
-            esc(s.publisher || '') + '</td><td>' + esc(s.kind || '') + '</td><td>' + esc(s.license || '') +
+          return '<tr><td>' + mono(s.source_id) + '</td><td>' + esc(L(s.title)) + '</td><td>' +
+            esc(L(s.publisher || '')) + '</td><td>' + esc(s.kind || '') + '</td><td>' + esc(L(s.license || '')) +
             '</td><td>' + esc((c.entities || c.entity_count || 0) + ' / ' + (c.relations || c.relation_count || 0)) +
-            '</td><td>' + (s.url ? '<a class="source-link" href="' + esc(s.url) + '" target="_blank" rel="noopener">link</a>' : '-') +
-            '</td></tr>';
+            '</td><td>' + (s.url ? '<a class="source-link" href="' + esc(s.url) + '" target="_blank" rel="noopener">' +
+            esc(t('common.link')) + '</a>' : '-') + '</td></tr>';
         }).join('');
         el('sourceCount').textContent = t('common.total', { n: sources.length });
         el('pendingCount').textContent = pending.length;
         el('pendingList').innerHTML = pending.length ? pending.map(function (p) {
           return '<div class="rel-item mb-2">' + badge(esc(p.pending_id), 'orange') + ' ' +
-            '<strong>' + esc(p.topic) + '</strong><div class="muted small">' + esc(p.question) +
-            '</div><div class="muted small">' + esc(p.impact || '') + '</div></div>';
+            '<strong>' + esc(L(p.topic)) + '</strong><div class="muted small">' + esc(L(p.question)) +
+            '</div><div class="muted small">' + esc(L(p.impact || '')) + '</div></div>';
         }).join('') : '<div class="empty-hint">' + esc(t('common.noData')) + '</div>';
       }).catch(fail);
   }
@@ -650,19 +680,18 @@
         state.sections = res[2].items;
         var svc = res[0].service || {};
         el('aboutBody').innerHTML = '<div class="kv-grid mb-3">' +
-          kv('Project', badge('CMIScope', 'blue')) + kv('Tagline', esc(res[0].project.tagline)) +
+          kv(t('common.project'), badge('CMIScope', 'blue')) + kv(t('common.tagline'), esc(res[0].project.tagline)) +
           kv(t('side.access'), esc(svc.access_mode || 'mirror')) +
           kv(t('side.mode'), badge(svc.read_only ? 'read-only' : 'read/write', 'green')) +
-          kv(t('common.language'), esc(I18N.getLang() === 'zh' ? '中文 (default)' : 'English')) +
-          kv('Dependencies', esc('Python stdlib + SQLite')) + '</div>' +
-          '<div class="small muted mb-2">CMIS references: ' + (res[0].cmis_specs || []).map(function (r) {
+          kv(t('common.language'), esc(I18N.getLang() === 'zh' ? t('about.languageZh') : t('about.languageEn'))) +
+          kv(t('common.dependencies'), esc('Python stdlib + SQLite')) + '</div>' +
+          '<div class="small muted mb-2">' + esc(t('common.cmisRefs')) + (res[0].cmis_specs || []).map(function (r) {
             return r.doc + ' (' + r.date + ')';
           }).join(', ') + '</div>' +
-          '<div class="small muted">Dashboard framework: Tabler 1.7.3 (MIT), vendored locally. ' +
-          'Source code, comments and API error messages are in English; the UI defaults to Chinese.</div>';
+          '<div class="small muted">' + esc(t('about.frameworkNote')) + '</div>';
         el('accessBody').innerHTML = (res[1].modes || []).map(function (m) {
           var active = m.key === (res[1].active || {}).mode;
-          return '<div class="rel-item mb-2">' + (active ? badge('ACTIVE', 'green') : badge(m.key, 'secondary')) +
+          return '<div class="rel-item mb-2">' + (active ? badge(t('common.active'), 'green') : badge(m.key, 'secondary')) +
             ' <strong>' + esc(pick(m.zh, m.en)) + '</strong><div class="muted small">' + esc(m.topology) +
             '</div><div class="muted small">' + esc(t('mod.writePolicy')) + ': ' + esc(m.writes) +
             ' · risk: ' + esc(m.risk) + '</div></div>';
@@ -680,10 +709,10 @@
         Object.keys(d.groups || {}).forEach(function (key) {
           var rows = d.groups[key] || [];
           if (!rows.length) return;
-          parts.push('<h4>' + esc(key) + ' (' + rows.length + ')</h4><div class="table-responsive"><table class="table table-sm table-vcenter"><tbody>' +
+          parts.push('<h4>' + esc(groupLabel(key)) + ' (' + rows.length + ')</h4><div class="table-responsive"><table class="table table-sm table-vcenter"><tbody>' +
             rows.slice(0, 12).map(function (r) {
               var label = r.device_id || r.field_key || r.entity_id || r.label || '';
-              var sub = r.name || r.title || r.label || r.description || '';
+              var sub = L(r.name || r.title || r.label || r.description || '');
               return '<tr><td>' + mono(label) + '</td><td>' + esc(String(sub).slice(0, 110)) + '</td></tr>';
             }).join('') + '</tbody></table></div>');
         });
@@ -858,7 +887,7 @@
       if (TG_MODE_KEYS[mode].indexOf(k) < 0) delete obj[k];
     });
     obj.access_mode = mode;
-    if (!obj.device_id) { toast('device_id is required', 'err'); return; }
+    if (!obj.device_id) { toast(t('tg.deviceIdRequired'), 'err'); return; }
     obj.port = parseInt(obj.port || '0', 10) || 0;
     obj.enabled = obj.enabled === 'true';
     obj.module_ids = String(obj.module_ids || '').split(',')
@@ -951,7 +980,7 @@
       api('POST', '/api/config-items/' + state.editorItem.item.id + '/validate',
         { value: el('editValue').value }).then(function (d) {
           el('editReport').innerHTML = reportHtml(d.report);
-          el('editStatus').textContent = d.report.valid ? '✓ PASS' : '✗ FAIL';
+          el('editStatus').textContent = d.report.valid ? t('common.pass') : t('common.fail');
         }).catch(fail);
     });
     el('editSave').addEventListener('click', function () {
@@ -992,7 +1021,7 @@
 
   window.onLanguageChange = function () {
     state.lang = I18N.getLang();
-    el('langToggle').textContent = I18N.getLang() === 'zh' ? 'EN' : '中文';
+    el('langToggle').textContent = I18N.getLang() === 'zh' ? 'EN' : 'ZH';
     fillDeviceSelects();
     fillSectionSelect();
     renderCurrent();
@@ -1002,7 +1031,7 @@
     I18N.init('zh');
     state.lang = I18N.getLang();
     bind();
-    el('langToggle').textContent = I18N.getLang() === 'zh' ? 'EN' : '中文';
+    el('langToggle').textContent = I18N.getLang() === 'zh' ? 'EN' : 'ZH';
     api('GET', '/api/health').then(function () {
       el('healthDot').classList.add('up');
       el('healthText').textContent = t('status.up');
@@ -1015,7 +1044,7 @@
       var svc = d.service || {};
       el('sideMode').textContent = (svc.read_only ? 'read-only' : 'read/write') +
         ' - ' + (svc.access_mode || 'mirror');
-    }).catch(function () { el('sideMode').textContent = 'unknown'; });
+    }).catch(function () { el('sideMode').textContent = t('common.unknown'); });
     fillDeviceSelects();
     var hash = (location.hash || '').slice(1);
     setView(VIEW_TITLE[hash] ? hash : 'overview', true);

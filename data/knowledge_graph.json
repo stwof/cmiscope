@@ -975,7 +975,7 @@
     {
       "entity_id": "CL-CCMIS-PM",
       "type": "SpecClause",
-      "name": "C-CMIS 性能监测（Pages 34h/35h、Flag 33h/3Bh）",
+      "name": "C-CMIS 性能监控（Pages 34h/35h、Flag 33h/3Bh）",
       "summary": "相干模块 PM / FEC / Flag 解码",
       "source_ids": [
         "S-OIF-CCMIS-013",
@@ -2083,7 +2083,7 @@
       "entity_id": "SEC-LOW-PAGE",
       "type": "SpecificationPartition",
       "name": "Low Page 0x00 (Lower + Upper 00h)",
-      "summary": "常驻低 128 字节与 Upper Page 00h：ID/状态、模块级标志、全局控制、CDB 状态、固件版本、应用广告、口令区、Bank/Page 选择",
+      "summary": "常驻低 128 字节与 Upper Page 00h：ID/状态、模块级标志、全局控制、CDB 状态、固件版本、应用通告、密码区、Bank/Page 选择",
       "source_ids": [
         "S-OIF-053",
         "S-OIF-054",
@@ -2118,7 +2118,7 @@
       "entity_id": "SEC-CDB",
       "type": "SpecificationPartition",
       "name": "CDB (Command Data Block)",
-      "summary": "Page 9Fh 命令帧与 120 字节 LPL、Pages A0h-AFh 最多 2048 字节 EPL、Lower 37-38 状态、Lower 122 口令入口；命令参考见 05.3 第 9 章",
+      "summary": "Page 9Fh 命令帧与 120 字节 LPL、Pages A0h-AFh 最多 2048 字节 EPL、Lower 37-38 状态、Lower 122 密码入口；命令参考见 05.3 第 9 章",
       "source_ids": [
         "S-OIF-053",
         "S-OIF-054",
@@ -2243,7 +2243,7 @@
       "entity_id": "CFG-CDB",
       "type": "ConfigItem",
       "name": "CDB registers and command parameters",
-      "summary": "Page 9Fh/A0h-AFh 与 Lower 37-38/122 的 CDB 相关寄存器：CMDID、EPL/LPL 长度、校验码、载荷、状态、口令、实例",
+      "summary": "Page 9Fh/A0h-AFh 与 Lower 37-38/122 的 CDB 相关寄存器：CMDID、EPL/LPL 长度、校验码、载荷、状态、密码、实例",
       "source_ids": [
         "S-OIF-053",
         "S-GH-LINUX-CDB"
@@ -5567,7 +5567,7 @@
       "src": "SEC-VDM",
       "dst": "IF-VDM",
       "type": "CONTAINS",
-      "label": "VDM 页 20h-2Fh 属于监测分区",
+      "label": "VDM 页 20h-2Fh 属于监控分区",
       "source_ids": [
         "S-OIF-053"
       ],
@@ -7563,7 +7563,7 @@
     },
     {
       "pending_id": "P-16",
-      "topic": "Low Page 应用广告位置版本差异",
+      "topic": "Low Page 应用通告位置版本差异",
       "question": "公开模块 datasheet 将 Application Advertising 列在 Lower 85-117，而 CMIS 5.3/5.4 主要使用 Upper Page 01h 的 Application Descriptors；该偏移随版本变化",
       "source_ids": [
         "S-ART-MAPYOURTECH",

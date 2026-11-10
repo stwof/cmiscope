@@ -20,9 +20,9 @@
 
 | 分区 key | 页面 | 主要内容 | 写策略 |
 |---|---|---|---|
-| `LOW_PAGE` | Lower 00h–7Fh + Upper 00h | 识别、状态、标志、全局控制、固件版本、应用广告、口令区、Bank/Page 选择 | 只读为主；远程写 Lower Memory 被禁止 |
+| `LOW_PAGE` | Lower 00h–7Fh + Upper 00h | 识别、状态、标志、全局控制、固件版本、应用通告、密码区、Bank/Page 选择 | 只读为主；远程写 Lower Memory 被禁止 |
 | `VDM` | Lower 14–25、02h、10h、11h、20h–2Fh | 监测量、阈值、通道状态、VDM | 阈值可委派；监测量只读 |
-| `CDB` | Lower 37–38 / 118–125、9Fh、A0h–AFh | 命令帧、EPL、状态、口令、命令目录 | 门控；禁止远程写白名单委派 |
+| `CDB` | Lower 37–38 / 118–125、9Fh、A0h–AFh | 命令帧、EPL、状态、密码、命令目录 | 门控；禁止远程写白名单委派 |
 | `CONTROL` | 01h、10h、12h、13h、14h、30h–4Fh | AppSel / DPSM / Staged Control Set / PRBS / 环回 / 相干设置 | 需页级委派 |
 
 分组依据：OIF-CMIS-05.3 §8（寄存器组织）、§9（CDB 命令）、IETF YANG 草案 §3 的 CMIS Page Classification 表（Lower Memory / 00h–01h / 02h / 10h–11h / 12h / 13h–14h / 20h–2Fh / 30h–3Fh / 40h–4Fh / 9Fh–AFh / B0h–FFh）。
@@ -45,7 +45,7 @@
 | 64–82 | 19 | Custom Area | 厂商自定义 |
 | 83–84 | 2 | Inactive Firmware Version | RO；00h 表示单镜像 |
 | 85–117 | 33 | Application Advertising | RO；**旧布局**，CMIS 5.3/5.4 主要使用 Upper Page 01h 描述符 |
-| 118–125 | 8 | Password Entry and Change | WO；内核 ethtool 在 `0x7A`(122) 写 4 字节口令 |
+| 118–125 | 8 | Password Entry and Change | WO；内核 ethtool 在 `0x7A`(122) 写 4 字节密码 |
 | 126 | 1 | Bank Select | RW |
 | 127 | 1 | Page Select | RW；切换后遵守 tBPC 保持时间 |
 
@@ -86,7 +86,7 @@ Dashboard 中该分区展示 `ModuleTemperature / ModuleVoltage / TxPowerDbm / R
 ### 5.2 扩展载荷与状态
 
 - **EPL**：Pages A0h–AFh，16 页 × 128 字节 = **最多 2048 字节**（内核 `CMIS_CDB_EPL_PAGE_START/END`、偏移 128–255）。
-- **CDB 状态**：Lower 37–38；**口令入口**：Lower 122 (0x7A)，内核在固件命令前写入 4 字节口令。服务不持久化口令。
+- **CDB 状态**：Lower 37–38；**密码入口**：Lower 122 (0x7A)，内核在固件命令前写入 4 字节密码。服务不持久化密码。
 - **回复区**：RPL length + RPL check code + 最多 120 字节回复（精确偏移待原文核对，P-14）。
 - **多实例**：CMIS 支持多个 CDB 实例，Bank 选择决定当前实例（§9.2.2）。
 
@@ -131,4 +131,4 @@ Page 01h Application Descriptors（Host/Media Interface ID、Lane Count、Lane A
 - `partial`：第三方解读、厂商 datasheet、开源实现引用，条款号或地址需复核；
 - `pending`：推断或社区资料。
 
-与本分区直接相关的待确认项：P-01（精确地址）、P-02（5.3/5.4 差异）、P-03（AppSel 编码）、P-04（数值编码）、P-14（CDB 帧位定义/校验码/回复区）、P-15（CMDID 冲突）、P-16（应用广告位置版本差异）、P-17（VDM 页归属与阈值可写性）、P-18（IETF 草案状态）、P-19（设备侧适配）。完整清单见 `data/knowledge_graph.json -> pending_confirmations` 与 [`knowledge/CMIS_KNOWLEDGE_GRAPH.md`](../knowledge/CMIS_KNOWLEDGE_GRAPH.md)。
+与本分区直接相关的待确认项：P-01（精确地址）、P-02（5.3/5.4 差异）、P-03（AppSel 编码）、P-04（数值编码）、P-14（CDB 帧位定义/校验码/回复区）、P-15（CMDID 冲突）、P-16（应用通告位置版本差异）、P-17（VDM 页归属与阈值可写性）、P-18（IETF 草案状态）、P-19（设备侧适配）。完整清单见 `data/knowledge_graph.json -> pending_confirmations` 与 [`knowledge/CMIS_KNOWLEDGE_GRAPH.md`](../knowledge/CMIS_KNOWLEDGE_GRAPH.md)。

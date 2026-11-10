@@ -36,7 +36,7 @@
 | `CONFIGURES` | 配置 | 22 | `AppSel` → `Data Path`；`BankSelect` → `Bank/Page` |
 | `CONSTRAINS` | 约束 | 19 | `§6.2.1` → `AppSel 只能引用已广告 Application`；`CON-PAGE-GOVERNANCE` → `PageSelect` |
 | `ADVERTISES` | 声明能力 | 5 | `OSFP 模块` → `Application Descriptor` |
-| `MONITORS` | 监控 | 5 | `VDM 监测量` → `DDM/VDM 概念` |
+| `MONITORS` | 监控 | 5 | `VDM 监控量` → `DDM/VDM 概念` |
 | `DERIVES_FROM` | 派生自 | 4 | `CMIS 5.3` → `5.2`；`libsffcmis` → `ethtool` |
 | `INSTANTIATES` | 实例化 | 2 | `相干 DCO` → `QSFP-DD / OSFP 封装` |
 | `INTEGRATES` | 集成 | 2 | CMIScope → `Tabler 1.7.3` / `Tabler Icons` |
@@ -160,7 +160,7 @@ Vitex CMIS 5.3 EEPROM map、CSDN CMIS 5.2/5.3 中文解读（社区资料，条�
 | P-13 | 元数据时效 | GitHub star / license / pushed_at 为 2026-11-08 快照 |
 | **P-14** | **CDB 命令帧精确位定义** | 9Fh 帧的字节序、Check Code 覆盖范围、保留字节需按 OIF-CMIS-05.3 §9 原文复核；当前实现以内核 `cmis_cdb.c` 与规范目录交叉推导 |
 | **P-15** | **CDB 命令 ID 第三方冲突** | 命令目录中部分 CMDID 来自开源实现/社区资料，若与厂商自定义命令冲突需按模块实际能力裁剪 |
-| **P-16** | **Low Page 应用广告位置版本差异** | Upper Page 00h/01h 的 Application 广告字节在 5.2/5.3/5.4 间可能有调整 |
+| **P-16** | **Low Page 应用通告位置版本差异** | Upper Page 00h/01h 的 Application 广告字节在 5.2/5.3/5.4 间可能有调整 |
 | **P-17** | **VDM 页归属与阈值可写性** | Lower 14-25、Page 02h、10h/11h、20h-2Fh 在 Monitors / Thresholds / VDM 之间的精确分工需按 OIF 原文与真实模块确认 |
 | **P-18** | **IETF CMIS YANG 草案状态** | `draft-hi-ccamp-cmis-control-yang-04` 为 Internet-Draft，页级 allowlist 尚未成为正式标准 |
 | **P-19** | **两种接入方式的设备侧映射** | SSH+I2C 命令模板与 REST 资源路径因 NOS/厂商而异，需在真实设备上联调并填充 |
