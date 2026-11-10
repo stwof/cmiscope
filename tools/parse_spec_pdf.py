@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 """Parse the bundled OIF CMIS specification PDF into a provenance index.
 
-This is the CMIScope-refactored replacement for the upstream ``jimfred/CMIS``
-extraction chain (``extract_memory_map.py`` + ``extract_cdb_commands.py`` +
-``normalize_memory_map.py``).  Differences from upstream:
+This is CMIScope's zero-dependency specification extraction pipeline:
 
-  * ``pdfplumber`` is replaced by ``tools/spec_pdf.py`` (standard library only);
-    table columns are rebuilt from the positioned text runs of each header row.
+  * Table columns are rebuilt from positioned text runs of each header row by
+    ``tools/spec_pdf.py`` (standard library only, no third-party PDF library).
   * The Section 8/9 page range is discovered from the document's own table of
-    contents and body captions instead of hardcoded page numbers (120..290).
+    contents and body captions instead of hardcoded page numbers.
   * Normalization rules live in ``tools/cmis53_rules.py`` and are shared with
-    the CSV importer, so PDF and CSV rows go through identical logic.
+    the reference builder, so PDF rows and normalized dataset rows go through
+    identical logic.
   * Paths are injected, every malformed row is reported rather than aborting,
     and the output carries provenance (file hash, page numbers, caveats).
   * Only factual identifiers are persisted (table numbers, short captions,
@@ -131,7 +130,7 @@ def _clean_name(text: str | None) -> str:
 def finalize_row(pending: dict, table: dict, pdf_page: int) -> list[dict]:
     """Turn one extracted table row (plus continuation text) into field rows."""
     parsed = parse_byte_range(pending["byte"])
-    # Upstream normalize drops rows whose page cannot be derived from the
+    # The normalized dataset drops rows whose page cannot be derived from the
     # caption and reports them as issues; do the same rather than emitting
     # location-less records that can never be cross-referenced.
     if not parsed or not table.get("page"):
@@ -354,7 +353,7 @@ def extract_cdb_commands(doc: PdfTextDocument, first_page: int,
                         entry["title"] = " ".join(parts[1:4])[:160]
     # 4-hex-digit values also occur in status/error-code tables. A real command
     # always has a Section 9 clause or a detail table, so drop those stray rows
-    # (upstream likewise omits reserved IDs).
+    # (the normalized dataset likewise omits reserved IDs).
     return sorted((item for item in commands.values()
                    if item.get("spec_section") or item.get("detail_table")),
                   key=lambda item: item["cmd_id"])
@@ -364,14 +363,14 @@ def extract_cdb_commands(doc: PdfTextDocument, first_page: int,
 
 def verify_against_reference(fields: list[dict], tables: dict[str, dict],
                              commands: list[dict], reference_path: Path) -> dict:
-    """Cross-check PDF-extracted rows against the published CSV reference."""
+    """Cross-check PDF-extracted rows against the normalized reference dataset."""
     if not reference_path.is_file():
         return {"available": False, "hint": f"missing {reference_path.name}"}
     data = json.loads(reference_path.read_text(encoding="utf-8"))
     reference = data.get("fields", [])
     keys = {(row.get("page"), row.get("byte"), row.get("name")) for row in reference}
     # Overview rows duplicate detail tables and use descriptive labels rather
-    # than register names, so they are reported separately (as upstream does).
+    # than register names, so they are reported separately.
     detail_rows = [row for row in fields if not row.get("is_overview")]
     matched = [row for row in detail_rows
                if (row.get("page"), row.get("byte"), row.get("name")) in keys]
@@ -392,7 +391,7 @@ def verify_against_reference(fields: list[dict], tables: dict[str, dict],
                     and abs(float(row["scale"]) - float(expected["scale"])) < 1e-9:
                 scale_agree += 1
 
-    # A CSV row may cite several source tables, e.g. "8-28; 8-30".
+    # A reference row may cite several source tables, e.g. "8-28; 8-30".
     ref_tables: Counter = Counter()
     for row in reference:
         for token in re.split(r"[;,\s]+", str(row.get("ref_table") or "")):
@@ -435,9 +434,9 @@ def verify_against_reference(fields: list[dict], tables: dict[str, dict],
             "unit_agreement": unit_agree,
             "scale_agreement": scale_agree,
         },
-        "caveat": ("PDF rows are a best-effort coordinate reconstruction; the published "
-                   "CSV (itself derived from this PDF with hand corrections) remains "
-                   "authoritative for field data. Only factual identifiers are stored."),
+        "caveat": ("PDF rows are a best-effort coordinate reconstruction; the normalized "
+                   "reference dataset remains authoritative for field data. Only factual "
+                   "identifiers are stored."),
     }
 
 
@@ -508,7 +507,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path, default=DEFAULT_OUT,
                         help=f"output JSON (default: {DEFAULT_OUT})")
     parser.add_argument("--reference", type=Path, default=DEFAULT_REFERENCE,
-                        help=f"CSV-derived reference JSON for verification (default: {DEFAULT_REFERENCE})")
+                        help=f"reference JSON for verification (default: {DEFAULT_REFERENCE})")
     parser.add_argument("--no-reference", action="store_true",
                         help="skip the cross-check against the reference JSON")
     args = parser.parse_args()

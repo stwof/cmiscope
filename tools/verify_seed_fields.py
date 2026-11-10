@@ -4,7 +4,7 @@
 ``data/seed.json`` contains synthetic demo fields whose byte offsets were
 flagged as "pending confirmation" in knowledge-graph item ``P-01``.  The
 read-only reference layer (``data/cmis53_reference.json``, 2442 authoritative
-rows derived from jimfred/CMIS) now makes those offsets checkable offline.
+rows, normalized by CMIScope) now makes those offsets checkable offline.
 
 This tool is **advisory only**: it never edits ``seed.json`` and never feeds
 values into the hardware write path.  It produces:
@@ -263,7 +263,7 @@ def build_report(seed: dict, reference: dict) -> dict:
             "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "seed_fields": len(fields),
             "reference_fields": len(rows),
-            "reference_source": "data/cmis53_reference.json (jimfred/CMIS CSV, OIF-derived)",
+            "reference_source": "data/cmis53_reference.json (CMIScope normalized dataset, OIF-derived)",
             "knowledge_graph_item": "P-01 (register byte offsets)",
             "matching": "exact_name -> exact_address -> fuzzy_name",
             "policy": ("Advisory only: seed.json is never modified and no value enters "

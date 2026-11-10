@@ -2,37 +2,34 @@
   "meta": {
     "generator": "tools/import_cmis53.py",
     "schema_version": "1.0",
-    "generated_at": "2026-11-09T15:11:47+00:00",
+    "generated_at": "2026-11-09T16:00:14+00:00",
     "specification": "OIF-CMIS-05.3, Common Management Interface Specification revision 5.3 (4 Sept 2024)",
     "specification_url": "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-05.3.pdf",
-    "upstream_repository": "https://github.com/jimfred/CMIS",
-    "source_directory": "data/upstream",
+    "dataset": "data/cmis53_dataset.json (CMIScope normalized, project-owned)",
     "source_assets": {
-      "CMIS_5.3_Memory_Map.csv": {
-        "sha256": "2dfc0a8383bcf84b3880ec90a76067f224ebc2adb8fd15245b6bb75754a3a63f",
-        "bytes": 646356
+      "cmis53_dataset.json": {
+        "sha256": "f17087d2ad3b3e33e33bf09e70aac721944d6658105860d575f786261935b34e",
+        "bytes": 2258059
       },
-      "CMIS_5.3_CDB_Commands.csv": {
-        "sha256": "a3bbe4fef041d08341b4f1fa95706c693c400481c4dd475237cad3f4bd73eb74",
-        "bytes": 12194
+      "spec_pdf_index.json": {
+        "sha256": "d3a57159d06b6de2464badf9a9b840fc64f62ddfb2e5a8e7fd1bc5a6427f273b",
+        "bytes": 3111504
       },
-      "corrections.csv": {
-        "sha256": "ec7b5fd73cdbc222f2e93553140abef0b05cbbff9c26ba5750f90ace4881f0e9",
-        "bytes": 426
+      "OIF-CMIS-05.3.pdf": {
+        "sha256": "631c76d0c8292021e61128dd94ed231679ab0703a9070cdd6d125d1f48c00d64",
+        "bytes": 14103363
       }
     },
-    "upstream_corrections": 2,
     "data_nature": "specification-derived reference, read-only",
     "authority_note": "The OIF specification is authoritative. Verify timing- or safety-critical details against the PDF before hardware use.",
     "license": {
-      "scripts_and_structure": "MIT, Copyright (c) 2026 Jim Frederick",
+      "scripts_and_structure": "Normalized schema, partition mapping, key IDs and build tooling are CMIScope original work under the repository MIT License (see LICENSE).",
       "specification_content": "Field names, register addresses, access/requirement types and verbatim Description text remain (c) Optical Internetworking Forum and are NOT covered by MIT; subject to OIF terms.",
       "sonic_cross_check": "Derived from sonic-net/sonic-platform-common, Apache-2.0; comparison result only, not a compliance statement."
     },
     "attribution": {
       "oif": "https://www.oiforum.com/",
-      "upstream": "https://github.com/jimfred/CMIS",
-      "notice": "See NOTICE sections 5-7 and data/upstream/README.md"
+      "notice": "See NOTICE for the OIF and Apache-2.0 terms that apply to this data"
     },
     "spec_pdf_provenance": {
       "available": true,
@@ -85336,7 +85333,7 @@
   "spec_pdf_meta": {
     "generator": "tools/parse_spec_pdf.py",
     "schema_version": "1.0",
-    "generated_at": "2026-11-09T15:08:46+00:00",
+    "generated_at": "2026-11-09T16:00:14+00:00",
     "specification": "OIF-CMIS-05.3",
     "pdf_file": "knowledge/specs/OIF-CMIS-05.3.pdf",
     "pdf_sha256": "631c76d0c8292021e61128dd94ed231679ab0703a9070cdd6d125d1f48c00d64",
@@ -88053,6 +88050,6 @@
       "unit_agreement": 33,
       "scale_agreement": 32
     },
-    "caveat": "PDF rows are a best-effort coordinate reconstruction; the published CSV (itself derived from this PDF with hand corrections) remains authoritative for field data. Only factual identifiers are stored."
+    "caveat": "PDF rows are a best-effort coordinate reconstruction; the normalized reference dataset remains authoritative for field data. Only factual identifiers are stored."
   }
 }

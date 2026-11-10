@@ -1,8 +1,8 @@
 """Zero-dependency PDF text-layer reader for the bundled OIF CMIS specifications.
 
-The upstream jimfred/CMIS rebuild chain uses ``pdfplumber`` to read the spec
-PDF table grid.  CMIScope keeps a strict "standard library only" runtime, so
-this module implements the small subset of PDF needed for that job:
+CMIScope keeps a strict "standard library only" runtime, so this module
+implements the small subset of PDF needed to read the specification table grid
+without a third-party PDF library:
 
   * classic ``xref`` tables (with optional ``/Prev`` chains),
   * FlateDecode content streams,
@@ -14,15 +14,15 @@ Every span keeps its ``(x, y, size)`` coordinates.  That is what makes it
 possible to rebuild the Section 8 table columns without a PDF library: the OIF
 documents are produced by Word, where each table cell is emitted as its own
 positioned text run.  Superscript footnote markers (small font size) can be
-filtered by the caller, exactly as the upstream extractor did.
+filtered by the caller.
 
 This reader is deliberately read-only and best-effort.  It is not a general PDF
 renderer: images, Type3 fonts, rotated text and encrypted documents are out of
 scope.  A stream that cannot be decoded yields an empty page instead of an
 exception, so one damaged page never aborts a full-document scan.
 
-Derived from the table-extraction approach of jimfred/CMIS (MIT,
-Copyright (c) 2026 Jim Frederick).  No OIF specification text is embedded here.
+This is a CMIScope original implementation under the repository MIT License.
+No OIF specification text is embedded here.
 """
 
 from __future__ import annotations
@@ -122,6 +122,7 @@ class PdfTextDocument:
             raise PdfFormatError(f"missing PDF header: {self.path.name}")
         if re.search(rb"/Encrypt\b", self._data[-8192:]):
             raise PdfFormatError("encrypted PDFs are not supported")
+        self._root_ref: int | None = None
         self._offsets = self._read_xref()
         self._object_cache: dict[int, bytes] = {}
         self._stream_cache: dict[int, bytes] = {}
@@ -159,6 +160,14 @@ class PdfTextDocument:
                 cursor = nl + 1
                 if header.startswith(b"trailer"):
                     tail = chunk[cursor:cursor + 8192]
+                    # Linearized ("fast web view") PDFs put the only /Root in
+                    # the first trailer near the beginning of the file, while
+                    # the final trailer only carries /Size and /ID. Remember it
+                    # here instead of assuming it lives in the tail bytes.
+                    if self._root_ref is None:
+                        root_match = re.search(rb"/Root\s+(\d+)\s+0\s+R", tail)
+                        if root_match:
+                            self._root_ref = int(root_match.group(1))
                     m = re.search(rb"/Prev\s+(\d+)", tail)
                     prev = int(m.group(1)) if m else None
                     break
@@ -226,8 +235,11 @@ class PdfTextDocument:
 
     def _read_page_tree(self) -> list[int]:
         """Flatten the /Pages tree into physical page object numbers."""
-        root_ref = re.search(rb"/Root\s+(\d+)\s+0\s+R", self._data[-8192:])
-        catalog = self._object(int(root_ref.group(1)) if root_ref else 1)
+        catalog_number = self._root_ref
+        if catalog_number is None:
+            root_ref = re.search(rb"/Root\s+(\d+)\s+0\s+R", self._data[-8192:])
+            catalog_number = int(root_ref.group(1)) if root_ref else 1
+        catalog = self._object(catalog_number)
         m = re.search(rb"/Pages\s+(\d+)\s+0\s+R", catalog)
         root_num = int(m.group(1)) if m else 2
         pages: list[int] = []

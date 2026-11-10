@@ -2,7 +2,7 @@
   "meta": {
     "generator": "tools/diff_spec_versions.py",
     "schema_version": "1.0",
-    "generated_at": "2026-11-09T15:32:13+00:00",
+    "generated_at": "2026-11-09T16:01:58+00:00",
     "versions": {
       "53": {
         "specification": "OIF-CMIS-05.3",
@@ -3043,6 +3043,6 @@
         }
       }
     ],
-    "caveat": "Field rows come from best-effort coordinate reconstruction and are incomplete by design; treat these entries as review candidates, not as statements about the specification. The published CSV and the OIF PDF are authoritative."
+    "caveat": "Field rows come from best-effort coordinate reconstruction and are incomplete by design; treat these entries as review candidates, not as statements about the specification. The normalized reference data and the OIF PDF are authoritative."
   }
 }

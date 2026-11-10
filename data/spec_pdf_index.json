@@ -2,7 +2,7 @@
   "meta": {
     "generator": "tools/parse_spec_pdf.py",
     "schema_version": "1.0",
-    "generated_at": "2026-11-09T15:08:46+00:00",
+    "generated_at": "2026-11-09T16:00:14+00:00",
     "specification": "OIF-CMIS-05.3",
     "pdf_file": "knowledge/specs/OIF-CMIS-05.3.pdf",
     "pdf_sha256": "631c76d0c8292021e61128dd94ed231679ab0703a9070cdd6d125d1f48c00d64",
@@ -226375,6 +226375,6 @@
       "unit_agreement": 33,
       "scale_agreement": 32
     },
-    "caveat": "PDF rows are a best-effort coordinate reconstruction; the published CSV (itself derived from this PDF with hand corrections) remains authoritative for field data. Only factual identifiers are stored."
+    "caveat": "PDF rows are a best-effort coordinate reconstruction; the normalized reference dataset remains authoritative for field data. Only factual identifiers are stored."
   }
 }

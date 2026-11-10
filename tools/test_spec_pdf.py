@@ -171,12 +171,83 @@ def api_checks() -> None:
           status == 200 and payload["data"]["total"] == 64)
 
 
+def _synthetic_pdf(linearized: bool) -> bytes:
+    """Build a tiny 2-page PDF. In linearized form the only /Root sits in the
+    first trailer at the front of the file, with /Prev pointing at the main
+    xref table - the layout used by the published CMIS 5.1 document.
+    """
+    objects = {
+        1: b"<< /Type /Catalog /Pages 2 0 R >>",
+        2: b"<< /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >>",
+        3: b"<< /Type /Page /Parent 2 0 R /Contents 5 0 R /MediaBox [0 0 612 792] >>",
+        4: b"<< /Type /Page /Parent 2 0 R /Contents 6 0 R /MediaBox [0 0 612 792] >>",
+        5: b"<< /Length 0 >>\nstream\n\nendstream",
+        6: b"<< /Length 0 >>\nstream\n\nendstream",
+    }
+    header = b"%PDF-1.7\n"
+    first_xref = (
+        b"xref\n1 1\n0000000000 00000 n \n"
+        b"trailer\n<< /Size 7 /Root 1 0 R /Prev 0000000000 >>\n"
+        b"startxref\n0\n%%EOF\n"
+    ) if linearized else b""
+    first_xref_pos = len(header)
+    body = bytearray(header + first_xref)
+    offsets: dict[int, int] = {}
+    for number in sorted(objects):
+        offsets[number] = len(body)
+        body += f"{number} 0 obj\n".encode() + objects[number] + b"\nendobj\n"
+    main_xref_pos = len(body)
+    body += b"xref\n0 7\n0000000000 65535 f \n"
+    for number in range(1, 7):
+        body += f"{offsets[number]:010d} 00000 n \n".encode()
+    trailer = b"<< /Size 7 >>" if linearized else b"<< /Size 7 /Root 1 0 R >>"
+    body += b"trailer\n" + trailer + b"\n"
+    if linearized:
+        # Both placeholders are fixed-width, so the offsets stay valid.
+        entry = body.find(b"0000000000 00000 n", first_xref_pos)
+        body[entry:entry + 18] = f"{offsets[1]:010d} 00000 n".encode()
+        prev = body.find(b"/Prev 0000000000", first_xref_pos)
+        body[prev + 6:prev + 16] = f"{main_xref_pos:010d}".encode()
+        start = first_xref_pos
+    else:
+        start = main_xref_pos
+    body += f"startxref\n{start}\n%%EOF\n".encode()
+    return bytes(body)
+
+
+def linearized_pdf_checks() -> None:
+    """Regression for /Root discovery in linearized (fast web view) PDFs."""
+    with tempfile.TemporaryDirectory(prefix="cmiscope-linear-") as name:
+        directory = Path(name)
+        plain_path = directory / "plain.pdf"
+        linear_path = directory / "linearized.pdf"
+        plain_path.write_bytes(_synthetic_pdf(False))
+        linear_path.write_bytes(_synthetic_pdf(True))
+
+        plain = PdfTextDocument(plain_path)
+        check("Classic single-xref PDF still resolves its page tree",
+              plain.page_count == 2 and plain._root_ref == 1,
+              f"pages={plain.page_count} root={plain._root_ref}")
+
+        linear = PdfTextDocument(linear_path)
+        check("Linearized PDF finds /Root in the first trailer",
+              linear._root_ref == 1, f"root={linear._root_ref}")
+        check("Linearized PDF flattens both pages, not just the first one",
+              linear.page_count == 2, f"pages={linear.page_count}")
+        check("Linearized PDF walks /Prev into the main xref table",
+              len(linear._offsets) >= 6, f"objects={len(linear._offsets)}")
+        check("Linearized PDF reads text from a later page",
+              all(linear.lines(page, min_size=0.0) is not None
+                  for page in (1, 2)))
+
+
 def main() -> int:
     if not PDF.is_file():
         print(f"ERROR: bundled specification is missing: {PDF}")
         return 1
     rule_checks()
     reader_checks(PdfTextDocument(PDF))
+    linearized_pdf_checks()
     index_checks()
     api_checks()
     print(f"\n{len(PASS)} passed, {len(FAIL)} failed")

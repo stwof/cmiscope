@@ -79,7 +79,7 @@
 | --- | --- | --- | --- |
 | GET | `/api/access` | — | 当前适配器能力（`capabilities()`）、三种接入模式拓扑/读写语义/风险/控制项、脱敏后的服务配置、规范版本 |
 | POST | `/api/access/probe` | `{"device_id":"..."}`(可选) | 连通性探测；指定设备时按该设备配置解析传输 |
-| GET | `/api/targets` | — | **可编辑接入配置**：设备清单、`active_target`、三种接入模式、字段元数据、文件路径、是否可写、禁止的凭据字段名 |
+| GET | `/api/targets` | — | **可编辑接入配置**：设备清单、`active_target`、三种接入模式、字段元数据（含每种模式专属字段 `mode_fields`）、文件路径、是否可写、禁止的凭据字段名 |
 | PUT | `/api/targets` | `{"version":1,"active_target":"...","targets":[...]}` | 校验后**原子写入** `config/targets.json`（UTF-8/LF）；新增设备即时生效；只读服务返回 409 |
 | POST | `/api/targets/probe` | `{"device_id":"..."}`(可选) | 按指定设备（缺省为 active target）的配置实例化适配器并探测 |
 | GET | `/api/registers/read` | `device_id`(必填), `page`(默认 `00h`), `offset`(0–255), `length`(1–128) | 通过当前适配器读取页/偏移；mirror 返回本地镜像缓存值 |
@@ -92,6 +92,8 @@
 | `mirror` | browser → 本地服务 → SQLite | 默认。离线演示，写只 staged，不接触硬件 |
 | `ssh-i2c` | browser → 测试 Server 上的服务 → SSH → 测试 Switch → I2C `0x50` → 模块 EEPROM | 方式一；命令模板 + `subprocess`，高线程序列化、页选择需复原 |
 | `rest-api` | browser → 服务 → 目标设备/NOS 北向 REST API → 设备内部 I2C | 方式二；token 走环境变量，页级 allowlist 参照 IETF YANG 草案 |
+
+> **严格互斥**：`ssh-i2c` 与 `rest-api` 二选一。每个目标只允许携带所选模式的专属字段（`ssh-i2c`：`ssh_user/i2c_bus/i2c_addr`；`rest-api`：`rest_scheme/rest_base_path/token_env`；`mirror`：均不携带）。`PUT /api/targets` 中出现未选中模式的字段会返回 400 `TARGETS_VALIDATION_FAILED`；`GET` 返回的每个目标只含一种模式的字段，`public_settings` 也只输出当前模式的连接块。运行时另一模式的端点被清空，无法生效。
 
 ### 2.5 CDB 操作接口
 
@@ -164,7 +166,7 @@ CDB 下发安全策略（非 mirror 模式）：`confirm` 必须等于 `cdb_conf
 
 ### 2.9 CMIS 5.3 规范参考（只读、强制分页）
 
-来自 `jimfred/CMIS` 的 2442 行字段级内存映射与 48 条 Section 9 CDB 命令，独立于 `/api/fields` 的 64 条演示字段，**不参与任何写入**。详见 [`CMIS53_REFERENCE.md`](CMIS53_REFERENCE.md)。
+本项目规范化数据集 `data/cmis53_dataset.json` 的 2442 行字段级内存映射与 48 条 Section 9 CDB 命令，独立于 `/api/fields` 的 64 条演示字段，**不参与任何写入**。全部解析与构建代码为本项目实现。详见 [`CMIS53_REFERENCE.md`](CMIS53_REFERENCE.md)。
 
 | 方法 | 路径 | 参数 | 说明 |
 | --- | --- | --- | --- |
@@ -174,7 +176,7 @@ CDB 下发安全策略（非 mirror 模式）：`confirm` 必须等于 `cdb_conf
 | GET | `/api/reference/cdb-commands` | `q`, `group` | 48 条完整命令目录，每条带 `in_runtime_catalog`（是否在可执行目录 26 条中）与 `spec_pdf_page` |
 | GET | `/api/reference/spec-tables` | `section=8\|9`, `page`, `q`, `limit`, `offset` | 238 张 Section 8/9 规范表目录：表号、短标题、PDF 页码、分区、字段数 |
 | GET | `/api/reference/spec-tables/{table_id}` | `limit`, `offset` | 单表详情 + 引用该表的参考字段（支持 `8-28; 8-30` 这类多表引用）；不存在时 404 `SPEC_TABLE_NOT_FOUND` |
-| GET | `/api/reference/verify` | — | PDF 坐标提取结果与 CSV 参考层的一致性摘要；索引未生成时返回 `available=false` |
+| GET | `/api/reference/verify` | — | PDF 坐标提取结果与规范化数据集的一致性摘要；索引未生成时返回 `available=false` |
 
 ```bash
 curl "http://127.0.0.1:8787/api/reference/fields?section=VDM&access=RO&limit=20"
@@ -196,7 +198,7 @@ curl "http://127.0.0.1:8787/api/reference/verify"
 - `spec-tables` 可按 `section` / `page` / `q` 分页检索 238 张表；
 - `verify` 返回匹配率（明细行 627/685，91.5%）、表溯源覆盖（129/129）、命令覆盖（48/48）与单位推导对照。
 
-> 坐标提取为**尽力而为**，未匹配行不代表 CSV 有误；字段值以 CSV / OIF 原文为准。索引不保存 OIF 描述正文，溯源信息只用于人工核对，不参与校验或写入。详见 [`CMIS53_REFERENCE.md`](CMIS53_REFERENCE.md) 第 7 节。
+> 坐标提取为**尽力而为**，未匹配行不代表数据集有误；字段值以规范化数据集 / OIF 原文为准。索引不保存 OIF 描述正文，溯源信息只用于人工核对，不参与校验或写入。详见 [`CMIS53_REFERENCE.md`](CMIS53_REFERENCE.md) 第 7 节。
 
 ---
 

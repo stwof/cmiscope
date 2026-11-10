@@ -1,23 +1,17 @@
 """Normalization rules for the CMIS 5.3 field reference data.
 
-Pure standard library. This module consolidates page / mask / value-type
-normalization that was duplicated across four scripts in the upstream
-``jimfred/CMIS`` project (``extract_memory_map.page_of``,
-``normalize_memory_map.bank_scope``, ``rebuild_memory_map.page_cell/page_key``
-and ``update_param_reference.masks_of/fmt_page``) into one testable place.
+Pure standard library. This module is CMIScope's single, testable home for
+page / mask / value-type / access normalization, spec-PDF table row parsing and
+engineering-unit derivation. The reference builder, the PDF parser and their
+tests all share one implementation.
 
-It also fixes the upstream weaknesses that matter for a portable runtime:
-explicit UTF-8 handling belongs to the loader, paths are injected by the
-caller, malformed values are reported instead of raising SystemExit, and the
-section mapping is data (see SECTION_RULES) rather than scattered conditionals.
+Design choices for a portable runtime: explicit UTF-8 handling belongs to the
+loader, paths are injected by the caller, malformed values are reported instead
+of raising SystemExit, and the section mapping is data (see SECTION_RULES)
+rather than scattered conditionals.
 
-The lower half of this module refactors the spec-PDF row parsing and the
-engineering-unit derivation from upstream ``extract_memory_map.page_of``,
-``normalize_memory_map`` and ``conversions.py``.  Those rules live here so the
-CSV importer, the PDF parser and their tests all share one implementation.
-
-Derived from jimfred/CMIS, MIT, Copyright (c) 2026 Jim Frederick.
-The field data itself is subject to the OIF / Apache-2.0 notices in NOTICE.
+This is CMIScope original work under the repository MIT License. The field
+data itself is subject to the OIF / Apache-2.0 notices in NOTICE.
 """
 
 from __future__ import annotations
@@ -26,7 +20,7 @@ import re
 
 LOWER_PAGE = "Lwr"
 
-# Column meanings from the upstream workbook (MIT original work).
+# Column meanings of the normalized CMIS 5.3 reference dataset.
 FIELD_COLUMN_NOTES = {
     "Key ID": "Unique row key: CMIS Name, with .<page>, .<byte> and .<mask> suffixes on collisions",
     "CMIS Name": "Field name in OIF-CMIS-05.3 Section 8; 'Reserved' denotes a reserved region",
@@ -133,7 +127,7 @@ def parse_page(raw: str | None) -> str:
 def parse_masks(raw: str | None, length: int) -> list[int]:
     """Parse '0x80 0x40' into byte masks, padding blank masks with 0xFF.
 
-    The upstream code repeated this in four places and assumed well-formed
+    Earlier implementations repeated this in four places and assumed well-formed
     input. Here an unparsable token is ignored (and the loader records it),
     so a single malformed cell cannot abort the whole import.
     """
@@ -215,7 +209,7 @@ def normalize_cmd_id(raw: str | None) -> str:
 
 
 def normalize_field(row: dict) -> dict:
-    """Convert one upstream CSV row into the portable reference schema."""
+    """Convert one raw field row into the portable reference schema."""
     out = {target: (row.get(source) or "").strip() for source, target in FIELD_COLUMNS.items()}
     byte = parse_int(out["byte"])
     length = parse_int(out["byte_length"], 1)
@@ -240,7 +234,7 @@ def normalize_field(row: dict) -> dict:
 
 
 def normalize_cdb(row: dict) -> dict:
-    """Convert one upstream CDB CSV row into the portable reference schema."""
+    """Convert one raw CDB command row into the portable reference schema."""
     out = {target: (row.get(source) or "").strip() for source, target in CDB_COLUMNS.items()}
     out["cmd_id"] = normalize_cmd_id(out["cmd_id"])
     return out
@@ -248,8 +242,7 @@ def normalize_cdb(row: dict) -> dict:
 
 # ---------------------------------------------------------------------------
 # Rules for rows extracted directly from the OIF specification PDF.
-# Refactored from upstream extract_memory_map.page_of, normalize_memory_map
-# (clean/parse_type/value_type/mask derivation) and conversions.derive.
+# Rules for rows extracted directly from the OIF specification PDF:/n# page/type/mask derivation and engineering-unit conversion.
 # ---------------------------------------------------------------------------
 
 TABLE_TITLE = re.compile(r"^\s*Table\s+([89])-(\d+)\s+(.+?)\s*$", re.I)
@@ -258,8 +251,7 @@ _PAGE_BYTE_TITLE = re.compile(r"Byte\s+([0-9A-F]{2})h\s*:", re.I)
 CMD_TITLE_RE = re.compile(r"Table\s+9-\d+\s+CDB Command\s+([0-9A-Fh/]+)\s*:\s*([^\n]+)", re.I)
 CMD_SECTION_RE = re.compile(r"\b(9\.\d+(?:\.\d+)?)\s+CMD\s+([0-9A-Fh/]+)", re.I)
 
-# Refactored from upstream extract_memory_map.SKIP_TABLES and
-# normalize_memory_map.OUT_OF_SCOPE. Overview tables duplicate the detail
+# Overview tables duplicate the detail
 # tables that follow them; template tables describe relative structures or
 # page ranges instead of fixed addresses. Keeping these as data (rather than
 # scattered conditionals) makes the extraction rules auditable and testable.
@@ -335,7 +327,7 @@ FAMILY_RULES = (
 def page_from_title(title: str | None) -> str | None:
     """Derive the memory page from a Section 8 table caption.
 
-    Upstream hardcoded this as ``page_of()`` and returned a bare hex token;
+    Earlier implementations returned a bare hex token;
     here the result is the canonical CMIScope page token (``Lwr`` / ``NNh``).
     """
     text = title or ""
@@ -422,8 +414,8 @@ def derive_conversion(description: str | None, value_type: str | None,
                       nbytes: int, name: str | None = None) -> dict:
     """Derive engineering unit/scale/byte-order from spec text.
 
-    Refactored from upstream ``conversions.derive`` into a single rule set that
-    is also used to cross-check the Unit/Scale columns of the published CSV.
+    A single rule set that is also used to cross-check the Unit/Scale
+    columns of the normalized reference dataset.
     """
     text = (description or "").replace("\u00a0", " ")
     out: dict = {"unit": None, "scale": None, "byte_order": None, "conversion_note": None}

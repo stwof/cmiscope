@@ -731,6 +731,25 @@
   // by PUT /api/targets, so the same configuration can be edited in a terminal.
   var tg = { version: 1, active_target: '', targets: [], editIndex: -1 };
 
+  // ssh + i2c and restful API are strictly mutually exclusive. A target only
+  // ever renders, reads and submits the fields of its selected mode.
+  var TG_MODE_KEYS = {
+    'mirror': [],
+    'ssh-i2c': ['ssh_user', 'i2c_bus', 'i2c_addr'],
+    'rest-api': ['rest_scheme', 'rest_base_path', 'token_env']
+  };
+  var TG_ALL_MODE_KEYS = ['ssh_user', 'i2c_bus', 'i2c_addr',
+                          'rest_scheme', 'rest_base_path', 'token_env'];
+
+  function syncTargetModeFields() {
+    var mode = el('tgAccessMode').value;
+    document.querySelectorAll('#tgFormFields [data-tg-modes]').forEach(function (box) {
+      box.hidden = box.getAttribute('data-tg-modes').split(' ').indexOf(mode) < 0;
+    });
+    el('tgModeHint').textContent = t('tg.modeHint') + ' ' + targetModeLabel(mode) +
+      ' — ' + t('tg.modeOnly');
+  }
+
   function loadTargets() {
     api('GET', '/api/targets').then(function (d) {
       tg.version = d.version;
@@ -748,6 +767,19 @@
     return 'mirror';
   }
 
+  // The list view also shows only the selected mode's parameters.
+  function targetParams(x) {
+    if (x.access_mode === 'ssh-i2c') {
+      return 'ssh ' + (x.ssh_user || '-') + ' · bus ' + (x.i2c_bus || '-') +
+        ' · addr ' + (x.i2c_addr || '-');
+    }
+    if (x.access_mode === 'rest-api') {
+      return (x.rest_scheme || 'https') + ' ' + (x.rest_base_path || '-') +
+        ' · ' + (x.token_env || '-');
+    }
+    return t('tg.offlineOnly');
+  }
+
   function renderTargets() {
     el('tgActive').innerHTML = tg.targets.map(function (x) {
       return '<option value="' + esc(x.device_id) + '">' + esc(x.device_id) +
@@ -759,7 +791,8 @@
       return '<tr>' +
         '<td class="mono">' + esc(x.device_id) + (isActive ? ' ' + badge(t('tg.setActive'), 'green') : '') + '</td>' +
         '<td>' + esc(x.name) + '</td>' +
-        '<td>' + badge(targetModeLabel(x.access_mode), x.access_mode === 'mirror' ? 'secondary' : 'blue') + '</td>' +
+        '<td>' + badge(targetModeLabel(x.access_mode), x.access_mode === 'mirror' ? 'secondary' : 'blue') +
+        '<div class="small text-secondary mono mt-1">' + esc(targetParams(x)) + '</div></td>' +
         '<td class="mono">' + esc(x.host || '-') + '</td>' +
         '<td class="mono">' + esc(x.port || '-') + '</td>' +
         '<td>' + (x.enabled ? '&#10003;' : '-') + '</td>' +
@@ -807,13 +840,24 @@
     });
     el('tgEditor').hidden = false;
     el('tgEditorTitle').textContent = t('tg.editor') + ' - ' + (x.device_id || t('tg.add'));
+    syncTargetModeFields();
   }
 
   function applyTargetForm() {
+    var mode = el('tgAccessMode').value;
     var obj = {};
-    document.querySelectorAll('[data-tg]').forEach(function (input) {
+    // Only the visible (selected-mode) inputs are read. Hidden fields of the
+    // other transport are never part of the payload.
+    document.querySelectorAll('#tgFormFields [data-tg]').forEach(function (input) {
+      var box = input.closest('[data-tg-modes]');
+      if (box && box.hidden) return;
       obj[input.getAttribute('data-tg')] = String(input.value).trim();
     });
+    // Defence in depth: drop every key owned by an unselected mode.
+    TG_ALL_MODE_KEYS.forEach(function (k) {
+      if (TG_MODE_KEYS[mode].indexOf(k) < 0) delete obj[k];
+    });
+    obj.access_mode = mode;
     if (!obj.device_id) { toast('device_id is required', 'err'); return; }
     obj.port = parseInt(obj.port || '0', 10) || 0;
     obj.enabled = obj.enabled === 'true';
@@ -927,6 +971,7 @@
         fail(err);
       });
     });
+    el('tgAccessMode').addEventListener('change', syncTargetModeFields);
     el('tgAdd').addEventListener('click', function () { openTargetEditor(-1); });
     el('tgSave').addEventListener('click', saveTargets);
     el('tgApply').addEventListener('click', applyTargetForm);

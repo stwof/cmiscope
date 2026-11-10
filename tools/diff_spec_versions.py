@@ -257,7 +257,7 @@ def diff_fields(old: dict[tuple, dict], new: dict[tuple, dict]) -> dict:
         "changed": changed,
         "caveat": ("Field rows come from best-effort coordinate reconstruction and are "
                    "incomplete by design; treat these entries as review candidates, not "
-                   "as statements about the specification. The published CSV and the OIF "
+                   "as statements about the specification. The normalized reference data and the OIF "
                    "PDF are authoritative."),
     }
 
@@ -425,9 +425,9 @@ def render_markdown(diff: dict, limit: int) -> str:
         f"{f['count_54']} 行；新增 {s['fields_indicative']['added']}、移除 "
         f"{s['fields_indicative']['removed']}、属性变化 {s['fields_indicative']['changed']}。",
         "",
-        "> ⚠️ 字段行来自坐标重建，覆盖率不完整（5.3 相对 CSV 约 91.5%），因此这些差异"
+        "> ⚠️ 字段行来自坐标重建，覆盖率不完整（5.3 相对规范化数据集约 91.5%），因此这些差异"
         "**只作为复核线索**，不能据此断言规范增删。逐条结论必须回到 OIF 原文；字段值以"
-        " `data/cmis53_reference.json`（源自上游 CSV）为准。",
+        " `data/cmis53_reference.json`（本项目规范化数据集）为准。",
         "",
         _md_table(["页", "Byte", "字段", "表号", "access", "value_type"],
                   [[r["page"], r["byte"], r["name"], r["table_id"],
@@ -464,7 +464,7 @@ def main() -> int:
     parser.add_argument("--index54", type=Path, default=None,
                         help="optional cached 5.4 index; the PDF is parsed in memory otherwise")
     parser.add_argument("--reference", type=Path, default=DEFAULT_REFERENCE,
-                        help="5.3 CSV-derived reference used only when rebuilding the 5.3 index")
+                        help="5.3 normalized reference used only when rebuilding the 5.3 index")
     parser.add_argument("--out-json", type=Path, default=DEFAULT_OUT_JSON)
     parser.add_argument("--out-md", type=Path, default=DEFAULT_OUT_MD)
     parser.add_argument("--max-examples", type=int, default=20,

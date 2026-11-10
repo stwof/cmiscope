@@ -74,6 +74,8 @@ dashboard's **Access targets** view). If that file is absent, the shipped
 | `ssh-i2c` | service -> SSH to test switch -> `i2cget`/`i2cset` -> module EEPROM at `0x50` | lab bring-up, module characterization |
 | `rest-api` | service -> northbound REST API of the target device / NOS | integration and multi-device automation |
 
+`ssh-i2c` and `rest-api` are **strictly mutually exclusive**. A target stores only the fields of its selected mode (`ssh-i2c`: `ssh_user`, `i2c_bus`, `i2c_addr`; `rest-api`: `rest_scheme`, `rest_base_path`, `token_env`; `mirror`: neither). Submitting fields of the other mode is rejected with `TARGETS_VALIDATION_FAILED`, the API returns only the selected mode's fields, and the loader blanks the unselected transport's endpoint so it cannot take effect. In `config.ini`, enable only the matching `[ssh]` or `[rest]` section; keep the other commented out.
+
 Minimal example of adding a device without touching code:
 
 ```json

@@ -636,11 +636,15 @@ def list_targets(settings: Settings) -> tuple[int, dict]:
         "targets": [targets.public_target(t) for t in registry.get("targets", [])],
         "access_modes": list(targets.ACCESS_MODES),
         "fields": targets.TARGET_FIELDS,
+        "mode_fields": {mode: sorted(keys) for mode, keys in targets.MODE_FIELD_KEYS.items()},
         "file": str(settings.targets_file),
         "example_file": str(settings.base_dir / "config" / "targets.example.json"),
         "writable": not settings.read_only,
         "credential_fields_forbidden": sorted(targets.SENSITIVE_KEYS),
-        "note": "Credentials are never stored here; reference them with token_env.",
+        "note": ("ssh+i2c and restful API are mutually exclusive: each target carries "
+                 "only the fields of its selected mode, and the unselected transport "
+                 "is rejected on save and disabled at runtime. Credentials are never "
+                 "stored here; reference them with token_env."),
     })
 
 
@@ -756,7 +760,7 @@ _REF_CDB_COLUMNS = (
 def reference_fields(conn: sqlite3.Connection, query: dict) -> tuple[int, dict]:
     """Paginated read-only lookup over the CMIS 5.3 field map.
 
-    The upstream table has 2442 rows, so this endpoint deliberately does not
+    The reference table has 2442 rows, so this endpoint deliberately does not
     reuse the fixed 300-row cap of /api/fields; callers page explicitly.
     """
     where: list[str] = []
@@ -898,11 +902,11 @@ def reference_spec_table_detail(conn: sqlite3.Connection, table_id: str,
     return ok({"table": dict(row), "total": len(items),
                "limit": limit, "offset": offset,
                "items": items[offset:offset + limit],
-               "note": "Fields come from the CSV reference; the PDF index supplies the page."})
+               "note": "Fields come from the normalized reference dataset; the PDF index supplies the page."})
 
 
 def reference_verification(conn: sqlite3.Connection) -> tuple[int, dict]:
-    """Report the PDF-vs-CSV cross-check produced by tools/parse_spec_pdf.py."""
+    """Report the PDF-vs-dataset cross-check produced by tools/parse_spec_pdf.py."""
     rows = conn.execute(
         "SELECT meta_key, meta_value FROM cmis53_meta "
         "WHERE meta_key IN ('spec_verification', 'spec_pdf_meta', 'stats')"
@@ -915,7 +919,7 @@ def reference_verification(conn: sqlite3.Connection) -> tuple[int, dict]:
     return ok({"available": True, "verification": verification,
                "pdf": data.get("spec_pdf_meta", {}),
                "reference_stats": data.get("stats", {}),
-               "note": "Best-effort coordinate extraction; the CSV remains authoritative."})
+               "note": "Best-effort coordinate extraction; the normalized dataset remains authoritative."})
 
 
 def reference_meta(conn: sqlite3.Connection) -> tuple[int, dict]:

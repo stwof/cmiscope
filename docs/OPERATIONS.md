@@ -37,10 +37,12 @@ device, click **Edit**, adjust the fields and click **Apply to list**, then
 | `access_mode` | `mirror` / `ssh-i2c` / `rest-api` |
 | `host` | IP address or hostname of the switch / device (required for hardware modes) |
 | `port` | SSH port (default 22) or HTTPS port (default 443); 0 for mirror |
-| `ssh_user`, `i2c_bus`, `i2c_addr` | Mode A parameters (default `0x50`) |
-| `rest_scheme`, `rest_base_path` | Mode B URL construction, e.g. `https://10.0.0.9:8443/api` |
-| `token_env` | **name** of the environment variable holding the REST token, never the token itself |
+| `ssh_user`, `i2c_bus`, `i2c_addr` | Mode A parameters (default `0x50`) - **ssh-i2c targets only** |
+| `rest_scheme`, `rest_base_path` | Mode B URL construction, e.g. `https://10.0.0.9:8443/api` - **rest-api targets only** |
+| `token_env` | **name** of the environment variable holding the REST token, never the token itself - **rest-api targets only** |
 | `module_ids` | optional list of module identifiers for CDB execution |
+
+**Mode A and Mode B are strictly mutually exclusive.** A target may contain only the fields of its selected `access_mode`; `mirror` targets carry neither set. The dashboard shows and submits only the selected mode's fields, `GET /api/targets` returns only those fields, and a `PUT` containing the other mode's fields is rejected with `TARGETS_VALIDATION_FAILED`. The unselected transport's endpoint is blanked at load and resolve time, so it cannot take effect.
 
 Literal credentials are rejected by the validator with
 `TARGETS_VALIDATION_FAILED`. Use `token_env` plus an environment variable.

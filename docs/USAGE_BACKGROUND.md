@@ -72,7 +72,7 @@ flowchart LR
 
 上文的 `config.ini` 描述的是**全局默认接入方式**；实际测试时往往需要按设备切换，或临时新增一台检测设备。为此 CMIScope 额外提供一份可编辑的目标设备清单：
 
-- **配置文件**：`config/targets.json`（首次使用时由 `config/targets.example.json` 提供示例回退；该文件被 `.gitignore` 排除，不随仓库分发）。每个条目可设置 `device_id`、`access_mode`（`mirror` / `ssh-i2c` / `rest-api`）、`host`、`port`、`ssh_user`、`i2c_bus`、`i2c_addr`、`rest_scheme`、`rest_base_path`、`token_env`、`module_ids`、`notes` 等参数；`active_target` 指定当前测试目标。
+- **配置文件**：`config/targets.json`（首次使用时由 `config/targets.example.json` 提供示例回退；该文件被 `.gitignore` 排除，不随仓库分发）。通用字段为 `device_id`、`access_mode`（`mirror` / `ssh-i2c` / `rest-api`）、`host`、`port`、`module_ids`、`notes`；**模式专属字段严格互斥**：`ssh-i2c` 只能有 `ssh_user/i2c_bus/i2c_addr`，`rest-api` 只能有 `rest_scheme/rest_base_path/token_env`，`mirror` 两者都不允许。同一条目标同时出现两种模式的字段会被拒绝；`active_target` 指定当前测试目标。
 - **Dashboard 视图**：左侧「接入配置 / Access targets」可直接切换当前目标、编辑 IP 等必要参数、新增或删除设备、保存并逐个探测。保存后立即生效，无需重启服务。
 - **REST 接口**：`GET /api/targets` 读取配置，`PUT /api/targets` 校验并原子写入，`POST /api/targets/probe` 按指定设备探测连通性；`GET /api/access`、`POST /api/access/probe`、`/api/registers/*`、`/api/config-items/*`、`/api/cdb/execute` 都会按 `device_id` 解析该设备自己的传输参数。
 - **凭据边界**：目标配置中禁止出现 `token`、`password`、`secret`、`api_key`、`private_key`、`credentials`、`auth` 等字段，写入时会被拒绝并返回 `TARGETS_VALIDATION_FAILED`；REST Token 只能通过 `token_env` 引用环境变量名，SSH 复用 ssh-agent。这样新增设备只需填写 IP/模式等参数，不涉及任何口令入库。

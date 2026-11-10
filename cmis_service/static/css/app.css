@@ -124,6 +124,8 @@ details[open] summary { color: #93c5fd; margin-bottom: 6px; }
 #moduleSections .card-body { padding: 14px 16px; }
 #moduleSections .table td { vertical-align: middle; }
 #moduleSections .table td small { font-size: 11px; }
+/* Access target editor: the unselected transport's fields must stay invisible. */
+#tgFormFields [data-tg-modes][hidden] { display: none !important; }
 .stat-card .stat-value { font-variant-numeric: tabular-nums; }
 .pill-row .badge { font-weight: 500; }
 .app-footer { letter-spacing: .01em; }

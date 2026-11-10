@@ -1,28 +1,28 @@
 #!/usr/bin/env python3
-"""Build the portable CMIS 5.3 reference JSON from the upstream CSV assets.
+"""Build the portable CMIS 5.3 reference JSON from CMIScope's own dataset.
 
 Pure standard library: no third-party packages, no network access, no PDF or
-XLSX parsing here. The heavyweight upstream rebuild chain (pdfplumber,
-openpyxl, SONiC git clone) stays outside this project. Its published CSV
-output is the authority; an optional PDF-derived index
-(data/spec_pdf_index.json, built by tools/parse_spec_pdf.py with the standard
-library) is merged in for specification page provenance and verification.
+XLSX parsing here. The canonical input is ``data/cmis53_dataset.json``, a
+normalized, project-owned record set; an optional PDF-derived index
+(``data/spec_pdf_index.json``, built by ``tools/parse_spec_pdf.py`` with the
+standard library) is merged in for specification page provenance and
+verification. No external repository or its exported files are required.
 
 Usage:
     python tools/parse_spec_pdf.py            # optional: build the PDF index first
     python tools/import_cmis53.py
-    python tools/import_cmis53.py --source data/upstream --out data/cmis53_reference.json
-    python tools/import_cmis53.py --no-spec-index   # CSV only
+    python tools/import_cmis53.py --dataset data/cmis53_dataset.json \
+        --out data/cmis53_reference.json
+    python tools/import_cmis53.py --no-spec-index   # dataset only
 
 The generated file is imported into SQLite at service start. Re-run this script
-whenever the upstream CSV assets or the PDF index are refreshed.
+whenever the normalized dataset or the PDF index is refreshed.
 See docs/CMIS53_REFERENCE.md.
 """
 
 from __future__ import annotations
 
 import argparse
-import csv
 import hashlib
 import json
 import re
@@ -38,38 +38,32 @@ if str(HERE) not in sys.path:
 
 from cmis53_rules import (  # noqa: E402 - path bootstrapped above
     CDB_COLUMN_NOTES, CDB_COLUMNS, FIELD_COLUMN_NOTES, FIELD_COLUMNS,
-    SECTION_RULES, normalize_cdb, normalize_field,
+    SECTION_RULES,
 )
 
-DEFAULT_SOURCE = ROOT / "data" / "upstream"
+DEFAULT_DATASET = ROOT / "data" / "cmis53_dataset.json"
 DEFAULT_OUTPUT = ROOT / "data" / "cmis53_reference.json"
 DEFAULT_SPEC_INDEX = ROOT / "data" / "spec_pdf_index.json"
-
-FIELD_CSV = "CMIS_5.3_Memory_Map.csv"
-CDB_CSV = "CMIS_5.3_CDB_Commands.csv"
-CORRECTIONS_CSV = "corrections.csv"
+DEFAULT_SPEC_PDF = ROOT / "knowledge" / "specs" / "OIF-CMIS-05.3.pdf"
 
 SPEC = "OIF-CMIS-05.3, Common Management Interface Specification revision 5.3 (4 Sept 2024)"
-UPSTREAM_REPO = "https://github.com/jimfred/CMIS"
 OIF_URL = "https://www.oiforum.com/"
 SPEC_PDF_URL = "https://www.oiforum.com/wp-content/uploads/OIF-CMIS-05.3.pdf"
 
-
-def read_csv(path: Path, required: dict) -> list[dict]:
-    """Read a UTF-8 CSV with explicit encoding and header validation."""
-    if not path.is_file():
-        raise SystemExit(f"ERROR: upstream asset is missing: {path}")
-    with path.open("r", encoding="utf-8-sig", newline="") as fh:
-        reader = csv.DictReader(fh)
-        headers = reader.fieldnames or []
-        missing = [name for name in required if name not in headers]
-        if missing:
-            raise SystemExit(f"ERROR: {path.name} is missing columns: {', '.join(missing)}")
-        return [dict(row) for row in reader]
+DATASET_SECTIONS = ("fields", "cdb_commands")
+DERIVED_FIELD_KEYS = ("spec_pdf_page", "spec_pdf_file", "spec_table_title")
+DERIVED_CDB_KEYS = ("spec_pdf_page", "spec_pdf_file")
 
 
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def asset(path: Path) -> dict:
+    """Checksum one build input; always return the same shape."""
+    if not path.is_file():
+        return {"sha256": "", "bytes": 0, "missing": True}
+    return {"sha256": sha256(path), "bytes": path.stat().st_size}
 
 
 def count_by(rows: list[dict], key: str) -> dict:
@@ -84,6 +78,26 @@ def require_unique(rows: list[dict], key: str, label: str) -> None:
         raise SystemExit(f"ERROR: duplicate {key} in {label}: {', '.join(duplicates[:5])}")
 
 
+def read_dataset(path: Path) -> dict:
+    """Load the canonical normalized dataset and validate its shape."""
+    if not path.is_file():
+        raise SystemExit(f"ERROR: normalized dataset is missing: {path}")
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise SystemExit("ERROR: dataset root must be a JSON object")
+    for section in DATASET_SECTIONS:
+        rows = data.get(section)
+        if not isinstance(rows, list) or not rows:
+            raise SystemExit(f"ERROR: dataset section {section!r} must be a non-empty list")
+        if not all(isinstance(row, dict) for row in rows):
+            raise SystemExit(f"ERROR: dataset section {section!r} contains non-object rows")
+    missing = [name for name in FIELD_COLUMNS.values()
+               if name not in data["fields"][0]]
+    if missing:
+        raise SystemExit(f"ERROR: dataset field rows lack columns: {', '.join(missing[:8])}")
+    return data
+
+
 def load_spec_index(path: Path) -> dict | None:
     """Load the optional PDF-derived provenance index (never required)."""
     if not path.is_file():
@@ -92,12 +106,13 @@ def load_spec_index(path: Path) -> dict | None:
 
 
 def attach_spec_provenance(payload: dict, index: dict | None) -> None:
-    """Join the PDF table index onto the CSV-derived field/command rows.
+    """Join the PDF table index onto the canonical field/command rows.
 
-    The PDF index supplies where a table lives in the specification; the CSV
-    remains the authority for field values.  Extra keys on the field rows are
-    in the JSON only - the SQLite column whitelist intentionally leaves them
-    out, and the API resolves provenance through the spec-tables table.
+    The PDF index supplies where a table lives in the specification; the
+    normalized dataset remains the authority for field values. Extra keys on
+    the field rows are in the JSON only - the SQLite column whitelist
+    intentionally leaves them out, and the API resolves provenance through the
+    spec-tables table.
     """
     tables = {str(t.get("table_id")): t for t in (index or {}).get("tables", [])}
     meta = (index or {}).get("meta", {})
@@ -140,27 +155,18 @@ def attach_spec_provenance(payload: dict, index: dict | None) -> None:
                          "hint": "Generate data/spec_pdf_index.json with tools/parse_spec_pdf.py"})
 
 
-def build(source: Path, spec_index: dict | None = None) -> dict:
-    field_csv = source / FIELD_CSV
-    cdb_csv = source / CDB_CSV
-    corrections = source / CORRECTIONS_CSV
-
-    raw_fields = read_csv(field_csv, FIELD_COLUMNS)
-    raw_cdb = read_csv(cdb_csv, CDB_COLUMNS)
-    fields = [normalize_field(row) for row in raw_fields]
-    commands = [normalize_cdb(row) for row in raw_cdb]
-    require_unique(fields, "key_id", FIELD_CSV)
-    require_unique(commands, "cmd_id", CDB_CSV)
-
-    correction_rows = 0
-    if corrections.is_file():
-        with corrections.open("r", encoding="utf-8-sig", newline="") as fh:
-            correction_rows = sum(1 for _ in csv.DictReader(fh))
-
-    assets = {}
-    for path in (field_csv, cdb_csv, corrections):
-        if path.is_file():
-            assets[path.name] = {"sha256": sha256(path), "bytes": path.stat().st_size}
+def build(dataset: dict, dataset_path: Path, spec_index_path: Path,
+          spec_pdf_path: Path, spec_index: dict | None = None) -> dict:
+    fields = []
+    for row in dataset["fields"]:
+        clean = {k: v for k, v in row.items() if k not in DERIVED_FIELD_KEYS}
+        fields.append(clean)
+    commands = []
+    for row in dataset["cdb_commands"]:
+        clean = {k: v for k, v in row.items() if k not in DERIVED_CDB_KEYS}
+        commands.append(clean)
+    require_unique(fields, "key_id", "normalized field dataset")
+    require_unique(commands, "cmd_id", "normalized CDB dataset")
 
     stats = {
         "fields": len(fields),
@@ -183,15 +189,19 @@ def build(source: Path, spec_index: dict | None = None) -> dict:
             "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "specification": SPEC,
             "specification_url": SPEC_PDF_URL,
-            "upstream_repository": UPSTREAM_REPO,
-            "source_directory": "data/upstream",
-            "source_assets": assets,
-            "upstream_corrections": correction_rows,
+            "dataset": "data/cmis53_dataset.json (CMIScope normalized, project-owned)",
+            "source_assets": {
+                "cmis53_dataset.json": asset(dataset_path),
+                "spec_pdf_index.json": asset(spec_index_path),
+                "OIF-CMIS-05.3.pdf": asset(spec_pdf_path),
+            },
             "data_nature": "specification-derived reference, read-only",
             "authority_note": ("The OIF specification is authoritative. Verify timing- or "
                                "safety-critical details against the PDF before hardware use."),
             "license": {
-                "scripts_and_structure": "MIT, Copyright (c) 2026 Jim Frederick",
+                "scripts_and_structure": ("Normalized schema, partition mapping, key IDs and "
+                                          "build tooling are CMIScope original work under the "
+                                          "repository MIT License (see LICENSE)."),
                 "specification_content": ("Field names, register addresses, access/requirement "
                                           "types and verbatim Description text remain "
                                           "(c) Optical Internetworking Forum and are NOT "
@@ -202,13 +212,12 @@ def build(source: Path, spec_index: dict | None = None) -> dict:
             },
             "attribution": {
                 "oif": OIF_URL,
-                "upstream": UPSTREAM_REPO,
-                "notice": "See NOTICE sections 5-7 and data/upstream/README.md",
+                "notice": "See NOTICE for the OIF and Apache-2.0 terms that apply to this data",
             },
         },
-        "field_columns": FIELD_COLUMN_NOTES,
-        "cdb_columns": CDB_COLUMN_NOTES,
-        "section_rules": SECTION_RULES,
+        "field_columns": dataset.get("field_columns") or FIELD_COLUMN_NOTES,
+        "cdb_columns": dataset.get("cdb_columns") or CDB_COLUMN_NOTES,
+        "section_rules": dataset.get("section_rules") or SECTION_RULES,
         "stats": stats,
         "fields": fields,
         "cdb_commands": commands,
@@ -220,27 +229,34 @@ def build(source: Path, spec_index: dict | None = None) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE,
-                        help=f"directory holding the upstream CSV assets (default: {DEFAULT_SOURCE})")
+    parser.add_argument("--dataset", type=Path, default=DEFAULT_DATASET,
+                        help=f"normalized, project-owned input (default: {DEFAULT_DATASET})")
     parser.add_argument("--out", type=Path, default=DEFAULT_OUTPUT,
                         help=f"output JSON path (default: {DEFAULT_OUTPUT})")
     parser.add_argument("--spec-index", type=Path, default=DEFAULT_SPEC_INDEX,
                         help=f"PDF-derived provenance index (default: {DEFAULT_SPEC_INDEX})")
+    parser.add_argument("--spec-pdf", type=Path, default=DEFAULT_SPEC_PDF,
+                        help=f"bundled OIF PDF for checksums (default: {DEFAULT_SPEC_PDF})")
     parser.add_argument("--no-spec-index", action="store_true",
-                        help="build the CSV reference without PDF provenance")
+                        help="build the reference without PDF provenance")
     args = parser.parse_args()
 
-    source = args.source if args.source.is_absolute() else (ROOT / args.source)
-    out = args.out if args.out.is_absolute() else (ROOT / args.out)
+    def resolve(path: Path) -> Path:
+        return path if path.is_absolute() else (ROOT / path)
+
+    dataset_path = resolve(args.dataset)
+    out = resolve(args.out)
+    spec_index_path = resolve(args.spec_index)
+    spec_pdf_path = resolve(args.spec_pdf)
+
     spec_index = None
     if not args.no_spec_index:
-        spec_path = (args.spec_index if args.spec_index.is_absolute()
-                     else (ROOT / args.spec_index))
-        spec_index = load_spec_index(spec_path)
+        spec_index = load_spec_index(spec_index_path)
         if spec_index is None:
-            print(f"  NOTE: {spec_path.name} not found; run tools/parse_spec_pdf.py "
+            print(f"  NOTE: {spec_index_path.name} not found; run tools/parse_spec_pdf.py "
                   "to enable PDF provenance")
-    payload = build(source.resolve(), spec_index)
+    payload = build(read_dataset(dataset_path), dataset_path,
+                    spec_index_path, spec_pdf_path, spec_index)
     out.parent.mkdir(parents=True, exist_ok=True)
     # write_bytes keeps LF line endings on every platform (.gitattributes).
     out.write_bytes((json.dumps(payload, ensure_ascii=False, indent=2) + "\n").encode("utf-8"))

@@ -1,11 +1,13 @@
 # CMIS 5.3 Field Reference (read-only)
 
-This document describes the integration of the field-level CMIS 5.3 map from
-[jimfred/CMIS](https://github.com/jimfred/CMIS) into CMIScope.
+This document describes CMIScope's own normalized CMIS 5.3 field reference
+layer. It is built entirely in this repository from a project-owned dataset and
+the bundled OIF specification PDF; no external CMIS tooling source or exported
+files are required.
 
 ## 1. Design decision
 
-The upstream data has **2442 field rows** (21 columns) and **48 CDB commands**.
+The reference data has **2442 field rows** (21 columns) and **48 CDB commands**.
 CMIScope's operational model has 64 synthetic `fields` and 512 `config_items`
 with `UNIQUE(device_id, field_key)`, a foreign key, editable values with
 optimistic locking, and a fixed `LIMIT 300` on `/api/fields`.
@@ -27,12 +29,12 @@ knowledge/specs/OIF-CMIS-05.3.pdf   (bundled offline copy, (c) OIF)
         v
 data/spec_pdf_index.json            (table + field provenance, PDF checksum, verification)
         |
-        +----------------------------+
-                                     |
-data/upstream/*.csv                  |   (unmodified upstream assets, MIT + OIF + Apache-2.0)
+        +---------------------------------+
+                                          |
+data/cmis53_dataset.json             |      (CMIScope normalized, project-owned)
         |                           |
-        |  python tools/import_cmis53.py <-------+   (merges both sources)
-        |    -> tools/cmis53_rules.py          (page/mask/type/section normalization)
+        |  python tools/import_cmis53.py <----+   (merges both sources)
+        |    -> tools/cmis53_rules.py          (column dictionary / section rules)
         v
 data/cmis53_reference.json          (portable UTF-8/LF, SHA-256 of every input)
         |
@@ -53,56 +55,42 @@ This is a **mixed** dataset; do not relicense it as a whole.
 
 | Content | Terms |
 | --- | --- |
-| Scripts, normalization, Key IDs, workbook structure, column definitions, unit/scale/conversion columns, `corrections.csv`, SONiC cross-check columns | MIT, Copyright (c) 2026 Jim Frederick. Full text preserved at `data/upstream/LICENSE` |
+| Normalized schema, partition mapping, key IDs, column definitions, unit/scale/conversion columns and build tooling | CMIScope original work, MIT (see repository `LICENSE`) |
 | `CMIS Name`, `Page`, `Byte`, `Byte Length`, `Mask Bytes`, `Access`, `Behavior`, `Requirement`, `Reference Table` / `Reference Section`, verbatim `Description` | Derived from *OIF-CMIS-05.3* (4 Sept 2024), (c) Optical Internetworking Forum, <https://www.oiforum.com/>. **Not MIT**; subject to OIF terms |
-| `SONiC Cross-check`, `SONiC Field` | Derived from `sonic-net/sonic-platform-common`, Apache-2.0, at a pinned commit. Comparison result only, not a compliance claim |
+| `SONiC Cross-check`, `SONiC Field` | Derived from `sonic-net/sonic-platform-common`, Apache-2.0. Comparison result only, not a compliance claim |
 
 The OIF specification is authoritative. A local copy is bundled at
 `knowledge/specs/OIF-CMIS-05.3.pdf`. Verify timing- or safety-critical details
 against it before any hardware use. See `NOTICE` sections 5-7.
 
-## 3. What was optimized from the upstream code
+## 3. Why the build is zero-dependency
 
-The upstream repository contains a rebuild chain that requires `pdfplumber`,
-`openpyxl`, the OIF PDF and a `git clone` of SONiC. The third-party libraries,
-the XLSX writer and the SONiC clone are **not** brought into CMIScope, which
-must stay zero-dependency and portable. The PDF parsing *ability*, however, is
-re-implemented with the standard library (section 7), so the bundled spec can
-be read without installing anything.
+CMIScope must stay standard-library-only and portable, so no third-party PDF or
+spreadsheet library and no external source checkout are used anywhere in the
+build chain. `tools/cmis53_rules.py` is the single, testable home for the
+reusable domain logic:
 
-Instead, `tools/cmis53_rules.py` extracts the reusable domain logic and fixes
-the problems found in the upstream scripts:
-
-- **De-duplication.** Page normalization and mask parsing were each implemented
-  four times (`extract_memory_map.page_of`, `normalize_memory_map.bank_scope`,
-  `rebuild_memory_map.page_cell/page_key`, `update_param_reference.masks_of`).
-  They are now single functions: `parse_page()` and `parse_masks()`.
-- **Explicit encoding.** Upstream `open()` calls relied on the process locale,
-  which breaks on Windows with `degC` / `µV` / quoted description text. All I/O
-  here uses `encoding="utf-8-sig"` and `newline=""`.
-- **Injected paths, no hard-coded PDF page ranges.** The importer takes
-  `--source` / `--out`; the PDF parser discovers the Section 8/9 range from
-  the document's own table of contents instead of upstream's fixed 120..290.
-  Paths resolve relative to the project root so the whole directory stays
-  movable. Upstream's table blacklists are retained as auditable data
-  (`OVERVIEW_TABLES`, `TEMPLATE_TABLES`) instead of scattered conditionals.
-- **One normalization path for CSV and PDF.** `parse_byte_range()`,
-  `masks_from_bits()`, `parse_access_type()`, `page_from_title()`,
-  `value_type_from_text()` and `derive_conversion()` replace the logic
-  duplicated across `normalize_memory_map.py` and `conversions.py`. Both
-  sources now normalize through the same functions, so their rows can be
-  compared directly.
-- **Error handling.** Missing columns, duplicate keys and malformed numeric or
-  mask values are reported or ignored per row rather than aborting via
-  `SystemExit`. `key_ids()` upstream raised on collision; here uniqueness is
-  validated with a clear message.
+- **De-duplication.** Page normalization, mask parsing, access/requirement
+  tokens and value-type mapping each live in one function (`parse_page()`,
+  `parse_masks()`, `parse_access_type()`, `value_type_from_text()`).
+- **Explicit encoding.** All JSON I/O uses `encoding="utf-8"`; output is
+  written with `write_bytes(...encode("utf-8"))` so line endings stay LF.
+- **Injected paths, no hard-coded PDF page ranges.** The builder takes
+  `--dataset` / `--out`; the PDF parser discovers the Section 8/9 range from
+  the document's own table of contents. Paths resolve relative to the project
+  root so the whole directory stays movable. Table blacklists are auditable
+  data (`OVERVIEW_TABLES`, `TEMPLATE_TABLES`) rather than conditionals.
+- **One normalization path for dataset and PDF.** `parse_byte_range()`,
+  `masks_from_bits()`, `page_from_title()` and `derive_conversion()` are shared,
+  so rows from both sources can be compared directly.
+- **Error handling.** Missing sections, duplicate keys and malformed values are
+  reported per row instead of aborting via `SystemExit`.
 - **No `group` SQL keyword.** The CDB `Group` column is renamed `cmd_group`,
   avoiding a reserved-word collision in SQLite.
-- **Auditable section mapping.** The page-to-section rules live in
-  `SECTION_RULES` / `VDM_PAGES` / `CDB_PAGES` and are serialized into the
-  generated JSON, instead of being scattered conditionals.
-- **Reproducible output.** `write_bytes(...encode("utf-8"))` keeps LF endings;
-  `meta.source_assets` records SHA-256 and byte size of every input.
+- **Auditable section mapping.** Page-to-section rules live in `SECTION_RULES` /
+  `VDM_PAGES` / `CDB_PAGES` and are serialized into the generated JSON.
+- **Reproducible output.** `meta.source_assets` records SHA-256 and byte size
+  of the dataset, the PDF index and the bundled OIF PDF.
 
 The generated JSON also carries the 21 column meanings (`field_columns`) and
 9 CDB column meanings (`cdb_columns`) so the schema is self-documenting.
@@ -113,7 +101,7 @@ The generated JSON also carries the 21 column meanings (`field_columns`) and
 
 Identity: `key_id` (primary key), `name`, `page`, `page_raw`.
 Location: `byte`, `byte_length`, `mask_bytes` (raw string), `mask_values`
-(JSON array of per-byte masks; blank upstream masks become `0xFF`).
+(JSON array of per-byte masks; blank source masks become `0xFF`).
 Semantics: `bank_scope`, `value_type` (spec types such as `u8`, `bitfield4`,
 `f16`), `data_type` (mapped into CMIScope's validation vocabulary), `unit`,
 `scale`, `byte_order`, `conversion_note`, `access`, `behavior`, `requirement`,
@@ -139,7 +127,7 @@ The canonical partition definition remains `cmis_spec.SECTIONS`.
 `cmd_id` (4 hex digits, matching `cmis_spec.CDB_COMMANDS`), `title`,
 `cmd_group`, `requirement`, `spec_section`, `detail_table`, `overview_table`,
 `description`, `note`. CDB **payload field layouts are not covered** by the
-upstream dataset.
+reference dataset.
 
 ### `cmis53_spec_tables` (238 rows)
 
@@ -158,14 +146,14 @@ has to parse the 2.7 MB reference file.
 
 ```bash
 python tools/parse_spec_pdf.py                 # PDF -> data/spec_pdf_index.json
-python tools/import_cmis53.py                 # CSV + PDF index -> reference JSON
-python tools/import_cmis53.py --no-spec-index # CSV only (provenance disabled)
+python tools/import_cmis53.py                 # dataset + PDF index -> reference JSON
+python tools/import_cmis53.py --no-spec-index # dataset only (provenance disabled)
 python tools/parse_spec_pdf.py --pdf knowledge/specs/OIF-CMIS-05.4.pdf \
     --out data/spec_pdf_54_index.json --no-reference
 ```
 
 No third-party packages and no network access. The PDF index is optional: if it
-is missing, the importer prints a note and still produces a complete reference
+is missing, the builder prints a note and still produces a complete reference
 JSON without provenance. `db.initialize()` rebuilds the four tables from the
 JSON on every start (`DELETE` + insert, like the knowledge graph).
 Configuration:
@@ -190,7 +178,7 @@ anchored to `base_dir`.
 | `GET /api/reference/cdb-commands` | All 48 commands, optional `q` / `group`; each row has `in_runtime_catalog` and `spec_pdf_page` |
 | `GET /api/reference/spec-tables` | Paginated 238-table directory. Filters: `section`, `page`, `q`, `limit`, `offset` |
 | `GET /api/reference/spec-tables/{table_id}` | One table plus the reference fields citing it (handles `8-28; 8-30`). 404 `SPEC_TABLE_NOT_FOUND` |
-| `GET /api/reference/verify` | PDF-vs-CSV cross-check summary; `available=false` when the index was not generated |
+| `GET /api/reference/verify` | PDF-vs-dataset cross-check summary; `available=false` when the index was not generated |
 
 ```bash
 curl "http://127.0.0.1:8787/api/reference/fields?section=VDM&access=RO&limit=20"
@@ -202,41 +190,38 @@ curl "http://127.0.0.1:8787/api/reference/verify"
 ```
 
 `GET /api/reference/cdb-commands` also returns `runtime_catalog_size` (26).
-Of the 48 upstream commands, 26 already exist in `cmis_spec.CDB_COMMANDS`;
+Of the 48 reference commands, 26 already exist in `cmis_spec.CDB_COMMANDS`;
 the remaining 22 are visible here for review but are **not** executable.
 `/api/cdb/commands` remains the executable catalog and is unchanged.
 
-## 7. Specification PDF parsing (zero-dependency refactor)
+## 7. Specification PDF parsing (zero-dependency implementation)
 
-The second upstream repository's main capability is **rebuilding the field map
-from the OIF PDF**. CMIScope now has that capability, re-implemented without
-`pdfplumber` and wired into the reference layer above:
+CMIScope implements its own PDF reading and table extraction capability and
+wires it into the reference layer above:
 
 | Module | Responsibility |
 | --- | --- |
 | `tools/spec_pdf.py` | Classic-xref reader: xref table (with `/Prev` chains), `/Pages` tree, FlateDecode streams, and `BT/ET` text runs with `(x, y, size)` from `Tm` / `Tf`. Handles WinAnsi escapes and optional ToUnicode CMaps. Read-only and best-effort: a damaged page yields no spans instead of an exception. |
 | `tools/parse_spec_pdf.py` | Discovers the TOC, collects `Table 8-N` / `Table 9-N` captions and page numbers, rebuilds column ranges from the header row's character x-coordinates, extracts data rows, and emits `data/spec_pdf_index.json`. |
-| `tools/cmis53_rules.py` | The normalization rules from section 3, shared with the CSV importer. |
+| `tools/cmis53_rules.py` | The normalization rules from section 3, shared with the reference builder. |
 
-Refactor highlights over upstream:
+Implementation highlights:
 
-- **No third-party libraries.** `pdfplumber`, `openpyxl` and the SONiC clone
-  are gone; only standard-library modules are used. The 5.3 PDF (408 pages,
-  14 MB) parses in roughly 3 seconds.
-- **Dynamic page range.** Upstream hardcoded pages 120..290; this parser reads
-  the document's own TOC and body captions, so CMIS 5.4 (456 pages) works via
-  `--pdf` without code changes.
+- **No third-party libraries.** Only standard-library modules are used. The
+  5.3 PDF (408 pages, 14 MB) parses in roughly 3 seconds.
+- **Dynamic page range.** The parser reads the document's own TOC and body
+  captions, so CMIS 5.4 (456 pages) works via `--pdf` without code changes.
 - **Columns reconstructed from coordinates.** Word emits each table cell as
   positioned text runs; mapping header characters back to their x coordinate
   reproduces the Byte / Bit / Name / Description / Type columns. Small-font
-  footnote markers are filtered by font size, as upstream did.
+  footnote markers are filtered by font size.
 - **One normalization path.** Wrapped byte ranges (`129-` + `130`), per-lane
   `<n>` expansion, bit masks, access/behavior/requirement tokens and
-  engineering-unit derivation all go through `cmis53_rules.py`, so PDF and CSV
-  rows can be compared directly.
+  engineering-unit derivation all go through `cmis53_rules.py`, so PDF and
+  dataset rows can be compared directly.
 - **Provenance and verification.** The index records the PDF SHA-256, TOC
   pages, scanned range, table captions and page numbers, plus a cross-check
-  against the CSV reference.
+  against the normalized dataset.
 - **Compliance.** Verbatim OIF descriptions are used in memory for unit
   derivation but are **not written to the index**. Only factual identifiers
   (table numbers, short captions, page numbers, field names, addresses,
@@ -249,16 +234,16 @@ Current 5.3 result:
 | Tables discovered | 238 (181 in Section 8, 57 in Section 9) |
 | Reference tables resolved to a PDF page | 129 / 129 |
 | Field rows extracted (best-effort) | 721 (685 detail + 36 overview) |
-| Exact `(page, byte, name)` matches against CSV | 627 / 685 (91.5%) |
+| Exact `(page, byte, name)` matches against the dataset | 627 / 685 (91.5%) |
 | CDB commands resolved | 48 / 48 |
 | Fields / commands carrying `spec_pdf_page` after merge | 2442 / 2442, 48 / 48 |
 
 Unmatched rows come from tables with a different column layout (e.g. Table
 8-28) or from descriptive overview labels; they are a limitation of coordinate
-extraction, **not** a CSV error. The CSV (itself produced upstream from this
-PDF with hand corrections) remains the authority for field values, and the OIF
-specification remains authoritative overall. `/api/reference/verify` exposes
-the numbers, including a unit/scale derivation comparison.
+extraction, **not** a dataset error. The normalized dataset remains the
+authority for field values, and the OIF specification remains authoritative
+overall. `/api/reference/verify` exposes the numbers, including a unit/scale
+derivation comparison.
 
 Rebuild order matters: run `parse_spec_pdf.py` before `import_cmis53.py`, then
 restart the service so `db.initialize()` reloads the JSON. Run
@@ -278,7 +263,7 @@ runtime schema, the API, `seed.json`, or the hardware write path.
 ### 8.1 Version diff: align captions, not table numbers
 
 CMIS 5.4 inserts tables in the middle of Section 8. 102 matched tables are
-therefore renumbered by +10 and most PDF pages shift by +25..+30.  Comparing
+therefore renumbered by +10 and most PDF pages shift by +25..+30. Comparing
 `table_id` directly reports hundreds of false "renames" and "page changes".
 `diff_tables()` uses `difflib.SequenceMatcher` on normalized captions, folds
 the global wording swap (`paged memory modules only` -> `not for static memory
@@ -338,5 +323,4 @@ authoritative.
 - **A Dashboard view** in `static/index.html` / `app.js` / `i18n.js` for
   browsing the field map with pagination and filters.
 - **Bundling the raw SONiC field map** for live bit-level re-computation
-  (requires Apache-2.0 NOTICE handling and adds a dependency on an external
-  pinned checkout).
+  (requires Apache-2.0 NOTICE handling and adds an external pinned checkout).

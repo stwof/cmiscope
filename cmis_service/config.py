@@ -175,6 +175,22 @@ def _resolve(base: Path, raw: str) -> Path:
     return p if p.is_absolute() else (base / p)
 
 
+def _disable_inactive_transport(settings: Settings) -> Settings:
+    """Enforce strict ssh+i2c / restful API mutual exclusion at load time.
+
+    Only the selected mode may keep a usable endpoint. Blanking the other
+    mode's endpoint means an unselected transport cannot be submitted, shown
+    as configured, or accidentally executed even if both ini sections exist.
+    """
+    if settings.access_mode == "ssh-i2c":
+        return type(settings)(**{**settings.__dict__,
+                                 "rest_base_url": "", "rest_token_env": ""})
+    if settings.access_mode == "rest-api":
+        return type(settings)(**{**settings.__dict__, "ssh_host": ""})
+    return type(settings)(**{**settings.__dict__,
+                             "ssh_host": "", "rest_base_url": "", "rest_token_env": ""})
+
+
 def load_settings(config_path: str | os.PathLike | None = None, environ=None) -> Settings:
     """Load settings. Without config_path, check CMIS_CONFIG, config.ini, then example."""
     env = dict(os.environ if environ is None else environ)
@@ -231,12 +247,16 @@ def load_settings(config_path: str | os.PathLike | None = None, environ=None) ->
         raise ValueError(f"access_mode must be one of {', '.join(_ACCESS_MODES)}")
     if settings.default_language not in ("zh", "en"):
         raise ValueError("default_language must be 'zh' or 'en'")
-    return settings
+    return _disable_inactive_transport(settings)
 
 
 def public_settings(settings: Settings) -> dict:
-    """Return a safe configuration summary for the browser (no secrets)."""
-    return {
+    """Return a safe configuration summary for the browser (no secrets).
+
+    Only the selected access mode's connection block is included: the
+    unselected ssh+i2c or restful API configuration is never displayed.
+    """
+    view = {
         "host": settings.host,
         "port": settings.port,
         "base_dir": str(settings.base_dir),
@@ -254,9 +274,13 @@ def public_settings(settings: Settings) -> dict:
         "allow_hardware_write": settings.allow_hardware_write,
         "cdb_allow_firmware": settings.cdb_allow_firmware,
         "cdb_rest_allowed": settings.cdb_rest_allowed,
-        "ssh": {"host": settings.ssh_host, "user": settings.ssh_user,
-                "port": settings.ssh_port, "i2c_bus": settings.i2c_bus,
-                "i2c_addr": settings.i2c_addr},
-        "rest": {"base_url": settings.rest_base_url, "token_env": settings.rest_token_env,
-                 "token_present": bool(os.environ.get(settings.rest_token_env))},
     }
+    if settings.access_mode == "ssh-i2c":
+        view["ssh"] = {"host": settings.ssh_host, "user": settings.ssh_user,
+                       "port": settings.ssh_port, "i2c_bus": settings.i2c_bus,
+                       "i2c_addr": settings.i2c_addr}
+    elif settings.access_mode == "rest-api":
+        view["rest"] = {"base_url": settings.rest_base_url,
+                        "token_env": settings.rest_token_env,
+                        "token_present": bool(os.environ.get(settings.rest_token_env))}
+    return view

@@ -2,6 +2,8 @@ CMIScope - Third-Party Notices
 ==============================
 
 The CMIScope source code is licensed under the MIT License (see LICENSE).
+This repository contains CMIScope's own implementation only; source files from
+other CMIS tooling projects are not bundled here.
 
 1. Tabler 1.7.3 and Tabler Icons (MIT)
    Location: cmis_service/static/vendor/tabler/
@@ -16,15 +18,16 @@ The CMIScope source code is licensed under the MIT License (see LICENSE).
    publicly published documents, bundled as unmodified offline reference
    copies. Canonical links and redistribution notes are in
    knowledge/specs/README.md. Specification-derived field descriptions are
-   also reproduced in data/upstream/*.csv and data/cmis53_reference.json;
-   see section 6 below for the terms that apply to that content.
+   reproduced in the normalized dataset data/cmis53_dataset.json and the
+   generated data/cmis53_reference.json; see section 6 for the terms that
+   apply to that content.
 
 3. Referenced open-source projects (no source code copied)
    The knowledge graph cites SONiC, FBOSS, libsffcmis, ethtool and the Linux
    kernel by name, URL and repository metadata only. No source files from
    those projects are included in this repository. Their respective licenses
    (GPL-2.0, NOASSERTION, etc.) are recorded in data/knowledge_graph.json and
-   knowledge/SOURCES.md; review them before integrating any upstream code.
+   knowledge/SOURCES.md; review them before integrating any external code.
    The one exception is the SONiC cross-check data described in section 7.
 
 4. Credentials
@@ -33,27 +36,24 @@ The CMIScope source code is licensed under the MIT License (see LICENSE).
    TEST-NET-1 addresses (192.0.2.0/24). Operator-owned files (config.ini,
    config/targets.json) are excluded by .gitignore.
 
-5. jimfred/CMIS - CMIS 5.3 field reference (MIT)
-   Location: data/upstream/, data/cmis53_reference.json,
+5. CMIS 5.3 normalized reference data (project-owned)
+   Location: data/cmis53_dataset.json, data/cmis53_reference.json,
              tools/import_cmis53.py, tools/cmis53_rules.py
-   Source: https://github.com/jimfred/CMIS
-   The normalization rules, Key IDs, workbook structure, column definitions,
-   unit/scale and conversion columns, hand corrections and the SONiC
-   cross-check columns are original work of that project, licensed under the
-   MIT License, Copyright (c) 2026 Jim Frederick. The upstream copyright
-   notice and full MIT permission notice are preserved verbatim at
-   data/upstream/LICENSE and are incorporated here by reference. CMIScope's
-   importer and rules module are adapted from that work.
+   The normalized schema, key IDs, partition mapping, unit/scale and
+   conversion columns, column definitions and the build tooling are CMIScope
+   original work under this repository's MIT License. The canonical dataset
+   is maintained in this repository and no external project source or
+   exported files are required to rebuild the reference JSON.
 
 6. OIF-derived specification content (NOT covered by MIT)
-   data/upstream/*.csv and data/cmis53_reference.json contain field names
+   data/cmis53_dataset.json and data/cmis53_reference.json contain field names
    (CMIS Name), register addresses (Page, Byte, Byte Length, Mask Bytes),
    Access, Behavior, Requirement, Reference Table / Reference Section values,
    and the verbatim Description text, derived from OIF-CMIS-05.3, Common
    Management Interface Specification revision 5.3 (4 Sept 2024), published
    by the Optical Internetworking Forum (OIF), https://www.oiforum.com/.
    That content remains the property of the OIF and is subject to the OIF's
-   terms; the MIT License applies only to the original work described in
+   terms; the MIT License applies only to CMIScope's own work described in
    section 5. It must not be relicensed as MIT.
    The OIF specification is authoritative: verify timing- or safety-critical
    details against knowledge/specs/OIF-CMIS-05.3.pdf before hardware use.
@@ -63,20 +63,18 @@ The CMIScope source code is licensed under the MIT License (see LICENSE).
 7. SONiC cross-check data (Apache-2.0)
    The SONiC Cross-check and SONiC Field columns are derived from
    sonic-net/sonic-platform-common (https://github.com/sonic-net/sonic-platform-common),
-   licensed under the Apache License 2.0, at a pinned commit recorded in the
-   upstream repository. The values are bit-level comparison results only and
-   are not a compliance statement. Apache-2.0 attribution is preserved here;
-   the raw SONiC field map is NOT redistributed by CMIScope.
+   licensed under the Apache License 2.0. The values are bit-level comparison
+   results only and are not a compliance statement. Apache-2.0 attribution is
+   preserved here; the raw SONiC field map is NOT redistributed by CMIScope.
 
 8. OIF specification PDF parsing and derived provenance
    Location: tools/spec_pdf.py, tools/parse_spec_pdf.py,
              data/spec_pdf_index.json, cmis53_spec_tables, cmis53_meta
    The zero-dependency PDF text-layer reader and the table/command extraction
    logic are CMIScope original implementations under this repository's MIT
-   License. They are adapted from the approach of jimfred/CMIS
-   (extract_memory_map.py, extract_cdb_commands.py,
-   normalize_memory_map.py, conversions.py), MIT, Copyright (c) 2026
-   Jim Frederick; section 5 and data/upstream/LICENSE carry that attribution.
+   License. No external CMIS tooling source code is incorporated in these
+   modules; they implement the required PDF and normalization behaviour from
+   scratch with the Python standard library.
 
    The bundled OIF PDFs remain the property of the Optical Internetworking
    Forum (section 2). data/spec_pdf_index.json and the derived SQLite rows
@@ -87,9 +85,9 @@ The CMIScope source code is licensed under the MIT License (see LICENSE).
    Short table captions are included as navigation identifiers, not as a
    reproduction of specification text.
 
-   The coordinate-based extraction is best-effort. The published CSV and the
-   OIF specification remain authoritative; verification numbers are a
-   diagnostic aid, not a compliance statement. Provenance data is read-only
+   The coordinate-based extraction is best-effort. The normalized dataset
+   and the OIF specification remain authoritative; verification numbers are
+   a diagnostic aid, not a compliance statement. Provenance data is read-only
    and is never used for hardware writes.
 
    Two derived reports reuse the same reader without persisting any

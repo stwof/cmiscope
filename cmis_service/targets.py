@@ -30,22 +30,41 @@ DEVICE_ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$")
 REGISTRY_VERSION = 1
 
 # Field -> description, used by the dashboard to render an editable form.
+# ``modes`` lists the modes in which the field is visible / submittable. The
+# two production transports are strictly mutually exclusive: a target must
+# carry fields of its selected mode only, never both sets.
+ALL_MODES = "mirror,ssh-i2c,rest-api"
+CONNECTED_MODES = "ssh-i2c,rest-api"
+
 TARGET_FIELDS: dict[str, dict[str, str]] = {
-    "device_id": {"type": "text", "required": "true", "label": "Device ID"},
-    "name": {"type": "text", "label": "Display name"},
-    "enabled": {"type": "bool", "label": "Enabled"},
-    "access_mode": {"type": "enum", "label": "Access mode", "values": "mirror,ssh-i2c,rest-api"},
-    "host": {"type": "text", "label": "IP / hostname"},
-    "port": {"type": "int", "label": "Port"},
-    "ssh_user": {"type": "text", "label": "SSH user"},
-    "i2c_bus": {"type": "text", "label": "I2C bus"},
-    "i2c_addr": {"type": "text", "label": "I2C address"},
-    "rest_scheme": {"type": "enum", "label": "REST scheme", "values": "https,http"},
-    "rest_base_path": {"type": "text", "label": "REST base path"},
-    "token_env": {"type": "text", "label": "Token env var name"},
-    "module_ids": {"type": "list", "label": "Module IDs"},
-    "notes": {"type": "text", "label": "Notes"},
+    "device_id": {"type": "text", "required": "true", "label": "Device ID", "modes": ALL_MODES},
+    "name": {"type": "text", "label": "Display name", "modes": ALL_MODES},
+    "enabled": {"type": "bool", "label": "Enabled", "modes": ALL_MODES},
+    "access_mode": {"type": "enum", "label": "Access mode",
+                    "values": ALL_MODES, "modes": ALL_MODES},
+    "host": {"type": "text", "label": "IP / hostname", "modes": CONNECTED_MODES},
+    "port": {"type": "int", "label": "Port", "modes": CONNECTED_MODES},
+    "ssh_user": {"type": "text", "label": "SSH user", "modes": "ssh-i2c"},
+    "i2c_bus": {"type": "text", "label": "I2C bus", "modes": "ssh-i2c"},
+    "i2c_addr": {"type": "text", "label": "I2C address", "modes": "ssh-i2c"},
+    "rest_scheme": {"type": "enum", "label": "REST scheme",
+                    "values": "https,http", "modes": "rest-api"},
+    "rest_base_path": {"type": "text", "label": "REST base path", "modes": "rest-api"},
+    "token_env": {"type": "text", "label": "Token env var name", "modes": "rest-api"},
+    "module_ids": {"type": "list", "label": "Module IDs", "modes": ALL_MODES},
+    "notes": {"type": "text", "label": "Notes", "modes": ALL_MODES},
 }
+
+# Mode-specific keys. Anything belonging to an unselected mode is rejected on
+# submission and never stored or returned for that target.
+MODE_FIELD_KEYS: dict[str, frozenset[str]] = {
+    "mirror": frozenset(),
+    "ssh-i2c": frozenset({"ssh_user", "i2c_bus", "i2c_addr"}),
+    "rest-api": frozenset({"rest_scheme", "rest_base_path", "token_env"}),
+}
+_COMMON_KEYS = frozenset({"device_id", "name", "enabled", "access_mode", "host",
+                          "port", "module_ids", "notes"})
+_ALL_MODE_KEYS = frozenset().union(*MODE_FIELD_KEYS.values())
 
 # Reject literal credentials so they can never land in a config file or repo.
 SENSITIVE_KEYS = frozenset({
@@ -53,9 +72,7 @@ SENSITIVE_KEYS = frozenset({
     "private_key", "credential", "credentials", "auth",
 })
 
-_ALLOWED_KEYS = frozenset({"device_id", "name", "enabled", "access_mode", "host", "port",
-                           "ssh_user", "i2c_bus", "i2c_addr", "rest_scheme",
-                           "rest_base_path", "token_env", "module_ids", "notes"})
+_ALLOWED_KEYS = _COMMON_KEYS | _ALL_MODE_KEYS
 
 
 class TargetError(Exception):
@@ -138,6 +155,17 @@ def _clean_target(raw: Any, index: int, seen: set[str], errors: list[str]) -> di
         errors.append(f"{device_id}: access_mode must be one of {', '.join(ACCESS_MODES)}")
         return None
 
+    # Strict mutual exclusion: ssh+i2c and restful API must never be mixed in
+    # one target. Keys of the unselected mode are neither accepted nor stored.
+    inactive_keys = sorted(k for k in raw
+                           if k in _ALL_MODE_KEYS and k not in MODE_FIELD_KEYS[mode])
+    if inactive_keys:
+        errors.append(
+            f"{device_id}: fields of the unselected access mode are not allowed for "
+            f"{mode} ({', '.join(inactive_keys)}); submit only one transport's fields"
+        )
+        return None
+
     host = _clean_str(raw.get("host"))
     if mode in ("ssh-i2c", "rest-api") and not host:
         errors.append(f"{device_id}: host (IP / hostname) is required for {mode}")
@@ -158,10 +186,12 @@ def _clean_target(raw: Any, index: int, seen: set[str], errors: list[str]) -> di
         errors.append(f"{device_id}: port out of range 1-65535")
         return None
 
-    scheme = _clean_str(raw.get("rest_scheme"), "https").lower()
-    if scheme not in ("http", "https"):
-        errors.append(f"{device_id}: rest_scheme must be http or https")
-        return None
+    scheme = "https"
+    if mode == "rest-api":
+        scheme = _clean_str(raw.get("rest_scheme"), "https").lower()
+        if scheme not in ("http", "https"):
+            errors.append(f"{device_id}: rest_scheme must be http or https")
+            return None
 
     modules = raw.get("module_ids") or []
     if not isinstance(modules, list):
@@ -174,29 +204,39 @@ def _clean_target(raw: Any, index: int, seen: set[str], errors: list[str]) -> di
     else:
         enabled = bool(enabled)
 
-    return {
+    item = {
         "device_id": device_id,
         "name": _clean_str(raw.get("name")) or device_id,
         "enabled": enabled,
         "access_mode": mode,
         "host": host,
         "port": port,
-        "ssh_user": _clean_str(raw.get("ssh_user"), "admin"),
-        "i2c_bus": _clean_str(raw.get("i2c_bus"), "0"),
-        "i2c_addr": _clean_str(raw.get("i2c_addr"), "0x50"),
-        "rest_scheme": scheme,
-        "rest_base_path": _clean_str(raw.get("rest_base_path")),
-        "token_env": _clean_str(raw.get("token_env"), "CMIS_REST_TOKEN"),
         "module_ids": [_clean_str(m) for m in modules if _clean_str(m)][:32],
         "notes": _clean_str(raw.get("notes"))[:300],
     }
+    # Only the selected mode's parameters appear in the stored / displayed
+    # configuration; the other transport has no representation at all.
+    if mode == "ssh-i2c":
+        item.update({
+            "ssh_user": _clean_str(raw.get("ssh_user"), "admin"),
+            "i2c_bus": _clean_str(raw.get("i2c_bus"), "0"),
+            "i2c_addr": _clean_str(raw.get("i2c_addr"), "0x50"),
+        })
+    elif mode == "rest-api":
+        item.update({
+            "rest_scheme": scheme,
+            "rest_base_path": _clean_str(raw.get("rest_base_path")),
+            "token_env": _clean_str(raw.get("token_env"), "CMIS_REST_TOKEN"),
+        })
+    return item
 
 
 def validate_registry(data: Any) -> tuple[dict, list[str]]:
     """Validate and normalize a registry; return (clean_registry, errors).
 
-    Invalid individual targets are dropped so one bad entry cannot take the
-    whole service down. Unknown keys are ignored.
+    Each target keeps only the fields of its selected access_mode; mixing
+    ssh+i2c and restful API fields is an error, so such a target is dropped and
+    a save is rejected. Unknown keys are ignored.
     """
     errors: list[str] = []
     if not isinstance(data, dict):
@@ -258,12 +298,19 @@ def find_target(registry: dict, device_id: str | None) -> dict | None:
     return next((t for t in targets if t.get("device_id") == active), None)
 
 
-def public_target(target: dict) -> dict:
-    """Return a browser-safe view; never includes token values."""
+def public_target(target: dict | None) -> dict:
+    """Return a browser-safe view; never includes token values.
+
+    Only the selected mode's fields are exposed. A non-REST target has no
+    token/TLS fields at all, so the browser never renders the other transport.
+    """
+    if not target:
+        return {}
     view = dict(target)
-    env_name = str(view.get("token_env") or "")
-    view["token_present"] = bool(os.environ.get(env_name)) if env_name else False
-    view["token_env"] = env_name  # name only, never the value
+    if view.get("access_mode") == "rest-api":
+        env_name = str(view.get("token_env") or "")
+        view["token_present"] = bool(os.environ.get(env_name)) if env_name else False
+        view["token_env"] = env_name  # name only, never the value
     return view
 
 
@@ -278,7 +325,15 @@ def resolve_settings(base: Settings, target: dict | None) -> Settings:
     mode = target.get("access_mode") or base.access_mode
     if mode not in ACCESS_MODES:
         return base
-    overrides: dict[str, Any] = {"access_mode": mode}
+    # Disable both transports first, then enable exactly one. This guarantees
+    # that an unselected mode can never take effect through inherited global
+    # settings (for example a rest_base_url left in config.ini).
+    overrides: dict[str, Any] = {
+        "access_mode": mode,
+        "ssh_host": "",
+        "rest_base_url": "",
+        "rest_token_env": "",
+    }
 
     host = str(target.get("host") or "")
     port = int(target.get("port") or 0)

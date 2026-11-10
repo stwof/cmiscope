@@ -2,10 +2,10 @@
   "meta": {
     "generator": "tools/verify_seed_fields.py",
     "schema_version": "1.0",
-    "generated_at": "2026-11-09T15:36:07+00:00",
+    "generated_at": "2026-11-10T12:55:20+00:00",
     "seed_fields": 64,
     "reference_fields": 2442,
-    "reference_source": "data/cmis53_reference.json (jimfred/CMIS CSV, OIF-derived)",
+    "reference_source": "data/cmis53_reference.json (CMIScope normalized dataset, OIF-derived)",
     "knowledge_graph_item": "P-01 (register byte offsets)",
     "matching": "exact_name -> exact_address -> fuzzy_name",
     "policy": "Advisory only: seed.json is never modified and no value enters the hardware write path. OIF specification is authoritative.",

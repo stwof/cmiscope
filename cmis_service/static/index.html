@@ -284,26 +284,27 @@
             <div class="card mt-3" id="tgEditor" hidden>
               <div class="card-header"><h4 class="card-title mb-0" id="tgEditorTitle" data-i18n="tg.editor">编辑设备</h4></div>
               <div class="card-body">
-                <div class="row g-2">
+                <div class="alert alert-secondary py-2 small" id="tgModeHint"></div>
+                <div class="row g-2" id="tgFormFields">
                   <div class="col-md-3"><label class="form-label">Device ID</label><input class="form-control form-control-sm" data-tg="device_id"></div>
                   <div class="col-md-3"><label class="form-label" data-i18n="tg.f.name">Name</label><input class="form-control form-control-sm" data-tg="name"></div>
                   <div class="col-md-3"><label class="form-label" data-i18n="tg.f.mode">Mode</label>
-                    <select class="form-select form-select-sm" data-tg="access_mode">
+                    <select class="form-select form-select-sm" data-tg="access_mode" id="tgAccessMode">
                       <option value="mirror">mirror (offline)</option>
                       <option value="ssh-i2c">ssh + i2c</option>
                       <option value="rest-api">restful API</option>
                     </select></div>
                   <div class="col-md-3"><label class="form-label" data-i18n="tg.f.enabled">Enabled</label>
                     <select class="form-select form-select-sm" data-tg="enabled"><option value="true">true</option><option value="false">false</option></select></div>
-                  <div class="col-md-4"><label class="form-label" data-i18n="tg.f.host">IP / host</label><input class="form-control form-control-sm" data-tg="host" placeholder="192.0.2.10"></div>
-                  <div class="col-md-2"><label class="form-label" data-i18n="tg.f.port">Port</label><input class="form-control form-control-sm" data-tg="port" type="number" min="0" max="65535"></div>
-                  <div class="col-md-3"><label class="form-label">SSH user</label><input class="form-control form-control-sm" data-tg="ssh_user"></div>
-                  <div class="col-md-3"><label class="form-label">I2C bus</label><input class="form-control form-control-sm" data-tg="i2c_bus"></div>
-                  <div class="col-md-3"><label class="form-label">I2C addr</label><input class="form-control form-control-sm" data-tg="i2c_addr"></div>
-                  <div class="col-md-3"><label class="form-label">REST scheme</label>
+                  <div class="col-md-4" data-tg-modes="ssh-i2c rest-api"><label class="form-label" data-i18n="tg.f.host">IP / host</label><input class="form-control form-control-sm" data-tg="host" placeholder="192.0.2.10"></div>
+                  <div class="col-md-2" data-tg-modes="ssh-i2c rest-api"><label class="form-label" data-i18n="tg.f.port">Port</label><input class="form-control form-control-sm" data-tg="port" type="number" min="0" max="65535"></div>
+                  <div class="col-md-3" data-tg-modes="ssh-i2c"><label class="form-label">SSH user</label><input class="form-control form-control-sm" data-tg="ssh_user"></div>
+                  <div class="col-md-3" data-tg-modes="ssh-i2c"><label class="form-label">I2C bus</label><input class="form-control form-control-sm" data-tg="i2c_bus"></div>
+                  <div class="col-md-3" data-tg-modes="ssh-i2c"><label class="form-label">I2C addr</label><input class="form-control form-control-sm" data-tg="i2c_addr"></div>
+                  <div class="col-md-3" data-tg-modes="rest-api"><label class="form-label">REST scheme</label>
                     <select class="form-select form-select-sm" data-tg="rest_scheme"><option value="https">https</option><option value="http">http</option></select></div>
-                  <div class="col-md-3"><label class="form-label">REST base path</label><input class="form-control form-control-sm" data-tg="rest_base_path" placeholder="/api"></div>
-                  <div class="col-md-3"><label class="form-label">Token env var</label><input class="form-control form-control-sm" data-tg="token_env" placeholder="CMIS_REST_TOKEN"></div>
+                  <div class="col-md-3" data-tg-modes="rest-api"><label class="form-label">REST base path</label><input class="form-control form-control-sm" data-tg="rest_base_path" placeholder="/api"></div>
+                  <div class="col-md-3" data-tg-modes="rest-api"><label class="form-label">Token env var</label><input class="form-control form-control-sm" data-tg="token_env" placeholder="CMIS_REST_TOKEN"></div>
                   <div class="col-md-3"><label class="form-label">Module IDs</label><input class="form-control form-control-sm" data-tg="module_ids" placeholder="QSFP-DD-01, OSFP-01"></div>
                   <div class="col-md-12"><label class="form-label" data-i18n="tg.f.notes">Notes</label><input class="form-control form-control-sm" data-tg="notes"></div>
                 </div>

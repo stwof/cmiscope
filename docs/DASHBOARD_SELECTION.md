@@ -112,7 +112,7 @@ Tabler 只提供样式骨架，不参与语言切换，这正是选择「纯 CSS
 
 ## 5. 风险与后续
 
-- vendored 静态资源需手动跟踪上游版本；建议定期核对 npm `@tabler/core/latest` 与 GitHub release。
+- vendored 静态资源需手动跟踪官方版本；建议定期核对 npm `@tabler/core/latest` 与 GitHub release。
 - Tabler 1.x 相对早期 1.4 有类名/主题变量变化，升级后应回归一次页面渲染；
   本项目已用 Edge 无头浏览器验证三个核心视图，升级后应重复该回归。
 - 图标字体 805 KB 是体积大头；若需极致瘦身，可改为按需内联 SVG 图标并移除 webfont。
