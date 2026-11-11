@@ -162,10 +162,15 @@ def delivered_report_checks() -> None:
     check("every candidate carries a confidence grade",
           all(row["checks"].get("confidence") in ("high", "medium", "low")
               for row in fields if row["status"] == "candidate"))
+    # Offsets verified against OIF-CMIS-05.3 no longer need the
+    # "address_resolved" fallback: exact-name rows become "verified" directly.
+    # The report must still expose actionable offsets (verified or resolved)
+    # and keep high-confidence pending candidates visible.
+    verified = summary["by_status"].get("verified", 0)
     check("actionable offsets are reported for P-01",
-          summary["resolvable_offsets"] >= 1
+          (summary["resolvable_offsets"] + verified) >= 4
           and summary["high_confidence_pending_candidates"] >= 1,
-          str(summary["resolvable_offsets"]))
+          f"verified={verified} address_resolved={summary['resolvable_offsets']}")
     check("report is advisory and license-aware",
           "never modified" in meta["policy"] and "OIF" in meta["license_note"])
     if MARKDOWN.is_file():

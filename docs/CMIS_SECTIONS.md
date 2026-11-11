@@ -31,29 +31,40 @@
 
 ### Lower Memory（常驻 00h–7Fh）
 
-| 地址 | 字节数 | 区域 | 权限/注意 |
-|---|---|---|---|
-| 0–3 | 4 | ID and Status Area | RO；Identifier(SFF-8024)、Revision Compliance、FlatMem、Module State |
-| 4–7 | 4 | Lane Flag Summary | RO / CoR；Pages 10h–1Fh 通道标志汇总 |
-| 8–13 | 6 | Module-Level Flags | RO / CoR |
-| 14–25 | 12 | Module-Level Monitors | RO；温度/电压/辅助监测量（VDM 分区） |
-| 26–30 | 5 | Module Global Controls | RW；含 LowPwrRequestSW |
-| 31–36 | 6 | Module-Level Flag Masks | RW |
-| 37–38 | 2 | CDB Status Area | RO；最近一次 CDB 命令状态 |
-| 39–40 | 2 | Module Firmware Version | RO |
-| 41–63 | 23 | Reserved | — |
-| 64–82 | 19 | Custom Area | 厂商自定义 |
-| 83–84 | 2 | Inactive Firmware Version | RO；00h 表示单镜像 |
-| 85–117 | 33 | Application Advertising | RO；**旧布局**，CMIS 5.3/5.4 主要使用 Upper Page 01h 描述符 |
-| 118–125 | 8 | Password Entry and Change | WO；内核 ethtool 在 `0x7A`(122) 写 4 字节密码 |
-| 126 | 1 | Bank Select | RW |
-| 127 | 1 | Page Select | RW；切换后遵守 tBPC 保持时间 |
+> 偏移已按 OIF-CMIS-05.3 Table 8-4～8-43 逐一核对，表示方式与 high page 字段目录统一为 `页:十进制 (0x十六进制)`。逐字段结论、修正清单与统一后定义见 [`CMIS53_OFFSET_AUDIT.md`](CMIS53_OFFSET_AUDIT.md)。
 
-该表来自公开 CMIS 模块 datasheet（CMIS 4.x/5.x 混合资料），**精确偏移在 5.3/5.4 中可能变化**，已在图谱标为 `partial` / 待确认项 P-16。
+| 页·偏移 | 字节数 | 区域 | 权限/注意 |
+|---|---|---|---|
+| `Lower:0-3 (0x00-0x03)` | 4 | ID and Status Area | RO；Identifier(SFF-8024)、Revision Compliance、MemoryModel、Module State（8-5/8-6） |
+| `Lower:4-7 (0x04-0x07)` | 4 | Lane Flag Summary | RO / CoR；Bank 0–3 标志汇总（8-8） |
+| `Lower:8-13 (0x08-0x0D)` | 6 | Module-Level Flags | RO / CoR（8-9） |
+| `Lower:14-25 (0x0E-0x19)` | 12 | Module-Level Monitors | RO；温度/电压/辅助监测量（VDM 分区，8-10） |
+| `Lower:26-30 (0x1A-0x1E)` | 5 | Module Global Controls | RW；含 LowPwrRequestSW（bit4，8-11） |
+| `Lower:31-36 (0x1F-0x24)` | 6 | Module-Level Flag Masks | RW（8-12） |
+| `Lower:37-38 (0x25-0x26)` | 2 | CDB Status Area | RO；CdbStatus1/2（8-13） |
+| `Lower:39-40 (0x27-0x28)` | 2 | Active Firmware Version | RO（8-15） |
+| `Lower:41-63 (0x29-0x3F)` | 23 | Reserved（混合区） | 41 故障信息 / 42–45 杂项状态 / 46–55 保留 / 56–63 扩展模块信息（8-16～8-18） |
+| `Lower:64-82 (0x40-0x52)` | 19 | Custom Area | 厂商自定义；datasheet 布局，5.3 的 64–84 为 Reserved |
+| `01h:128-129 (0x80-0x81)` | 2 | Inactive Firmware Version | RO；CMIS 5.3 位于 Upper Page 01h（8-43），**不在 Lower Memory** |
+| `Lower:85-117 (0x55-0x75)` | 33 | Application Advertising | RO；85 MediaType + 86–117 八个应用描述符（8-21/8-23） |
+| `Lower:118-125 (0x76-0x7D)` | 8 | Password Entry and Change | WO；118–121 修改区、122–125 入口区（8-24） |
+| `Lower:126 (0x7E)` | 1 | Bank Select | RW（8-25） |
+| `Lower:127 (0x7F)` | 1 | Page Select | RW；切换后遵守 tBPC 保持时间（8-25） |
 
 ### Upper Page 00h（静态识别）
 
-Vendor Name(16B ASCII)、Vendor OUI(3B)、Part Number(16B)、Revision(2B)、Serial Number(16B)、Date Code(8B)、`CC_BASE` / `CC_EXT` 校验和。重编码 EEPROM 后若不重算校验和，模块可能无法识别。精确偏移待 OIF 原文核对（P-01）。
+| 页·偏移 | 字节数 | 字段 | 权限 |
+|---|---|---|---|
+| `00h:129-144 (0x81-0x90)` | 16 | Vendor Name | RO |
+| `00h:145-147 (0x91-0x93)` | 3 | Vendor OUI | RO |
+| `00h:148-163 (0x94-0xA3)` | 16 | Vendor Part Number | RO |
+| `00h:164-165 (0xA4-0xA5)` | 2 | Vendor Revision | RO |
+| `00h:166-181 (0xA6-0xB5)` | 16 | Vendor Serial Number | RO |
+| `00h:182-189 (0xB6-0xBD)` | 8 | Date Code | RO |
+| `00h:222 (0xDE)` | 1 | CC_BASE（5.3 的 Page Checksum，覆盖 128–221） | RO |
+| `00h:223 (0xDF)` | 1 | CC_EXT（4.x 兼容位置；5.3 中 223–254 为 Reserved） | RO |
+
+依据 Table 8-26 / 8-27 / 8-28。重编码 EEPROM 后若不重算校验和，模块可能无法识别。
 
 ## 4. VDM（Versatile Diagnostic Monitoring）
 

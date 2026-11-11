@@ -51,6 +51,7 @@ python tools/test_dataset_build.py  # 规范化数据集构建：功能 / 异常
 python tools/test_access_modes.py   # 源码清理 + 两种接入模式严格互斥（99 项）
 python tools/test_legacy_specs.py   # CMIS 5.1/5.2 手册跨版本校验（手册需自行下载，见 docs/TEST_REPORT.md）
 python tools/test_i18n.py           # 中英文界面文案 / 数据记录本地化回归（19 项，含真实 API 响应扫描）
+python tools/test_cmis53_offsets.py # CMIS 5.3 Low Page / Page 00h offset 一致性与格式统一（88 项）
 python tools/build_i18n_data.py     # 校验译文覆盖率并重建 static/js/data_en.js
 python tools/fetch_specs.py --check  # 校验随附的 OIF 5.3/5.4 PDF 副本
 ```
@@ -87,7 +88,7 @@ CMIS_DATA_DIR=/path/to/data python run.py
 
 | 分区 | 规范依据 | 主要页/地址 |
 |---|---|---|
-| 低页 0x00 | OIF-CMIS-05.3 §8.2 / §8.4 | Lower 00h–7Fh + Upper Page 00h（ID、状态、模块级标志、全局控制、CDB 状态、固件版本、密码区、Bank/Page 选择、厂商/OUI/料号/序列号/校验和） |
+| 低页 0x00 | OIF-CMIS-05.3 §8.2 / §8.4（Table 8-4～8-43） | Lower 00h–7Fh + Upper Page 00h（ID、状态、模块级标志、全局控制、CDB 状态、固件版本、应用通告、密码区、Bank/Page 选择、厂商/OUI/料号/序列号/校验和）；偏移已按 5.3 逐字段核对并统一表示格式，见 [`docs/CMIS53_OFFSET_AUDIT.md`](docs/CMIS53_OFFSET_AUDIT.md) |
 | VDM | §8.8 / §8.22；IETF YANG 草案 Table 2 | Lower 14–25 模块级监测量、Page 02h 阈值、10h/11h 通道状态与光功率、20h–2Fh VDM |
 | CDB | §8.23 / §8.24 / §9 | Page 9Fh 命令帧、A0h–AFh EPL、Lower 37–38 状态、Lower 122 密码入口 |
 | 控制与诊断 | §6.3 / §8.9 / §8.10 / C-CMIS | Page 01h 应用描述符、10h AppSel/DPSM/Staged Control Set、13h/14h PRBS、12h 可调激光器、30h–4Fh 相干设置 |

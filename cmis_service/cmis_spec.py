@@ -111,50 +111,51 @@ SECTIONS: list[dict[str, Any]] = [
 SECTION_BY_KEY = {s["key"]: s for s in SECTIONS}
 
 # ---------------------------------------------------------------------------
-# Lower Memory (Page 00h, always visible, address 0-127).
-# Layout reproduced from a public CMIS module datasheet; CMIS 5.3/5.4 may move
-# Application Advertising to Upper Page 01h. Offsets are therefore "partial".
+# Lower Memory (Page 00h, always visible, address 0-127) and Upper Page 00h.
+# Byte offsets are verified against OIF-CMIS-05.3 Tables 8-4..8-43 as recorded
+# in data/cmis53_dataset.json. Addresses use the same unified notation as the
+# high-page field catalog: "<page>:<decimal range> (0x<hex range>)".
 # ---------------------------------------------------------------------------
 LOWER_MEMORY_MAP: list[dict[str, Any]] = [
-    {"addr": "0-3", "size": 4, "en": "ID and Status Area", "zh": "标识与状态区", "access": "RO",
+    {"addr": "Lower:0-3 (0x00-0x03)", "size": 4, "en": "ID and Status Area", "zh": "标识与状态区", "access": "RO",
      "note": "Module ID (SFF-8024), revision compliance, flat-memory indication, module state bits"},
-    {"addr": "4-7", "size": 4, "en": "Lane Flag Summary", "zh": "通道标志汇总", "access": "RO/CoR",
+    {"addr": "Lower:4-7 (0x04-0x07)", "size": 4, "en": "Lane Flag Summary", "zh": "通道标志汇总", "access": "RO/CoR",
      "note": "Summary of lane flags on pages 10h-1Fh; may be clear-on-read"},
-    {"addr": "8-13", "size": 6, "en": "Module-Level Flags", "zh": "模块级标志", "access": "RO/CoR",
+    {"addr": "Lower:8-13 (0x08-0x0D)", "size": 6, "en": "Module-Level Flags", "zh": "模块级标志", "access": "RO/CoR",
      "note": "Flags that are neither lane nor datapath specific"},
-    {"addr": "14-25", "size": 12, "en": "Module-Level Monitors", "zh": "模块级监测量", "access": "RO",
+    {"addr": "Lower:14-25 (0x0E-0x19)", "size": 12, "en": "Module-Level Monitors", "zh": "模块级监测量", "access": "RO",
      "note": "Temperature, supply voltage and auxiliary monitors (VDM partition)"},
-    {"addr": "26-30", "size": 5, "en": "Module Global Controls", "zh": "模块全局控制", "access": "RW",
+    {"addr": "Lower:26-30 (0x1A-0x1E)", "size": 5, "en": "Module Global Controls", "zh": "模块全局控制", "access": "RW",
      "note": "LowPwrRequestSW, reset and module-wide controls"},
-    {"addr": "31-36", "size": 6, "en": "Module-Level Flag Masks", "zh": "模块级标志掩码", "access": "RW",
+    {"addr": "Lower:31-36 (0x1F-0x24)", "size": 6, "en": "Module-Level Flag Masks", "zh": "模块级标志掩码", "access": "RW",
      "note": "Masking bits for module-level flags"},
-    {"addr": "37-38", "size": 2, "en": "CDB Status Area", "zh": "CDB 状态区", "access": "RO",
+    {"addr": "Lower:37-38 (0x25-0x26)", "size": 2, "en": "CDB Status Area", "zh": "CDB 状态区", "access": "RO",
      "note": "Status of the most recently triggered CDB command"},
-    {"addr": "39-40", "size": 2, "en": "Module Firmware Version", "zh": "模块固件版本", "access": "RO",
+    {"addr": "Lower:39-40 (0x27-0x28)", "size": 2, "en": "Active Firmware Version", "zh": "模块固件版本", "access": "RO",
      "note": "Active firmware version"},
-    {"addr": "41-63", "size": 23, "en": "Reserved", "zh": "保留区", "access": "RO", "note": "Reserved for future standardization"},
-    {"addr": "64-82", "size": 19, "en": "Custom Area", "zh": "厂商自定义区", "access": "RW",
+    {"addr": "Lower:41-63 (0x29-0x3F)", "size": 23, "en": "Reserved", "zh": "保留区", "access": "RO", "note": "Reserved for future standardization"},
+    {"addr": "Lower:64-82 (0x40-0x52)", "size": 19, "en": "Custom Area", "zh": "厂商自定义区", "access": "RW",
      "note": "Vendor or module-type specific use"},
-    {"addr": "83-84", "size": 2, "en": "Inactive Firmware Version", "zh": "非活动固件版本", "access": "RO",
+    {"addr": "01h:128-129 (0x80-0x81)", "size": 2, "en": "Inactive Firmware Version", "zh": "非活动固件版本", "access": "RO",
      "note": "00h indicates a single-image module"},
-    {"addr": "85-117", "size": 33, "en": "Application Advertising", "zh": "应用通告", "access": "RO",
+    {"addr": "Lower:85-117 (0x55-0x75)", "size": 33, "en": "Application Advertising", "zh": "应用通告", "access": "RO",
      "note": "Legacy layout; CMIS 5.3/5.4 uses Upper Page 01h application descriptors"},
-    {"addr": "118-125", "size": 8, "en": "Password Entry and Change", "zh": "密码输入与修改", "access": "WO",
+    {"addr": "Lower:118-125 (0x76-0x7D)", "size": 8, "en": "Password Entry and Change", "zh": "密码输入与修改", "access": "WO",
      "note": "Password entry at 0x7A (122) in the Linux ethtool implementation; 4-byte value"},
-    {"addr": "126", "size": 1, "en": "Bank Select Byte", "zh": "Bank 选择字节", "access": "RW",
+    {"addr": "Lower:126 (0x7E)", "size": 1, "en": "Bank Select", "zh": "Bank 选择字节", "access": "RW",
      "note": "Bank address of the currently visible upper page"},
-    {"addr": "127", "size": 1, "en": "Page Select Byte", "zh": "Page 选择字节", "access": "RW",
+    {"addr": "Lower:127 (0x7F)", "size": 1, "en": "Page Select", "zh": "Page 选择字节", "access": "RW",
      "note": "Page address of the currently visible upper page; observe tBPC hold time"},
 ]
 
 UPPER_PAGE_00H: list[dict[str, Any]] = [
-    {"en": "Vendor Name", "zh": "厂商名称", "size": 16, "access": "RO", "addr": "pending"},
-    {"en": "Vendor OUI", "zh": "厂商 OUI", "size": 3, "access": "RO", "addr": "pending"},
-    {"en": "Vendor Part Number", "zh": "厂商料号", "size": 16, "access": "RO", "addr": "pending"},
-    {"en": "Vendor Revision", "zh": "厂商版本", "size": 2, "access": "RO", "addr": "pending"},
-    {"en": "Vendor Serial Number", "zh": "序列号", "size": 16, "access": "RO", "addr": "pending"},
-    {"en": "Date Code", "zh": "日期码", "size": 8, "access": "RO", "addr": "pending"},
-    {"en": "CC_BASE / CC_EXT", "zh": "基础/扩展校验和", "size": 2, "access": "RO", "addr": "pending"},
+    {"en": "Vendor Name", "zh": "厂商名称", "size": 16, "access": "RO", "addr": "00h:129-144 (0x81-0x90)"},
+    {"en": "Vendor OUI", "zh": "厂商 OUI", "size": 3, "access": "RO", "addr": "00h:145-147 (0x91-0x93)"},
+    {"en": "Vendor Part Number", "zh": "厂商料号", "size": 16, "access": "RO", "addr": "00h:148-163 (0x94-0xA3)"},
+    {"en": "Vendor Revision", "zh": "厂商版本", "size": 2, "access": "RO", "addr": "00h:164-165 (0xA4-0xA5)"},
+    {"en": "Vendor Serial Number", "zh": "序列号", "size": 16, "access": "RO", "addr": "00h:166-181 (0xA6-0xB5)"},
+    {"en": "Date Code", "zh": "日期码", "size": 8, "access": "RO", "addr": "00h:182-189 (0xB6-0xBD)"},
+    {"en": "CC_BASE / CC_EXT", "zh": "基础/扩展校验和", "size": 2, "access": "RO", "addr": "00h:222-223 (0xDE-0xDF)"},
 ]
 
 # ---------------------------------------------------------------------------

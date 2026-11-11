@@ -338,20 +338,23 @@
     if (sec.key === 'LOW_PAGE') {
       var regs = (sectionsData.lower_memory_map || []);
       body += '<details class="mb-3"><summary class="small">' + esc(t('mod.registerMap')) +
-        ' (Lower 00h-7Fh)</summary><div class="table-responsive mt-2"><table class="table table-sm table-vcenter">' +
-        '<thead><tr><th>' + esc(t('mod.addr')) + '</th><th>' + esc(t('mod.size')) + '</th><th>' +
+        ' (Lower / Upper 00h-01h)</summary><div class="table-responsive mt-2"><table class="table table-sm table-vcenter">' +
+        '<thead><tr><th>' + esc(t('mod.pageOffset')) + '</th><th>' + esc(t('mod.size')) + '</th><th>' +
         esc(t('mod.field')) + '</th><th>' + esc(t('mod.access')) + '</th><th>' + esc(t('mod.desc')) +
         '</th></tr></thead><tbody>' + regs.map(function (r) {
           return '<tr><td>' + mono(r.addr) + '</td><td>' + esc(r.size) + '</td><td>' +
-            esc(pick(r.zh, r.en)) + '</td><td>' + badge(esc(r.access), 'secondary') + '</td><td class="muted">' +
+            esc(pick(r.zh, r.en)) + '<div class="muted small">' + mono(r.en) + '</div></td><td>' +
+            badge(esc(r.access), 'secondary') + '</td><td class="muted">' +
             esc(r.note) + '</td></tr>';
         }).join('') + '</tbody></table></div></details>';
       body += '<details class="mb-3"><summary class="small">' + esc(t('mod.identity')) +
-        '</summary><div class="table-responsive mt-2"><table class="table table-sm"><thead><tr><th>' +
-        esc(t('mod.field')) + '</th><th>' + esc(t('mod.size')) + '</th><th>' + esc(t('mod.pageOffset')) +
+        '</summary><div class="table-responsive mt-2"><table class="table table-sm table-vcenter"><thead><tr><th>' +
+        esc(t('mod.field')) + '</th><th>' + esc(t('mod.pageOffset')) + '</th><th>' + esc(t('mod.size')) +
+        '</th><th>' + esc(t('mod.access')) +
         '</th></tr></thead><tbody>' + (sectionsData.upper_page_00h || []).map(function (r) {
-          return '<tr><td>' + esc(pick(r.zh, r.en)) + '</td><td>' + esc(r.size) + '</td><td>' +
-            mono(r.addr) + '</td></tr>';
+          return '<tr><td>' + esc(pick(r.zh, r.en)) + '<div class="muted small">' + mono(r.en) +
+            '</div></td><td>' + mono(r.addr) + '</td><td>' + esc(r.size) + '</td><td>' +
+            badge(esc(r.access), 'secondary') + '</td></tr>';
         }).join('') + '</tbody></table></div></details>';
     }
     if (sec.key === 'CDB') {

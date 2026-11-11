@@ -2,7 +2,7 @@
   "meta": {
     "generator": "tools/verify_seed_fields.py",
     "schema_version": "1.0",
-    "generated_at": "2026-11-10T12:55:20+00:00",
+    "generated_at": "2026-11-11T12:52:59+00:00",
     "seed_fields": 64,
     "reference_fields": 2442,
     "reference_source": "data/cmis53_reference.json (CMIScope normalized dataset, OIF-derived)",
@@ -14,16 +14,15 @@
   "summary": {
     "total": 64,
     "by_status": {
-      "address_resolved": 3,
-      "candidate": 47,
-      "unresolved": 10,
-      "verified": 4
+      "candidate": 48,
+      "unresolved": 9,
+      "verified": 7
     },
     "by_match_kind": {
-      "exact_address": 19,
+      "exact_address": 24,
       "exact_name": 7,
-      "fuzzy_name": 28,
-      "none": 10
+      "fuzzy_name": 24,
+      "none": 9
     },
     "by_section": {
       "CDB": {
@@ -35,23 +34,22 @@
         "unresolved": 4
       },
       "LOW_PAGE": {
-        "candidate": 12,
-        "verified": 4,
-        "address_resolved": 3,
-        "unresolved": 2
+        "candidate": 13,
+        "verified": 7,
+        "unresolved": 1
       },
       "VDM": {
         "candidate": 11,
         "unresolved": 1
       }
     },
-    "addressable_demo_fields": 27,
-    "pending_offsets": 37,
-    "resolvable_offsets": 3,
+    "addressable_demo_fields": 34,
+    "pending_offsets": 30,
+    "resolvable_offsets": 0,
     "mismatches": 0,
     "candidate_confidence": {
       "high": 13,
-      "low": 12,
+      "low": 13,
       "medium": 22
     },
     "high_confidence_pending_candidates": 10
@@ -63,7 +61,7 @@
       "pages_normalized": [
         "Lwr"
       ],
-      "byte_offset_raw": "00h",
+      "byte_offset_raw": "0 (0x00)",
       "byte_offset_parsed": 0,
       "section": "LOW_PAGE",
       "demo_access": "RO",
@@ -116,7 +114,7 @@
       "pages_normalized": [
         "Lwr"
       ],
-      "byte_offset_raw": "01h",
+      "byte_offset_raw": "1 (0x01)",
       "byte_offset_parsed": 1,
       "section": "LOW_PAGE",
       "demo_access": "RO",
@@ -167,7 +165,7 @@
       "pages_normalized": [
         "Lwr"
       ],
-      "byte_offset_raw": "03h",
+      "byte_offset_raw": "3 (0x03)",
       "byte_offset_parsed": 3,
       "section": "LOW_PAGE",
       "demo_access": "RO",
@@ -218,7 +216,7 @@
       "pages_normalized": [
         "Lwr"
       ],
-      "byte_offset_raw": "08-13",
+      "byte_offset_raw": "8-13 (0x08-0x0D)",
       "byte_offset_parsed": 8,
       "section": "LOW_PAGE",
       "demo_access": "RO/CoR",
@@ -297,7 +295,7 @@
       "pages_normalized": [
         "Lwr"
       ],
-      "byte_offset_raw": "04-07",
+      "byte_offset_raw": "4-7 (0x04-0x07)",
       "byte_offset_parsed": 4,
       "section": "LOW_PAGE",
       "demo_access": "RO/CoR",
@@ -377,8 +375,8 @@
       "pages_normalized": [
         "00h"
       ],
-      "byte_offset_raw": "pending",
-      "byte_offset_parsed": null,
+      "byte_offset_raw": "129-144 (0x81-0x90)",
+      "byte_offset_parsed": 129,
       "section": "LOW_PAGE",
       "demo_access": "RO",
       "demo_data_type": "ascii",
@@ -419,10 +417,8 @@
         "name_similarity": 1.0,
         "confidence": "exact"
       },
-      "notes": [
-        "Demo offset is pending; reference byte can be used for review."
-      ],
-      "status": "address_resolved"
+      "notes": [],
+      "status": "verified"
     },
     {
       "field_key": "VendorOUI",
@@ -430,8 +426,8 @@
       "pages_normalized": [
         "00h"
       ],
-      "byte_offset_raw": "pending",
-      "byte_offset_parsed": null,
+      "byte_offset_raw": "145-147 (0x91-0x93)",
+      "byte_offset_parsed": 145,
       "section": "LOW_PAGE",
       "demo_access": "RO",
       "demo_data_type": "hex",
@@ -472,10 +468,8 @@
         "name_similarity": 1.0,
         "confidence": "exact"
       },
-      "notes": [
-        "Demo offset is pending; reference byte can be used for review."
-      ],
-      "status": "address_resolved"
+      "notes": [],
+      "status": "verified"
     },
     {
       "field_key": "VendorPartNumber",
@@ -483,17 +477,17 @@
       "pages_normalized": [
         "00h"
       ],
-      "byte_offset_raw": "pending",
-      "byte_offset_parsed": null,
+      "byte_offset_raw": "148-163 (0x94-0xA3)",
+      "byte_offset_parsed": 148,
       "section": "LOW_PAGE",
       "demo_access": "RO",
       "demo_data_type": "ascii",
-      "match_kind": "fuzzy_name",
+      "match_kind": "exact_address",
       "reference": {
-        "key_id": "VendorName",
-        "name": "VendorName",
+        "key_id": "VendorPN",
+        "name": "VendorPN",
         "page": "00h",
-        "byte": 129,
+        "byte": 148,
         "byte_length": 16,
         "access": "RO",
         "data_type": "ascii",
@@ -503,19 +497,6 @@
         "spec_pdf_page": 161
       },
       "candidates": [
-        {
-          "key_id": "VendorName",
-          "name": "VendorName",
-          "page": "00h",
-          "byte": 129,
-          "byte_length": 16,
-          "access": "RO",
-          "data_type": "ascii",
-          "value_type": "ascii[16]",
-          "ref_table": "8-28",
-          "ref_section": "",
-          "spec_pdf_page": 161
-        },
         {
           "key_id": "VendorPN",
           "name": "VendorPN",
@@ -528,19 +509,6 @@
           "ref_table": "8-28",
           "ref_section": "",
           "spec_pdf_page": 161
-        },
-        {
-          "key_id": "VendorRev",
-          "name": "VendorRev",
-          "page": "00h",
-          "byte": 164,
-          "byte_length": 2,
-          "access": "RO",
-          "data_type": "ascii",
-          "value_type": "ascii[2]",
-          "ref_table": "8-28",
-          "ref_section": "",
-          "spec_pdf_page": 161
         }
       ],
       "checks": {
@@ -548,7 +516,7 @@
         "byte_match": true,
         "access_match": true,
         "type_compatible": true,
-        "name_similarity": 0.692,
+        "name_similarity": 0.667,
         "confidence": "medium"
       },
       "notes": [
@@ -562,17 +530,17 @@
       "pages_normalized": [
         "00h"
       ],
-      "byte_offset_raw": "pending",
-      "byte_offset_parsed": null,
+      "byte_offset_raw": "166-181 (0xA6-0xB5)",
+      "byte_offset_parsed": 166,
       "section": "LOW_PAGE",
       "demo_access": "RO",
       "demo_data_type": "ascii",
-      "match_kind": "fuzzy_name",
+      "match_kind": "exact_address",
       "reference": {
-        "key_id": "VendorName",
-        "name": "VendorName",
+        "key_id": "VendorSN",
+        "name": "VendorSN",
         "page": "00h",
-        "byte": 129,
+        "byte": 166,
         "byte_length": 16,
         "access": "RO",
         "data_type": "ascii",
@@ -583,10 +551,10 @@
       },
       "candidates": [
         {
-          "key_id": "VendorName",
-          "name": "VendorName",
+          "key_id": "VendorSN",
+          "name": "VendorSN",
           "page": "00h",
-          "byte": 129,
+          "byte": 166,
           "byte_length": 16,
           "access": "RO",
           "data_type": "ascii",
@@ -601,12 +569,11 @@
         "byte_match": true,
         "access_match": true,
         "type_compatible": true,
-        "name_similarity": 0.5,
-        "confidence": "low"
+        "name_similarity": 0.615,
+        "confidence": "medium"
       },
       "notes": [
-        "Alias/address-based match only; confirm against OIF text before reuse.",
-        "Low confidence candidate; treat as unresolved for P-01."
+        "Alias/address-based match only; confirm against OIF text before reuse."
       ],
       "status": "candidate"
     },
@@ -616,8 +583,8 @@
       "pages_normalized": [
         "00h"
       ],
-      "byte_offset_raw": "pending",
-      "byte_offset_parsed": null,
+      "byte_offset_raw": "182-189 (0xB6-0xBD)",
+      "byte_offset_parsed": 182,
       "section": "LOW_PAGE",
       "demo_access": "RO",
       "demo_data_type": "ascii",
@@ -658,10 +625,8 @@
         "name_similarity": 1.0,
         "confidence": "exact"
       },
-      "notes": [
-        "Demo offset is pending; reference byte can be used for review."
-      ],
-      "status": "address_resolved"
+      "notes": [],
+      "status": "verified"
     },
     {
       "field_key": "CcBase",
@@ -669,19 +634,54 @@
       "pages_normalized": [
         "00h"
       ],
-      "byte_offset_raw": "pending",
-      "byte_offset_parsed": null,
+      "byte_offset_raw": "222 (0xDE)",
+      "byte_offset_parsed": 222,
       "section": "LOW_PAGE",
       "demo_access": "RO",
       "demo_data_type": "hex",
-      "match_kind": "none",
-      "reference": null,
-      "candidates": [],
-      "checks": {},
-      "notes": [
-        "No reference row matched by name or address; demo-only field."
+      "match_kind": "exact_address",
+      "reference": {
+        "key_id": "PageChecksum.00h",
+        "name": "PageChecksum",
+        "page": "00h",
+        "byte": 222,
+        "byte_length": 1,
+        "access": "RO",
+        "data_type": "int",
+        "value_type": "u8",
+        "ref_table": "8-26",
+        "ref_section": "8.3.11",
+        "spec_pdf_page": 161
+      },
+      "candidates": [
+        {
+          "key_id": "PageChecksum.00h",
+          "name": "PageChecksum",
+          "page": "00h",
+          "byte": 222,
+          "byte_length": 1,
+          "access": "RO",
+          "data_type": "int",
+          "value_type": "u8",
+          "ref_table": "8-26",
+          "ref_section": "8.3.11",
+          "spec_pdf_page": 161
+        }
       ],
-      "status": "unresolved"
+      "checks": {
+        "page_match": true,
+        "byte_match": true,
+        "access_match": true,
+        "type_compatible": true,
+        "name_similarity": 0.333,
+        "confidence": "low"
+      },
+      "notes": [
+        "Alias/address-based match only; confirm against OIF text before reuse.",
+        "Names are unrelated: this is an address coincidence, not an alias. Do not reuse without OIF confirmation.",
+        "Low confidence candidate; treat as unresolved for P-01."
+      ],
+      "status": "candidate"
     },
     {
       "field_key": "CcExt",
@@ -689,8 +689,8 @@
       "pages_normalized": [
         "00h"
       ],
-      "byte_offset_raw": "pending",
-      "byte_offset_parsed": null,
+      "byte_offset_raw": "223 (0xDF)",
+      "byte_offset_parsed": 223,
       "section": "LOW_PAGE",
       "demo_access": "RO",
       "demo_data_type": "hex",
@@ -705,55 +705,56 @@
     },
     {
       "field_key": "ModuleTypeEncoding",
-      "page_raw": "00h",
+      "page_raw": "Lower",
       "pages_normalized": [
-        "00h"
+        "Lwr"
       ],
       "byte_offset_raw": "85 (0x55)",
       "byte_offset_parsed": 85,
       "section": "LOW_PAGE",
       "demo_access": "RO",
       "demo_data_type": "hex",
-      "match_kind": "fuzzy_name",
+      "match_kind": "exact_address",
       "reference": {
-        "key_id": "ModuleTempMin",
-        "name": "ModuleTempMin",
-        "page": "01h",
-        "byte": 147,
+        "key_id": "MediaType",
+        "name": "MediaType",
+        "page": "Lwr",
+        "byte": 85,
         "byte_length": 1,
         "access": "RO",
-        "data_type": "int",
-        "value_type": "s8",
-        "ref_table": "8-49",
+        "data_type": "enum",
+        "value_type": "enum8",
+        "ref_table": "8-21",
         "ref_section": "",
-        "spec_pdf_page": 173
+        "spec_pdf_page": 157
       },
       "candidates": [
         {
-          "key_id": "ModuleTempMin",
-          "name": "ModuleTempMin",
-          "page": "01h",
-          "byte": 147,
+          "key_id": "MediaType",
+          "name": "MediaType",
+          "page": "Lwr",
+          "byte": 85,
           "byte_length": 1,
           "access": "RO",
-          "data_type": "int",
-          "value_type": "s8",
-          "ref_table": "8-49",
+          "data_type": "enum",
+          "value_type": "enum8",
+          "ref_table": "8-21",
           "ref_section": "",
-          "spec_pdf_page": 173
+          "spec_pdf_page": 157
         }
       ],
       "checks": {
-        "page_match": false,
-        "byte_match": false,
+        "page_match": true,
+        "byte_match": true,
         "access_match": true,
         "type_compatible": true,
-        "name_similarity": 0.645,
-        "confidence": "medium"
+        "name_similarity": 0.444,
+        "confidence": "low"
       },
       "notes": [
         "Alias/address-based match only; confirm against OIF text before reuse.",
-        "candidate byte differs: demo=85 reference=147"
+        "Names are unrelated: this is an address coincidence, not an alias. Do not reuse without OIF confirmation.",
+        "Low confidence candidate; treat as unresolved for P-01."
       ],
       "status": "candidate"
     },
@@ -983,7 +984,7 @@
       "pages_normalized": [
         "Lwr"
       ],
-      "byte_offset_raw": "26-30",
+      "byte_offset_raw": "26-30 (0x1A-0x1E)",
       "byte_offset_parsed": 26,
       "section": "LOW_PAGE",
       "demo_access": "RW",
@@ -1064,7 +1065,7 @@
       "pages_normalized": [
         "Lwr"
       ],
-      "byte_offset_raw": "31-36",
+      "byte_offset_raw": "31-36 (0x1F-0x24)",
       "byte_offset_parsed": 31,
       "section": "LOW_PAGE",
       "demo_access": "RW",
@@ -1144,7 +1145,7 @@
       "pages_normalized": [
         "Lwr"
       ],
-      "byte_offset_raw": "39-40",
+      "byte_offset_raw": "39-40 (0x27-0x28)",
       "byte_offset_parsed": 39,
       "section": "LOW_PAGE",
       "demo_access": "RO",
@@ -1194,43 +1195,30 @@
     },
     {
       "field_key": "InactiveFirmwareVersion",
-      "page_raw": "Lower",
+      "page_raw": "01h",
       "pages_normalized": [
-        "Lwr"
+        "01h"
       ],
-      "byte_offset_raw": "83-84",
-      "byte_offset_parsed": 83,
+      "byte_offset_raw": "128-129 (0x80-0x81)",
+      "byte_offset_parsed": 128,
       "section": "LOW_PAGE",
       "demo_access": "RO",
       "demo_data_type": "ascii",
-      "match_kind": "fuzzy_name",
+      "match_kind": "exact_address",
       "reference": {
-        "key_id": "ModuleActiveFirmwareMinorRevision",
-        "name": "ModuleActiveFirmwareMinorRevision",
-        "page": "Lwr",
-        "byte": 40,
+        "key_id": "ModuleInactiveFirmwareMajorRevision",
+        "name": "ModuleInactiveFirmwareMajorRevision",
+        "page": "01h",
+        "byte": 128,
         "byte_length": 1,
         "access": "RO",
         "data_type": "int",
         "value_type": "u8",
-        "ref_table": "8-15",
+        "ref_table": "8-43",
         "ref_section": "",
-        "spec_pdf_page": 153
+        "spec_pdf_page": 169
       },
       "candidates": [
-        {
-          "key_id": "ModuleInactiveFirmwareMinorRevision",
-          "name": "ModuleInactiveFirmwareMinorRevision",
-          "page": "01h",
-          "byte": 129,
-          "byte_length": 1,
-          "access": "RO",
-          "data_type": "int",
-          "value_type": "u8",
-          "ref_table": "8-43",
-          "ref_section": "",
-          "spec_pdf_page": 169
-        },
         {
           "key_id": "ModuleInactiveFirmwareMajorRevision",
           "name": "ModuleInactiveFirmwareMajorRevision",
@@ -1243,33 +1231,19 @@
           "ref_table": "8-43",
           "ref_section": "",
           "spec_pdf_page": 169
-        },
-        {
-          "key_id": "ModuleActiveFirmwareMinorRevision",
-          "name": "ModuleActiveFirmwareMinorRevision",
-          "page": "Lwr",
-          "byte": 40,
-          "byte_length": 1,
-          "access": "RO",
-          "data_type": "int",
-          "value_type": "u8",
-          "ref_table": "8-15",
-          "ref_section": "",
-          "spec_pdf_page": 153
         }
       ],
       "checks": {
         "page_match": true,
-        "byte_match": false,
+        "byte_match": true,
         "access_match": true,
         "type_compatible": false,
-        "name_similarity": 0.679,
+        "name_similarity": 0.724,
         "confidence": "medium"
       },
       "notes": [
         "data type differs: demo=ascii reference=int",
-        "Alias/address-based match only; confirm against OIF text before reuse.",
-        "candidate byte differs: demo=83 reference=40"
+        "Alias/address-based match only; confirm against OIF text before reuse."
       ],
       "status": "candidate"
     },
@@ -1332,7 +1306,7 @@
       "pages_normalized": [
         "Lwr"
       ],
-      "byte_offset_raw": "85-117",
+      "byte_offset_raw": "85-117 (0x55-0x75)",
       "byte_offset_parsed": 85,
       "section": "LOW_PAGE",
       "demo_access": "RO",
@@ -1491,7 +1465,7 @@
       "pages_normalized": [
         "Lwr"
       ],
-      "byte_offset_raw": "14-25",
+      "byte_offset_raw": "14-25 (0x0E-0x19)",
       "byte_offset_parsed": 14,
       "section": "VDM",
       "demo_access": "RO",
@@ -3048,7 +3022,7 @@
       "pages_normalized": [
         "Lwr"
       ],
-      "byte_offset_raw": "26 bit4",
+      "byte_offset_raw": "26 (0x1A) bit4",
       "byte_offset_parsed": 26,
       "section": "LOW_PAGE",
       "demo_access": "RW",
